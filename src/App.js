@@ -1,10 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
+import GlobalStyle from './styles/GlobalStyle';
 import LoginPage from './pages/LoginPage';
 
 function App() {
   return (
+    <>
+    <GlobalStyle/>
     <Router>
       <Routes>
         {/* 예시 네비게이션이 필요한 페이지들 */}
@@ -14,6 +17,8 @@ function App() {
         <Route path="/" element={<Layout><LoginPage /></Layout>}/>
       </Routes>
     </Router>
+    </>
+
   );
 }
 
