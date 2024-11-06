@@ -20,11 +20,13 @@ import {
   Divider,
   ReviewTitle
 } from '../styles/pages/ReviewPage';
+import { useNavigate } from 'react-router-dom';
 
 const ReviewPage = () => {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [review, setReview] = useState('');
   const [image, setImage] = useState(null);
+  const navigate = useNavigate();
 
   const keywords = [
     '여기 없어지면 에리카 퇴학합니다.',
@@ -55,7 +57,7 @@ const ReviewPage = () => {
       alert('필수 항목을 채워주세요.');
       return;
     }
-    // 다음 단계로 진행하는 로직
+    navigate('/review/complete');
   };
 
   return (
