@@ -2,7 +2,7 @@ import Tap from '../components/stamp/Tap'
 import Category from '../components/stamp/Category';
 import StampList from '../components/stamp/StampList';
 import {FixedContainer, ContentContainer, Title,Search, Header} from '../styles/pages/StampPage';
-import searchIcon from '../asset/svg/search.svg?react';
+import searchIcon from '../assets/svg/search.svg?react';
 
 const StampPage = () => {
     return (

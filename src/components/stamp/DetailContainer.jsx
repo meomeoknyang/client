@@ -1,7 +1,7 @@
 import { Title, Information } from "../../styles/components/stamp/DetailContainer";
-import breakIcon from "../../asset/svg/break.svg"
-import priceIcon from "../../asset/svg/price.svg"
-import locationIcon from "../../asset/svg/location.svg"
+import breakIcon from "../../assets/svg/break.svg"
+import priceIcon from "../../assets/svg/price.svg"
+import locationIcon from "../../assets/svg/location.svg"
 const Main = ({text}) => {
     return(
         <Title>{text}</Title>
