@@ -94,6 +94,9 @@ export const ImageUploadBox = styled.div`
   align-items: center;
   justify-content: center;
   gap: 0.25rem;
+  position: relative;
+  overflow: hidden;
+  padding: 0;
   
   span {
     color: rgba(0, 0, 0, 0.20);
@@ -173,12 +176,22 @@ export const NextButton = styled.button`
   letter-spacing: -0.03rem;
   margin-left: auto;
   display: block;
+  opacity: ${props => props.disabled ? 0.5 : 1};
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  
+  &:disabled {
+    background: #CCCCCC;
+  }
 `;
 
 export const UploadedImage = styled.img`
-  max-width: 100%;
-  height: auto;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   border-radius: 0.313rem;
+  position: absolute;
+  top: 0;
+  left: 0;
 `;
 
 export const QuestionTitle = styled.div`

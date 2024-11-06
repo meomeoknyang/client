@@ -50,6 +50,14 @@ const ReviewPage = () => {
     }
   };
 
+  const handleNextClick = () => {
+    if (selectedKeywords.length === 0 || !image || !review.trim()) {
+      alert('필수 항목을 채워주세요.');
+      return;
+    }
+    // 다음 단계로 진행하는 로직
+  };
+
   return (
     <PageContainer>
       <CloseButton src={Close} alt="닫기" />
@@ -115,7 +123,12 @@ const ReviewPage = () => {
         </CharCount>
       </Section>
 
-      <NextButton>다음</NextButton>
+      <NextButton 
+        onClick={handleNextClick}
+        disabled={selectedKeywords.length === 0 || !image || !review.trim()}
+      >
+        다음
+      </NextButton>
     </PageContainer>
   );
 };
