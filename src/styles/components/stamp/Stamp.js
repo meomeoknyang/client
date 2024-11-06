@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import menu from '../../../asset/menu.png'
+import menu from '../../../assets/menu.png'
 const Container = styled.div`
     width: 335px;
     height: 128px;

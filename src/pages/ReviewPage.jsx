@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import PhotoClick from '../assets/Review/PhotoClick.svg';
-import Pencil from '../assets/Review/Pencil.svg';
-import Close from '../assets/Review/Close.svg';
+import PhotoClick from '../assets/svg/PhotoClick.svg';
+import Pencil from '../assets/svg/Pencil.svg';
+import Close from '../assets/svg/Close.svg';
 import {
   PageContainer,
   CloseButton,

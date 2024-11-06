@@ -1,7 +1,7 @@
 import {CgView, Filter, Back} from '../../styles/components/stamp/Category';
 import ChipWrapper from './ChipWrapper';
-import FilterIcon from '../../asset/svg/filter.svg';
-import DownIcon from '../../asset/svg//arrow_down.svg';
+import FilterIcon from '../../assets/svg/filter.svg';
+import DownIcon from '../../assets/svg//arrow_down.svg';
 
 const Category = () => {
     return (
