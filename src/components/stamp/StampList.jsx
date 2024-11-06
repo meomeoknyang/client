@@ -7,6 +7,8 @@ const StampList = () => {
             <Stamp/>
             <Stamp/>
             <Stamp/>
+            <Stamp/>
+
 
         </div>
     );
