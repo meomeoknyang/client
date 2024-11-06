@@ -5,6 +5,7 @@ import GlobalStyle from './styles/GlobalStyle';
 import LoginPage from './pages/LoginPage';
 import ReviewPage from './pages/ReviewPage';
 import ReviewCompletePage from './pages/ReviewCompletePage';
+import MapPage from './pages/MapPage';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<Layout><LoginPage /></Layout>} />
           <Route path="/review" element={<Layout><ReviewPage /></Layout>} />
           <Route path="/review/complete" element={<Layout><ReviewCompletePage /></Layout>} />
+          <Route path="/map" element={<Layout hasNavigation><MapPage /></Layout>} />
         </Routes>
       </Router>
     </>
