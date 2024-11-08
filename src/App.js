@@ -22,11 +22,11 @@ function App() {
           <Route path="/stamp" element={<Layout hasNavigation> <StampPage/></Layout>}/>
           <Route path="/map" element={<Layout hasNavigation> </Layout>}/>
           <Route path="/mypage" element={<Layout hasNavigation> </Layout>}/>
+          <Route path="/random-menu" element={<Layout hasNavigation><RandomMenuPage /></Layout>} />
+          <Route path="/custom-choice" element={<Layout hasNavigation><CustomPage /></Layout>} />
           {/* 네비게이션이 필요 없는 페이지들 */}
           <Route path="/" element={<Layout><SplashPage /></Layout>} />
           <Route path="/login" element={<Layout><LoginPage /></Layout>} />
-          <Route path="/random-menu" element={<RandomMenuPage />} />
-          <Route path="/custom-choice" element={<CustomPage />} />
           <Route path="/review" element={<Layout><ReviewPage /></Layout>} />
           <Route path="/review/complete" element={<Layout><ReviewCompletePage /></Layout>} />
         </Routes>
