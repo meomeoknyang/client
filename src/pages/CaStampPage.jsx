@@ -1,15 +1,15 @@
 import Tap from '../components/stamp/Tap'
-import Category from '../components/stamp/Category';
-import StampList from '../components/stamp/StampList';
+import Category from '../components/stamp/restaurant/Category';
+import StampList from '../components/stamp/restaurant/StampList';
 import {FixedContainer, ContentContainer, Title,Search, Header} from '../styles/pages/StampPage';
 import searchIcon from '../assets/svg/search.svg?react';
 import { useNavigate} from 'react-router-dom';
 import { useState } from 'react';
-import SortBottomSheet from '../components/stamp/bottomsheet/SortBottomSheet';
-import PartnerBottomSheet from '../components/stamp/bottomsheet/PartnerBottomSheet';
-import CategoryBottomSheet from '../components/stamp/bottomsheet/CategoryBottomSheet';
-import AllBottomSheet from '../components/stamp/bottomsheet/AllBottomSheet';
-const StampPage = () => {
+import SortBottomSheet from '../components/stamp/restaurant/bottomsheet/SortBottomSheet';
+import PartnerBottomSheet from '../components/stamp/restaurant/bottomsheet/PartnerBottomSheet';
+import CategoryBottomSheet from '../components/stamp/restaurant/bottomsheet/CategoryBottomSheet';
+import AllBottomSheet from '../components/stamp/restaurant/bottomsheet/AllBottomSheet';
+const CaStampPage = () => {
     const navigate = useNavigate();
     const [bottomSheet, setBottomSheet] = useState({
         type: null,
@@ -20,9 +20,8 @@ const StampPage = () => {
     <>
         <FixedContainer>
             <Header>
-                <Title>도장깨기</Title>
+                <Title>카페 도장깨기</Title>
                 <Search src={searchIcon} alt='search' onClick={() => navigate('/stamp/search')}/>
-                
             </Header>
             <Tap/>
             <Category setBottomSheet={setBottomSheet}/>
@@ -53,4 +52,4 @@ const StampPage = () => {
     
     );
   };
-export default StampPage;
+export default CaStampPage;

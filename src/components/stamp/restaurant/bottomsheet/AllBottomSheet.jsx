@@ -1,5 +1,5 @@
-import { Overlay } from "../../../styles/pages/StampPage";
-import clearIcon from "../../../assets/svg/clear.svg"
+import { Overlay } from "../../../../styles/pages/StampPage";
+import clearIcon from "../../../../assets/svg/clear.svg"
 import styled from "styled-components";
 
 const AllBottomSheet = ({ open, setOpen }) => {

@@ -1,7 +1,7 @@
-import { Overlay } from "../../../styles/pages/StampPage";
-import clearIcon from "../../../assets/svg/clear.svg"
+import { Overlay } from "../../../../styles/pages/StampPage";
+import clearIcon from "../../../../assets/svg/clear.svg"
 import styled from "styled-components";
-import checkIcon from "../../../assets/svg/check.svg"
+import checkIcon from "../../../../assets/svg/check.svg"
 import { useState } from "react";
 const CategoryBottomSheet = ({ open, setOpen }) => {
 

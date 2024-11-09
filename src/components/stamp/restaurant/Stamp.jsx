@@ -1,6 +1,6 @@
-import { Container, Detail, Visit } from "../../styles/components/stamp/Stamp";
+import { Container, Detail, Visit } from "../../../styles/components/stamp/Stamp";
 import { Main, Breaktime, Price, Distance } from "./DetailContainer";
-import starIcon from "../../assets/svg/star.svg"
+import starIcon from "../../../assets/svg/star.svg"
 const Stamp = () => {
 
     return(
