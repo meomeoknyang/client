@@ -28,7 +28,7 @@ const Category = ({setBottomSheet}) => {
             </CgView>
             <Back>
                 <Filter>
-                    <img  style={{position: "absolute", right: "5px", bottom: "5px"}}  src={FilterIcon}  alt="filter" />
+                    <img onClick={()=>handleClick('all')}  style={{position: "absolute", right: "5px", bottom: "5px"}}  src={FilterIcon}  alt="filter" />
                 </Filter>
             </Back>
         </div>

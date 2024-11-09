@@ -8,6 +8,7 @@ import { useState } from 'react';
 import SortBottomSheet from '../components/stamp/bottomsheet/SortBottomSheet';
 import PartnerBottomSheet from '../components/stamp/bottomsheet/PartnerBottomSheet';
 import CategoryBottomSheet from '../components/stamp/bottomsheet/CategoryBottomSheet';
+import AllBottomSheet from '../components/stamp/bottomsheet/AllBottomSheet';
 const StampPage = () => {
     const navigate = useNavigate();
     const [bottomSheet, setBottomSheet] = useState({
@@ -15,7 +16,6 @@ const StampPage = () => {
         isOpen: false
     });
 
-    
     return (
     <>
         <FixedContainer>
@@ -43,6 +43,10 @@ const StampPage = () => {
         />
         <CategoryBottomSheet 
             open={bottomSheet.isOpen && bottomSheet.type === 'category'} 
+            setOpen={() => setBottomSheet({type: null, isOpen: false})}
+        />
+        <AllBottomSheet
+            open={bottomSheet.isOpen && bottomSheet.type === 'all'} 
             setOpen={() => setBottomSheet({type: null, isOpen: false})}
         />
     </>

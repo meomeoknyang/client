@@ -31,7 +31,7 @@ const SortBottomSheet = ({ open, setOpen }) => {
             <Overlay onClick={() => setOpen(false)}/>
             <Bottom>
                 <Head>
-                    <div style={{fontWeight: "700", display: "flex",alignItems: "center"}}>정렬</div>
+                    <div style={{fontWeight: "700", display: "flex",alignItems: "center",fontSize:"20px"}}>정렬</div>
                     <img onClick={() => setOpen(false)} 
                         src={clearIcon} 
                         alt="clear" 
