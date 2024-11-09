@@ -9,7 +9,7 @@ const CgChips = styled.span`
     border-radius: 48px;
     border: 1px solid rgba(0, 0, 0, 0.10);
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center
     `

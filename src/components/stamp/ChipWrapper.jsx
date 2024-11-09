@@ -1,13 +1,15 @@
 import { CgChips } from "../../styles/components/stamp/Category";
-
-const ChipWrapper = ({text, width}) => {
+import DownIcon from '../../assets/svg//arrow_down.svg';
+const ChipWrapper = ({text, width, icon, onClick}) => {
     
     return(
         <CgChips
-        width={width}
+            width={width}
+            onClick={onClick}
         >
             {text}
-            
+
+            {icon === "drop" && <img src={DownIcon} alt="down arrow" />}
         </CgChips>
     )
 }
