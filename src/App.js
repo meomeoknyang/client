@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage';
 import StampPage from './pages/StampPage';
 import ReviewPage from './pages/ReviewPage';
 import ReviewCompletePage from './pages/ReviewCompletePage';
+import StampSearchPage from './pages/StampSearchPage';
 
 function App() {
   return (
@@ -15,7 +16,10 @@ function App() {
         <Routes>
           {/* 예시 네비게이션이 필요한 페이지들 */}
           <Route path="/home" element={<Layout hasNavigation><LoginPage /></Layout>} />
-          <Route path="/stamp" element={<Layout hasNavigation> <StampPage/></Layout>}/>
+          <Route path="/stamp" >
+            <Route index element={<Layout hasNavigation> <StampPage/></Layout>}/>
+            <Route path='/stamp/search' element={<Layout hasNavigation><StampSearchPage/></Layout>} />
+          </Route>
           <Route path="/random" element={<Layout hasNavigation> </Layout>}/>
           <Route path="/map" element={<Layout hasNavigation> </Layout>}/>
           <Route path="/mypage" element={<Layout hasNavigation> </Layout>}/>
