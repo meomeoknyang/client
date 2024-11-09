@@ -6,9 +6,14 @@ import searchIcon from '../assets/svg/search.svg?react';
 import { useNavigate} from 'react-router-dom';
 import { useState } from 'react';
 import SortBottomSheet from '../components/stamp/bottomsheet/SortBottomSheet';
+import PartnerBottomSheet from '../components/stamp/bottomsheet/PartnerBottomSheet';
 const StampPage = () => {
     const navigate = useNavigate();
-    const [open, setOpen] = useState(false);
+    const [bottomSheet, setBottomSheet] = useState({
+        type: null,
+        isOpen: false
+    });
+
     
     return (
     <>
@@ -19,7 +24,7 @@ const StampPage = () => {
                 
             </Header>
             <Tap/>
-            <Category setOpen={setOpen}/>
+            <Category setBottomSheet={setBottomSheet}/>
 
         </FixedContainer>
         <ContentContainer >
@@ -27,7 +32,14 @@ const StampPage = () => {
                 <StampList></StampList>
             </div>
         </ContentContainer>
-        <SortBottomSheet open={open} setOpen={setOpen}/>
+        <SortBottomSheet 
+                open={bottomSheet.isOpen && bottomSheet.type === 'sort'} 
+                setOpen={() => setBottomSheet({type: null, isOpen: false})}
+            />
+            <PartnerBottomSheet 
+                open={bottomSheet.isOpen && bottomSheet.type === 'partner'} 
+                setOpen={() => setBottomSheet({type: null, isOpen: false})}
+            />
     </>
     
     );

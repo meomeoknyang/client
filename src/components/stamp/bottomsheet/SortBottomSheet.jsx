@@ -5,14 +5,8 @@ import checkIcon from "../../../assets/svg/check.svg"
 import { useState } from "react";
 const SortBottomSheet = ({ open, setOpen }) => {
 
-    const [selectedIndex, setSelectedIndex] = useState(0);
-    const sortOptions = [
-        "추천순",
-        "별점순",
-        "리뷰 많은 순",
-        "가격 낮은 순",
-        "거리순"
-    ];
+    const [selectedItem, setSelectedItem] = useState(false);
+
     if (!open) return null;
     return(
         
@@ -27,16 +21,41 @@ const SortBottomSheet = ({ open, setOpen }) => {
                         style={{ cursor: 'pointer' }} />
                 </Head>
                 <Container>
-                    {sortOptions.map((option, index) => (
-                            <List 
-                                key={index}
-                                onClick={() => setSelectedIndex(index)}
-                                style={{ opacity: selectedIndex === index ? 1 : 0.5 }}
-                            >
-                                {selectedIndex === index && <img src={checkIcon} alt="check" />}
-                                <div>{option}</div>
-                            </List>
-                        ))}
+                    <List 
+                        onClick={() => setSelectedItem('추천순')} 
+                        style={{ opacity: selectedItem === '추천순' ? 1 : 0.5 }}
+                    >
+                        {selectedItem === '추천순' && <img src={checkIcon} alt="check" />}
+                        <div>추천순</div>
+                    </List>
+                    <List 
+                        onClick={() => setSelectedItem('별점순')}
+                        style={{ opacity: selectedItem === '별점순' ? 1 : 0.5 }}
+                    >
+                        {selectedItem === '별점순' && <img src={checkIcon} alt="check" />}
+                        <div>별점순</div>
+                    </List>
+                    <List 
+                        onClick={() => setSelectedItem('리뷰많은순')}
+                        style={{ opacity: selectedItem === '리뷰많은순' ? 1 : 0.5 }}
+                    >
+                        {selectedItem === '리뷰많은순' && <img src={checkIcon} alt="check" />}
+                        <div>리뷰 많은 순</div>
+                    </List>
+                    <List 
+                        onClick={() => setSelectedItem('가격낮은순')}
+                        style={{ opacity: selectedItem === '가격낮은순' ? 1 : 0.5 }}
+                    >
+                        {selectedItem === '가격낮은순' && <img src={checkIcon} alt="check" />}
+                        <div>가격 낮은 순</div>
+                    </List>
+                    <List 
+                        onClick={() => setSelectedItem('거리순')}
+                        style={{ opacity: selectedItem === '거리순' ? 1 : 0.5 }}
+                    >
+                        {selectedItem === '거리순' && <img src={checkIcon} alt="check" />}
+                        <div>거리순</div>
+                    </List>
 
                 </Container>
 
