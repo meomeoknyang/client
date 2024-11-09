@@ -7,6 +7,7 @@ import { useNavigate} from 'react-router-dom';
 import { useState } from 'react';
 import SortBottomSheet from '../components/stamp/bottomsheet/SortBottomSheet';
 import PartnerBottomSheet from '../components/stamp/bottomsheet/PartnerBottomSheet';
+import CategoryBottomSheet from '../components/stamp/bottomsheet/CategoryBottomSheet';
 const StampPage = () => {
     const navigate = useNavigate();
     const [bottomSheet, setBottomSheet] = useState({
@@ -36,10 +37,14 @@ const StampPage = () => {
                 open={bottomSheet.isOpen && bottomSheet.type === 'sort'} 
                 setOpen={() => setBottomSheet({type: null, isOpen: false})}
             />
-            <PartnerBottomSheet 
-                open={bottomSheet.isOpen && bottomSheet.type === 'partner'} 
-                setOpen={() => setBottomSheet({type: null, isOpen: false})}
-            />
+        <PartnerBottomSheet 
+            open={bottomSheet.isOpen && bottomSheet.type === 'partner'} 
+            setOpen={() => setBottomSheet({type: null, isOpen: false})}
+        />
+        <CategoryBottomSheet 
+            open={bottomSheet.isOpen && bottomSheet.type === 'category'} 
+            setOpen={() => setBottomSheet({type: null, isOpen: false})}
+        />
     </>
     
     );
