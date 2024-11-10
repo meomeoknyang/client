@@ -1,14 +1,18 @@
 import {CgView, Filter, Back} from '../../../styles/components/stamp/Category';
 import ChipWrapper from './ChipWrapper';
 import FilterIcon from '../../../assets/svg/filter.svg';
-import { useState } from 'react';
 
-const Category = ({setBottomSheet}) => {
+
+const Category = ({setBottomSheet, visited, setVisited}) => {
     const handleClick = (type) => {
-        setBottomSheet({type:type, isOpen: true});
+        setBottomSheet({
+            type:type,
+            isOpen: true
+        });
+        
     };
 
-    const [visited, setVisited] = useState(false);
+
 
     const handleVisit= (type) => {
         if (visited === type) {

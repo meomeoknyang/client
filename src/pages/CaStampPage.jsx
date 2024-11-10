@@ -16,6 +16,8 @@ const CaStampPage = () => {
         isOpen: false
     });
 
+
+
     return (
     <>
         <FixedContainer>

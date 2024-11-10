@@ -2,23 +2,13 @@ import { Overlay } from "../../../../styles/pages/StampPage";
 import clearIcon from "../../../../assets/svg/clear.svg"
 import styled from "styled-components";
 import checkIcon from "../../../../assets/svg/check.svg"
-import { useState } from "react";
-const SortBottomSheet = ({ open, setOpen }) => {
 
-    const [selectedItems, setSelectedItems] = useState({
-        공학대학: false,
-        소프트웨어융합대학: false,
-        약학대학: false,
-        과학기술융합대학: false,
-        국제문화대학: false,
-        언론정보대학: false,
-        경상대학: false,
-        디자인대학: false,
-        예체능대학: false
-    });
+const SortBottomSheet = ({ open, setOpen, selectedColleges, setSelectedColleges  }) => {
+
+
 
     const handleSelect = (college) => {
-        setSelectedItems(prev=>({
+        setSelectedColleges(prev=>({
             ...prev,
             [college]: !prev[college]
         }));
@@ -38,68 +28,70 @@ const SortBottomSheet = ({ open, setOpen }) => {
                         style={{ cursor: 'pointer' }} />
                 </Head>
                 <Container>
+
+                    
                     <List 
                         onClick={() => handleSelect('공학대학')}
-                        style={{ opacity: selectedItems.공학대학 ? 1 : 0.5 }}
+                        style={{ opacity: selectedColleges.공학대학 ? 1 : 0.5 }}
                     >
-                        {selectedItems.공학대학 && <img src={checkIcon} alt="check" />}
+                        {selectedColleges.공학대학 && <img src={checkIcon} alt="check" />}
                         <div>공학대학</div>
                     </List>
 
                     <List 
                         onClick={() => handleSelect('소프트웨어융합대학')}
-                        style={{ opacity: selectedItems.소프트웨어융합대학 ? 1 : 0.5 }}
+                        style={{ opacity: selectedColleges.소프트웨어융합대학 ? 1 : 0.5 }}
                     >
-                        {selectedItems.소프트웨어융합대학 && <img src={checkIcon} alt="check" />}
+                        {selectedColleges.소프트웨어융합대학 && <img src={checkIcon} alt="check" />}
                         <div>소프트웨어융합대학</div>
                     </List>
                     <List 
                         onClick={() => handleSelect('약학대학')}
-                        style={{ opacity: selectedItems.약학대학 ? 1 : 0.5 }}
+                        style={{ opacity: selectedColleges.약학대학 ? 1 : 0.5 }}
                     >
-                        {selectedItems.약학대학 && <img src={checkIcon} alt="check" />}
+                        {selectedColleges.약학대학 && <img src={checkIcon} alt="check" />}
                         <div>약학대학</div>
                     </List>
                     <List 
                         onClick={() => handleSelect('과학기술융합대학')}
-                        style={{ opacity: selectedItems.과학기술융합대학 ? 1 : 0.5 }}
+                        style={{ opacity: selectedColleges.과학기술융합대학 ? 1 : 0.5 }}
                     >
-                        {selectedItems.과학기술융합대학 && <img src={checkIcon} alt="check" />}
+                        {selectedColleges.과학기술융합대학 && <img src={checkIcon} alt="check" />}
                         <div>과학기술융합대학</div>
                     </List>
                     <List 
                         onClick={() => handleSelect('국제문화대학')}
-                        style={{ opacity: selectedItems.국제문화대학 ? 1 : 0.5 }}
+                        style={{ opacity: selectedColleges.국제문화대학 ? 1 : 0.5 }}
                     >
-                        {selectedItems.국제문화대학 && <img src={checkIcon} alt="check" />}
+                        {selectedColleges.국제문화대학 && <img src={checkIcon} alt="check" />}
                         <div>국제문화대학</div>
                     </List>
                     <List 
                         onClick={() => handleSelect('언론정보대학')}
-                        style={{ opacity: selectedItems.언론정보대학 ? 1 : 0.5 }}
+                        style={{ opacity: selectedColleges.언론정보대학 ? 1 : 0.5 }}
                     >
-                        {selectedItems.언론정보대학 && <img src={checkIcon} alt="check" />}
+                        {selectedColleges.언론정보대학 && <img src={checkIcon} alt="check" />}
                         <div>언론정보대학</div>
                     </List>
                     <List 
                         onClick={() => handleSelect('경상대학')}
-                        style={{ opacity: selectedItems.경상대학 ? 1 : 0.5 }}
+                        style={{ opacity: selectedColleges.경상대학 ? 1 : 0.5 }}
                     >
-                        {selectedItems.경상대학 && <img src={checkIcon} alt="check" />}
+                        {selectedColleges.경상대학 && <img src={checkIcon} alt="check" />}
                         <div>경상대학</div>
                     </List>
                     <List 
                         onClick={() => handleSelect('디자인대학')}
-                        style={{ opacity: selectedItems.디자인대학 ? 1 : 0.5 }}
+                        style={{ opacity: selectedColleges.디자인대학 ? 1 : 0.5 }}
                     >
-                        {selectedItems.디자인대학 && <img src={checkIcon} alt="check" />}
+                        {selectedColleges.디자인대학 && <img src={checkIcon} alt="check" />}
                         <div>디자인대학</div>
                     </List>
                     <List 
                         onClick={() => handleSelect('예체능대학')}
-                        style={{ opacity: selectedItems.예체능대학 ? 1 : 0.5 }}
+                        style={{ opacity: selectedColleges.예체능대학 ? 1 : 0.5 }}
                     >
-                        {selectedItems.예체능대학 && <img src={checkIcon} alt="check" />}
+                        {selectedColleges.예체능대학 && <img src={checkIcon} alt="check" />}
                         <div>예체능대학</div>
                     </List>
                     

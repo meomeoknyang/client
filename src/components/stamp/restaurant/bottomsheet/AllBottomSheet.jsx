@@ -2,8 +2,62 @@ import { Overlay } from "../../../../styles/pages/StampPage";
 import clearIcon from "../../../../assets/svg/clear.svg"
 import styled from "styled-components";
 
-const AllBottomSheet = ({ open, setOpen }) => {
+const AllBottomSheet = ({ open, setOpen, selectedColleges, setSelectedColleges, selectedFoods, setSelectedFoods, visited, setVisited }) => {
+    const handleVisitClick= (type) => {
+        if (visited === type) {
+            setVisited(false);
+        } else {
+            setVisited(type);
+        }
+    };
+    const handleCollegeClick = (college) => {
+        setSelectedColleges((prev) => {
+            return{
+            ...prev,
+            [college]: !selectedColleges[college]
+        }});
+    };
+
+    const handleFoodClick = (restaurant) => {
+        setSelectedFoods((prev) => {
+            return{
+            ...prev,
+            [restaurant]: !selectedFoods[restaurant]
+        }});
+    };
     
+    const handleRemove = () => {
+        setVisited(false);
+        setSelectedColleges(() => ({
+            공학대학: false,
+            소프트웨어융합대학: false,
+            약학대학: false,
+            과학기술융합대학: false,
+            국제문화대학: false,
+            언론정보대학: false,
+            경상대학: false,
+            디자인대학: false,
+            예체능대학: false
+        }));
+        setSelectedFoods(()=>({
+            한식:false,
+            양식:false,
+            아시안:false,
+            일식:false,
+            중식:false,
+            패스트푸드:false
+        }));
+    }
+
+    const handleSubmit = async () => {
+        const load = {
+            visited,
+            selectedColleges,
+            selectedFoods,
+        };
+
+};
+
 
     if (!open) return null;
     return(
@@ -23,43 +77,131 @@ const AllBottomSheet = ({ open, setOpen }) => {
                     <List>
                         <div>정렬</div>
                         <BoxWrapper>
-                            <Box>방문</Box>
-                            <Box>미방문</Box>
+                        {visited === 'visited' ? (
+                                <>
+                                    <ClickBox onClick={() => handleVisitClick('visited')}>방문</ClickBox>
+                                    <Box onClick={() => handleVisitClick('unvisited')}>미방문</Box>
+                                </>
+                            ) : visited === 'unvisited' ? (
+                                <>
+                                    <Box onClick={() => handleVisitClick('visited')}>방문</Box>
+                                    <ClickBox onClick={() => handleVisitClick('unvisited')}>미방문</ClickBox>
+                                </>
+                            ) : (
+                                <>
+                                    <Box onClick={() => handleVisitClick('visited')}>방문</Box>
+                                    <Box onClick={() => handleVisitClick('unvisited')}>미방문</Box>
+                                </>
+                            )}
+
+                    
+                            
                         </BoxWrapper>
                     </List>
 
                     <List>
                         <div>제휴</div>
                         <BoxWrapper>
-                            <Box>공학대학</Box>
-                            <Box>소프트웨어융합대학</Box>
-                            <Box>약학대학</Box>
-                            <Box>과학기술융합대학</Box>
-                            <Box>국제문화대학</Box>
-                            <Box>언론정보대학</Box>
-                            <Box>경상대학</Box>
-                            <Box>디자인대학</Box>
-                            <Box>예체능대학</Box>
+                        {selectedColleges.공학대학 ? (
+                                <ClickBox onClick={() => handleCollegeClick('공학대학')}>공학대학</ClickBox>
+                            ) : (
+                                <Box onClick={() => handleCollegeClick('공학대학')}>공학대학</Box>
+                            )}
+                            
+                            {selectedColleges.소프트웨어융합대학 ? (
+                                <ClickBox onClick={() => handleCollegeClick('소프트웨어융합대학')}>소프트웨어융합대학</ClickBox>
+                            ) : (
+                                <Box onClick={() => handleCollegeClick('소프트웨어융합대학')}>소프트웨어융합대학</Box>
+                            )}
+                            
+                            {selectedColleges.약학대학 ? (
+                                <ClickBox onClick={() => handleCollegeClick('약학대학')}>약학대학</ClickBox>
+                            ) : (
+                                <Box onClick={() => handleCollegeClick('약학대학')}>약학대학</Box>
+                            )}
+                            
+                            {selectedColleges.과학기술융합대학 ? (
+                                <ClickBox onClick={() => handleCollegeClick('과학기술융합대학')}>과학기술융합대학</ClickBox>
+                            ) : (
+                                <Box onClick={() => handleCollegeClick('과학기술융합대학')}>과학기술융합대학</Box>
+                            )}
+                            
+                            {selectedColleges.국제문화대학 ? (
+                                <ClickBox onClick={() => handleCollegeClick('국제문화대학')}>국제문화대학</ClickBox>
+                            ) : (
+                                <Box onClick={() => handleCollegeClick('국제문화대학')}>국제문화대학</Box>
+                            )}
+                            
+                            {selectedColleges.언론정보대학 ? (
+                                <ClickBox onClick={() => handleCollegeClick('언론정보대학')}>언론정보대학</ClickBox>
+                            ) : (
+                                <Box onClick={() => handleCollegeClick('언론정보대학')}>언론정보대학</Box>
+                            )}
+                            
+                            {selectedColleges.경상대학 ? (
+                                <ClickBox onClick={() => handleCollegeClick('경상대학')}>경상대학</ClickBox>
+                            ) : (
+                                <Box onClick={() => handleCollegeClick('경상대학')}>경상대학</Box>
+                            )}
+                            
+                            {selectedColleges.디자인대학 ? (
+                                <ClickBox onClick={() => handleCollegeClick('디자인대학')}>디자인대학</ClickBox>
+                            ) : (
+                                <Box onClick={() => handleCollegeClick('디자인대학')}>디자인대학</Box>
+                            )}
+                            
+                            {selectedColleges.예체능대학 ? (
+                                <ClickBox onClick={() => handleCollegeClick('예체능대학')}>예체능대학</ClickBox>
+                            ) : (
+                                <Box onClick={() => handleCollegeClick('예체능대학')}>예체능대학</Box>
+                            )}
                         </BoxWrapper>
                     </List>
 
                     <List>
                         <div>음식 카테고리</div>
                         <BoxWrapper>
-                            <Box>한식</Box>
-                            <Box>양식</Box>
-                            <Box>아시안</Box>
-                            <Box>일식</Box>
-                            <Box>중식</Box>
-                            <Box>패스트푸드</Box>
+                            {selectedFoods.한식 ? (
+                                    <ClickBox onClick={() => handleFoodClick('한식')}>한식</ClickBox>
+                                ) : (
+                                    <Box onClick={() => handleFoodClick('한식')}>한식</Box>
+                                )}
+
+                            {selectedFoods.양식 ? (
+                                    <ClickBox onClick={() => handleFoodClick('양식')}>양식</ClickBox>
+                                ) : (
+                                    <Box onClick={() => handleFoodClick('양식')}>양식</Box>
+                                )}
+
+                            {selectedFoods.일식 ? (
+                                    <ClickBox onClick={() => handleFoodClick('일식')}>일식</ClickBox>
+                                ) : (
+                                    <Box onClick={() => handleFoodClick('일식')}>일식</Box>
+                                )}
+                            {selectedFoods.중식 ? (
+                                    <ClickBox onClick={() => handleFoodClick('중식')}>중식</ClickBox>
+                                ) : (
+                                    <Box onClick={() => handleFoodClick('중식')}>중식</Box>
+                                )}
+                            {selectedFoods.아시아 ? (
+                                    <ClickBox onClick={() => handleFoodClick('아시아')}>아시아</ClickBox>
+                                ) : (
+                                    <Box onClick={() => handleFoodClick('아시아')}>아시아</Box>
+                                )}
+                            {selectedFoods.패스트푸드 ? (
+                                    <ClickBox onClick={() => handleFoodClick('패스트푸드')}>패스트푸드</ClickBox>
+                                ) : (
+                                    <Box onClick={() => handleFoodClick('패스트푸드')}>패스트푸드</Box>
+                                )}
+                            
 
                         </BoxWrapper>
                     </List>
 
                 </Container>
                 <div style={{padding:"20px", display:"flex", gap:"8px",fontWeight:"500",fontSize:"16px", borderTop:"1px solid rgba(0, 0, 0, 0.10)"}}>
-                    <div style={{width:"82px", padding:"12px 18px", borderRadius: "5px", border: "1px solid rgba(0, 0, 0, 0.20)"}}>초기화</div>
-                    <div style={{padding:"12px 84px", borderRadius: "5px",backgroundColor: "#FF6F00", color:"#fff"}}>결과보기</div>
+                    <button onClick={()=>handleRemove()} style={{width:"82px", padding:"12px 18px", borderRadius: "5px", border: "1px solid rgba(0, 0, 0, 0.20)", backgroundColor: "#fff"}}>초기화</button>
+                    <button onClick={()=> handleSubmit()} style={{width:"247px",padding:"12px 84px", borderRadius: "5px",backgroundColor: "#FF6F00", color:"#fff", border:"none"}}>결과보기</button>
 
                 </div>
                 
