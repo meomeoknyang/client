@@ -1,14 +1,14 @@
-import Tap from '../components/stamp/Tap'
-import Category from '../components/stamp/restaurant/Category';
-import StampList from '../components/stamp/restaurant/StampList';
-import {FixedContainer, ContentContainer, Title,Search, Header} from '../styles/pages/StampPage';
-import searchIcon from '../assets/svg/search.svg?react';
+import Tap from '../../components/stamp/Tap'
+import Category from '../../components/stamp/restaurant/Category';
+import StampList from '../../components/stamp/restaurant/StampList';
+import {FixedContainer, ContentContainer, Title,Search, Header} from '../../styles/pages/StampPage';
+import searchIcon from '../../assets/svg/search.svg?react';
 import { useNavigate} from 'react-router-dom';
 import { useState } from 'react';
-import SortBottomSheet from '../components/stamp/restaurant/bottomsheet/SortBottomSheet';
-import PartnerBottomSheet from '../components/stamp/restaurant/bottomsheet/PartnerBottomSheet';
-import CategoryBottomSheet from '../components/stamp/restaurant/bottomsheet/CategoryBottomSheet';
-import AllBottomSheet from '../components/stamp/restaurant/bottomsheet/AllBottomSheet';
+import SortBottomSheet from '../../components/stamp/restaurant/bottomsheet/SortBottomSheet';
+import PartnerBottomSheet from '../../components/stamp/restaurant/bottomsheet/PartnerBottomSheet';
+import CategoryBottomSheet from '../../components/stamp/restaurant/bottomsheet/CategoryBottomSheet';
+import AllBottomSheet from '../../components/stamp/restaurant/bottomsheet/AllBottomSheet';
 const ReStampPage = () => {
     const navigate = useNavigate();
     const [bottomSheet, setBottomSheet] = useState({
@@ -37,7 +37,6 @@ const ReStampPage = () => {
         일식:false,
         중식:false,
         패스트푸드:false
-
     });
     return (
     <>
