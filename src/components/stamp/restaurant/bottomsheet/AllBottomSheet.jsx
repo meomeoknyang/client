@@ -50,11 +50,8 @@ const AllBottomSheet = ({ open, setOpen, selectedColleges, setSelectedColleges, 
     }
 
     const handleSubmit = async () => {
-        const load = {
-            visited,
-            selectedColleges,
-            selectedFoods,
-        };
+        
+        
 
 };
 

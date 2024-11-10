@@ -13,7 +13,7 @@ const CgChips = styled.span`
     justify-content: center;
     align-items: center
 
-    ${props => props.isSelected && `
+    ${props => props.$isSelected && `
     border: 1px solid #FF6F00;
     background: rgba(255, 111, 0, 0.10);
     color: #FF6F00;

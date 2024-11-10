@@ -2,13 +2,13 @@ import {LayoutWrapper, ContentContainer, NavigationContainer} from '../../styles
 import Navigation from './Navigation';
 
 
-const Layout = ({ children, hasNavigation }) => {
+const Layout = ({ children, $hasNavigation }) => {
   return (
     <LayoutWrapper>
-      <ContentContainer hasNavigation={hasNavigation}>
+      <ContentContainer $hasNavigation={$hasNavigation}>
         {children}
       </ContentContainer>
-      {hasNavigation && (
+      {$hasNavigation && (
         <NavigationContainer>
           <Navigation></Navigation>
         </NavigationContainer>

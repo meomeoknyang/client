@@ -6,7 +6,7 @@ const ChipWrapper = ({text, width, icon, onClick, isSelected}) => {
         <CgChips
             width={width}
             onClick={onClick}
-            isSelected={isSelected}
+            $isSelected={isSelected}
         >
             {text}
 

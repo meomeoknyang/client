@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import backIcon from "../assets/svg/back.svg"
+import backIcon from "../../assets/svg/back.svg"
 const StampSearchPage = () => {
     return(
         <>
@@ -24,20 +24,21 @@ const Search = styled.div`
     border-bottom: 1px solid rgba(0, 0, 0, 0.15);
     display:flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     gap:8px;
 }
-}
+
     & img {  
-        left:20px;
+        
     }
     & input {
         font-size: 16px;
         font-weight: 500;
-
+        width:100%;
         border:none;
         display:block;
+        
     }
 `
 
