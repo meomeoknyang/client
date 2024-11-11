@@ -16,20 +16,20 @@ const GlobalStyle = createGlobalStyle`
         font-family: 'Noto Sans KR';
         font-style: normal;
         font-weight: 400;
-        src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff) format('woff');}
+        src: url(https://fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff) format('woff');}
 
     @font-face {
         font-family: 'Noto Sans KR';
         font-style: normal;
         font-weight: 500;
-        src:url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff) format('woff');
+        src:url(https://fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff) format('woff');
         }
 
     @font-face {
         font-family: 'Noto Sans KR';
         font-style: normal;
         font-weight: 700;
-        src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff) format('woff');
+        src: url(https://fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff) format('woff');
         }
        
     * {
