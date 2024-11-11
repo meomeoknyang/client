@@ -8,6 +8,7 @@ import ReviewPage from './pages/ReviewPage';
 import ReviewCompletePage from './pages/ReviewCompletePage';
 import StampSearchPage from './pages/stamp/StampSearchPage';
 import CaStampPage from './pages/stamp/CaStampPage';
+import StampDetailPage from './pages/stamp/StampDetailPage';
 function App() {
   return (
     <>
@@ -19,6 +20,8 @@ function App() {
           <Route path="/stamp/restaurant" >
             <Route index element={<Layout $hasNavigation> <ReStampPage/></Layout>}/>
           </Route>
+          <Route path='/stamp/restaurant/detail' element={<Layout><StampDetailPage/></Layout>} />
+
           <Route path="/stamp/cafe" >
             <Route index element={<Layout $hasNavigation> <CaStampPage/></Layout>}/>
           </Route>
