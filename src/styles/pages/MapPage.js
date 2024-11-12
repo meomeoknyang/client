@@ -110,7 +110,7 @@ export const BottomSheet = styled.div`
   background: var(--Backgrounds-Primary, #FFF);
   box-shadow: 0px -3px 5px 0px rgba(0, 0, 0, 0.05);
   
-  z-index: 3;
+  z-index: 2;
   height: 100vh;
   transform: translateY(${props => {
     if (props.isDragging) {
