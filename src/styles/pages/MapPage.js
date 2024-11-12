@@ -143,7 +143,7 @@ export const BottomSheetContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: calc(100vh + 18rem);
+  min-height: calc(100vh + 18rem + 65.96px);
   
   & > *:not(.scrollable-section) {
     width: 20.9375rem;
