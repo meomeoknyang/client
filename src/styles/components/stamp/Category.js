@@ -9,9 +9,16 @@ const CgChips = styled.span`
     border-radius: 48px;
     border: 1px solid rgba(0, 0, 0, 0.10);
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center
+
+    ${props => props.$isSelected && `
+    border: 1px solid #FF6F00;
+    background: rgba(255, 111, 0, 0.10);
+    color: #FF6F00;
+    align-items: center
+    `}
     `
 
 const CgView = styled.div`
