@@ -3,23 +3,25 @@ import randomIcon from '../../assets/svg/layout/random.svg';
 import mapIcon from '../../assets/svg/layout/map.svg';
 import personIcon from '../../assets/svg/layout/person.svg';
 import approvalIcon from '../../assets/svg/layout/approval.svg';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Navigation = () => {
     const navigate = useNavigate();
-    const [activeMenu, setActiveMenu] = useState('');
-    const handleClick = (menuName, path) => {
-        setActiveMenu(menuName);
-        navigate(path);
+    const location = useLocation();
+
+    const handleClick = (path) => {
+
+        navigate('/' + path);
     };
+    const currentPath = location.pathname.split('/')[1];
 
     return(
         <>
                 <Menu 
-                    onClick={() => handleClick('random', '/random')}
+                    onClick={() => handleClick( 'random')}
                     style={{
-                        opacity: activeMenu === 'random' ? 1 : 0.24
+                        opacity: currentPath === 'random' ? 1 : 0.24
                     }}
                 >
                     <img src={randomIcon} alt="random" />
@@ -27,9 +29,9 @@ const Navigation = () => {
                 </Menu>
 
                 <Menu
-                    onClick={() => handleClick('stamp', '/stamp')}
+                    onClick={() => handleClick('stamp/restaurant')}
                     style={{
-                        opacity: activeMenu === 'stamp' ? 1 : 0.24
+                        opacity: currentPath === 'stamp' ? 1 : 0.24
                     }}
                 >
                     <img src={approvalIcon} alt="stamp" />
@@ -37,9 +39,9 @@ const Navigation = () => {
                 </Menu>
 
                 <Menu
-                    onClick={() => handleClick('map', '/map')}
+                    onClick={() => handleClick('map')}
                     style={{
-                        opacity: activeMenu === 'map' ? 1 : 0.24
+                        opacity: currentPath === 'map' ? 1 : 0.24
                     }}
                 >
                     <img src={mapIcon} alt="map" />
@@ -47,9 +49,9 @@ const Navigation = () => {
                 </Menu>
 
                 <Menu
-                    onClick={() => handleClick('mypage', '/mypage')}
+                    onClick={() => handleClick('mypage')}
                     style={{
-                        opacity: activeMenu === 'mypage' ? 1 : 0.24
+                        opacity: currentPath === 'mypage' ? 1 : 0.24
                     }}
                 >
                     <img src={personIcon} alt="mypage" />

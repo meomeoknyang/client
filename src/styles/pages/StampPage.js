@@ -7,14 +7,26 @@ const FixedContainer = styled.div`
     left: auto;
     background: white;
     z-index: 100;
-`;
 
+`;
 
 const ContentContainer = styled.div`
 
     background: #F0F0F3;
     display: flex;
     justify-content: center;
+`;
+
+const Overlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: auto;
+    right: auto;
+    bottom: 0;
+    width: 375px;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 100; 
+    transition: opacity 0.3s ease;
 `;
 
 const Header = styled.div`
@@ -37,4 +49,4 @@ const Search = styled.img`
     right: 20px;
 `
 
-export {FixedContainer, ContentContainer, Header, Title, Search};
+export {FixedContainer, ContentContainer, Header, Title, Search, Overlay};
