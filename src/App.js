@@ -18,13 +18,13 @@ function App() {
           <Route path="/home" element={<Layout hasNavigation><LoginPage /></Layout>} />
           <Route path="/stamp" element={<Layout hasNavigation> <StampPage/></Layout>}/>
           <Route path="/random" element={<Layout hasNavigation> </Layout>}/>
-          <Route path="/map" element={<Layout hasNavigation> </Layout>}/>
+          <Route path="/map" element={<Layout hasNavigation><MapPage /></Layout>} />
           <Route path="/mypage" element={<Layout hasNavigation> </Layout>}/>
           {/* 네비게이션이 필요 없는 페이지들 */}
           <Route path="/" element={<Layout><LoginPage /></Layout>} />
           <Route path="/review" element={<Layout><ReviewPage /></Layout>} />
           <Route path="/review/complete" element={<Layout><ReviewCompletePage /></Layout>} />
-          <Route path="/map" element={<Layout hasNavigation><MapPage /></Layout>} />
+          
         </Routes>
       </Router>
     </>
