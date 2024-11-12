@@ -1,7 +1,8 @@
-import { Container, Detail, Visit } from "../../styles/components/stamp/Stamp";
+import { Container, Detail, Visit } from "../../../styles/components/stamp/Stamp";
 import { Main, Breaktime, Price, Distance } from "./DetailContainer";
-import starIcon from "../../assets/svg/star.svg"
+import starIcon from "../../../assets/svg/star.svg"
 const Stamp = () => {
+
     return(
         <Container>
             <Detail>
@@ -25,7 +26,6 @@ const Stamp = () => {
             </Detail>
             <Visit>
                 <span>N번째 방문</span>
-                
             </Visit>
         </Container>
     );

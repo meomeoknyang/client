@@ -13,7 +13,7 @@ const LayoutWrapper = styled.div`
 const ContentContainer = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding-bottom: ${props => props.hasNavigation ? '65.96px' : '0'};  // 네비게이션 높이에 맞게 수정
+  padding-bottom: {props => props.$hasNavigation ? '65.96px' : '0'};  // 네비게이션 높이에 맞게 수정
 `;
 
 
