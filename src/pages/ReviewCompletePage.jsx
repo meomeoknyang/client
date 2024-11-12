@@ -1,6 +1,6 @@
 import React from 'react';
-import Bell from '../assets/Review/Bell.svg';
-import Close from '../assets/Review/Close.svg';
+import Bell from '../assets/svg/Bell.svg'
+import Close from '../assets/svg/Close.svg';
 import {
   PageContainer,
   CloseButton,
