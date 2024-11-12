@@ -6,9 +6,7 @@ import searchIcon from '../../assets/svg/search.svg';
 import { useNavigate} from 'react-router-dom';
 import { useState } from 'react';
 import SortBottomSheet from '../../components/stamp/restaurant/bottomsheet/SortBottomSheet';
-import PartnerBottomSheet from '../../components/stamp/restaurant/bottomsheet/PartnerBottomSheet';
 import CategoryBottomSheet from '../../components/stamp/restaurant/bottomsheet/CategoryBottomSheet';
-import AllBottomSheet from '../../components/stamp/restaurant/bottomsheet/AllBottomSheet';
 const CaStampPage = () => {
     const navigate = useNavigate();
     const [bottomSheet, setBottomSheet] = useState({
@@ -38,18 +36,12 @@ const CaStampPage = () => {
                 open={bottomSheet.isOpen && bottomSheet.type === 'sort'} 
                 setOpen={() => setBottomSheet({type: null, isOpen: false})}
             />
-        <PartnerBottomSheet 
-            open={bottomSheet.isOpen && bottomSheet.type === 'partner'} 
-            setOpen={() => setBottomSheet({type: null, isOpen: false})}
-        />
+        
         <CategoryBottomSheet 
             open={bottomSheet.isOpen && bottomSheet.type === 'category'} 
             setOpen={() => setBottomSheet({type: null, isOpen: false})}
         />
-        <AllBottomSheet
-            open={bottomSheet.isOpen && bottomSheet.type === 'all'} 
-            setOpen={() => setBottomSheet({type: null, isOpen: false})}
-        />
+
     </>
     
     );

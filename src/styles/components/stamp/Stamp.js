@@ -29,6 +29,23 @@ const Visit = styled.div`
         font-size: 16px;
         color: #FF6F00;
         font-weight: 700;
+        color: rgba(0, 0, 0, 0.30);
+    
+    }
+    & > img {
+        position: relative;
+        left: 65px;
+        top: 35px;
+
+    }
+
+    .active{
+        position: relative;
+        top: 16px;
+        left: 17px;
+        font-size: 16px;
+        color: #FF6F00;
+        font-weight: 700;
     }
 `
 

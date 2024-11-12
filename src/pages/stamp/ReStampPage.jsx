@@ -6,9 +6,7 @@ import searchIcon from '../../assets/svg/search.svg?react';
 import { useNavigate} from 'react-router-dom';
 import { useState } from 'react';
 import SortBottomSheet from '../../components/stamp/restaurant/bottomsheet/SortBottomSheet';
-import PartnerBottomSheet from '../../components/stamp/restaurant/bottomsheet/PartnerBottomSheet';
 import CategoryBottomSheet from '../../components/stamp/restaurant/bottomsheet/CategoryBottomSheet';
-import AllBottomSheet from '../../components/stamp/restaurant/bottomsheet/AllBottomSheet';
 const ReStampPage = () => {
     const navigate = useNavigate();
     const [bottomSheet, setBottomSheet] = useState({
@@ -17,18 +15,7 @@ const ReStampPage = () => {
     });
 
     const [visited, setVisited] = useState(false);
-    const [selectedSorts, setSelectedSorts] = useState(false);
-    const [selectedColleges, setSelectedColleges] = useState({
-        공학대학: false,
-        소프트웨어융합대학: false,
-        약학대학: false,
-        과학기술융합대학: false,
-        국제문화대학: false,
-        언론정보대학: false,
-        경상대학: false,
-        디자인대학: false,
-        예체능대학: false
-    });
+    const [selectedSorts, setSelectedSorts] = useState('추천순');
 
     const [selectedFoods, setSelectedFoods] = useState({
         한식:false,
@@ -62,31 +49,12 @@ const ReStampPage = () => {
                 setSelectedSorts={setSelectedSorts}
             />
         
-        
-        <PartnerBottomSheet 
-            open={bottomSheet.isOpen && bottomSheet.type === 'partner'} 
-            setOpen={() => setBottomSheet({type: null, isOpen: false})}
-            selectedColleges={selectedColleges}
-            setSelectedColleges={setSelectedColleges}
-        />
-        
         <CategoryBottomSheet 
             open={bottomSheet.isOpen && bottomSheet.type === 'category'} 
             setOpen={() => setBottomSheet({type: null, isOpen: false})}
             selectedFoods={selectedFoods}
             setSelectedFoods={setSelectedFoods}
         /> 
-        <AllBottomSheet
-            open={bottomSheet.isOpen && bottomSheet.type === 'all'} 
-            setOpen={() => setBottomSheet({type: null, isOpen: false})}
-            selectedColleges={selectedColleges}
-            setSelectedColleges={setSelectedColleges}
-            selectedFoods={selectedFoods}
-            setSelectedFoods={setSelectedFoods}
-            visited={visited}
-            setVisited={setVisited}
-
-        />
     </>
     
     );
