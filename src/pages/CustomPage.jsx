@@ -36,7 +36,7 @@ const CustomPage = () => {
           카테고리 설정하기
           <NextIcon src={nextIcon} alt="Next" />
         </Button>
-        <Button onClick={() => navigate('/custom')}>
+        <Button onClick={() => navigate('/customchoice')}>
           선택지 적고 고르기
           <NextIcon src={nextIcon} alt="Next" />
         </Button>

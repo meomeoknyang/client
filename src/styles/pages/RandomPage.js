@@ -63,7 +63,7 @@ export const ButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 400px;
+  margin-top: 517px;
 `;
 
 export const Button = styled.button`
@@ -89,4 +89,22 @@ export const Button = styled.button`
 export const NextIcon = styled.img`
   width: 20px;
   height: 20px;
+`;
+
+export const BellIcon = styled.img`
+  position: absolute; /* 화면에서 바깥으로 위치 */
+  width: 130.21px;
+  height: auto;
+  top: 50px; /* 위치 조정 */
+  margin-right: 0px;
+  pointer-events: none; /* 클릭 방지 */
+`;
+
+export const FingerIcon = styled.img`
+  position: absolute; /* 화면에서 바깥으로 위치 */
+  width: 145.48px;
+  height: 145.48px;
+  top: 258.07px; /* 위치 조정 */
+  margin-left: 0px;
+  pointer-events: none; /* 클릭 방지 */
 `;

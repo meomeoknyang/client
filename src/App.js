@@ -5,6 +5,8 @@ import GlobalStyle from './styles/GlobalStyle';
 import LoginPage from './pages/LoginPage';
 import RandomPage from './pages/RandomPage'; 
 import RandomMenuPage from './pages/RandomMenuPage';
+import CategoryPage from './pages/CategoryPage';
+import CustomchoicePage from './pages/CustomchoicePage';
 import SplashPage from './pages/SplashPage';
 import CustomPage from './pages/CustomPage';
 import StampPage from './pages/StampPage';
@@ -22,8 +24,10 @@ function App() {
           <Route path="/stamp" element={<Layout hasNavigation> <StampPage/></Layout>}/>
           <Route path="/map" element={<Layout hasNavigation> </Layout>}/>
           <Route path="/mypage" element={<Layout hasNavigation> </Layout>}/>
-          <Route path="/random-menu" element={<Layout hasNavigation><RandomMenuPage /></Layout>} />
-          <Route path="/custom-choice" element={<Layout hasNavigation><CustomPage /></Layout>} />
+          <Route path="/randommenu" element={<Layout hasNavigation><RandomMenuPage /></Layout>} />
+          <Route path="/custom" element={<Layout hasNavigation><CustomPage /></Layout>} />
+          <Route path="/category" element={<Layout hasNavigation><CategoryPage /></Layout>} />
+          <Route path="/customchoice" element={<Layout hasNavigation><CustomchoicePage /></Layout>} />
           {/* 네비게이션이 필요 없는 페이지들 */}
           <Route path="/" element={<Layout><SplashPage /></Layout>} />
           <Route path="/login" element={<Layout><LoginPage /></Layout>} />
