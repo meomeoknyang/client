@@ -9,6 +9,8 @@ import ReviewCompletePage from './pages/ReviewCompletePage';
 import StampSearchPage from './pages/stamp/StampSearchPage';
 import CaStampPage from './pages/stamp/CaStampPage';
 import StampDetailPage from './pages/stamp/StampDetailPage';
+import MapPage from './pages/MapPage';
+
 function App() {
   return (
     <>
@@ -27,12 +29,16 @@ function App() {
           </Route>
           <Route path='/stamp/search' element={<Layout $hasNavigation><StampSearchPage/></Layout>} />
           <Route path="/random" element={<Layout $hasNavigation> </Layout>}/>
-          <Route path="/map" element={<Layout $hasNavigation> </Layout>}/>
           <Route path="/mypage" element={<Layout $hasNavigation> </Layout>}/>
+          <Route path="/home" element={<Layout hasNavigation><LoginPage /></Layout>} />
+          <Route path="/random" element={<Layout hasNavigation> </Layout>}/>
+          <Route path="/map" element={<Layout $hasNavigation><MapPage /></Layout>} />
+          <Route path="/mypage" element={<Layout hasNavigation> </Layout>}/>
           {/* 네비게이션이 필요 없는 페이지들 */}
           <Route path="/" element={<Layout><LoginPage /></Layout>} />
           <Route path="/review" element={<Layout><ReviewPage /></Layout>} />
           <Route path="/review/complete" element={<Layout><ReviewCompletePage /></Layout>} />
+          
         </Routes>
       </Router>
     </>

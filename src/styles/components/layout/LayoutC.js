@@ -27,5 +27,7 @@ const NavigationContainer = styled.div`
   padding: 11px 30px;
   align-items: flex-start;
   gap: 30px;
+  z-index: 3;
+  border-top: 1px solid rgba(0, 0, 0, 0.20);
 `;
 export {LayoutWrapper, ContentContainer, NavigationContainer};
