@@ -7,6 +7,7 @@ import downIcon from '../../assets/svg/arrow_down.svg'
 import rightIcon from '../../assets/svg/arrow_right.svg'
 import mapIcon from '../../assets/svg/map.svg'
 import editIcon from '../../assets/svg/edit.svg'
+import logoIcon from '../../assets/logo.png'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 const StampDetailPage = () => {
@@ -173,7 +174,7 @@ const StampDetailPage = () => {
                                 $percent={(review.count / totalCount) * 100}
                             >
                                 <div className="graph">
-                                    <div className="fill" />
+                                    <div className="fill"/>
                                     <div className="content">
                                         <div className="text">{review.text}</div>
                                         <div className="count">{review.count}</div>
@@ -183,6 +184,7 @@ const StampDetailPage = () => {
                         ))}
                         <ReviewOverlay />
                     </Review>
+                    <End><div className='line'/></End>
                     <ReviewList>
                         {[1, 2, 3].map((_, index) => (
                             <ReviewCard key={index}>
@@ -222,7 +224,7 @@ const StampDetailPage = () => {
                         <span>리뷰운영정책</span>
                         <span>신고센터</span>
                     </TopMenu>
-                    <Logo>머먹냥</Logo>
+                    <Logo><img src={logoIcon} alt="" /></Logo>
                 </Footer>
             </Container>
 
@@ -260,9 +262,7 @@ const TopMenu = styled.div`
 `;
 
 const Logo = styled.div`
-    color: rgba(0, 0, 0, 0.2);
-    font-size: 14px;
-    font-weight: 700;
+    margin-top:12px;
 `;
 
 const ReviewList = styled.div`
@@ -347,9 +347,9 @@ const ReviewOverlay = styled.div`
 `;
 
 const Review = styled.div`
-    padding: 20px 20px 20px 20px;
+    padding: 20px 20px 0 20px;
     position: relative;
-    border-bottom: 1px solid #E4E4E4;
+
 `;
 
 const ReviewItem = styled.div`
@@ -524,7 +524,7 @@ const SubTab = styled.div`
     font-weight: 700;
     color: ${props=>props.$isActive ? '#000':'rgba(0, 0, 0, 0.55)'};
     width:93.74px;
-    height:43px;
+    height:45px;
     border-bottom: ${props => props.$isActive ? '1.5px solid #000' : '1px solid #E4E4E4'};
     display:flex;
     flex-direction: row;

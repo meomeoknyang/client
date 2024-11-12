@@ -42,6 +42,7 @@ const SubTitle = styled.div`
 const SubInformation = styled.div`
     font-size: 14px;
     font-weight: 500;
+    display: flex;
     
 `
 
