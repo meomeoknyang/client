@@ -443,3 +443,21 @@ export const MainRestaurantInfo = styled(RestaurantInfo)`
     }
   }
 `;
+
+export const StoreImageGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.25rem;
+  margin-top: 0.7rem;
+  width: 20.9375rem;
+`;
+
+export const StoreImage = styled.div`
+  width: 6.8125rem;
+  height: 6rem;
+  border-radius: 0.3125rem;
+  background-color: #D9D9D9;
+  background-image: ${({ src }) => src ? `url(${src})` : 'none'};
+  background-size: cover;
+  background-position: center;
+`;
