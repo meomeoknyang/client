@@ -70,3 +70,14 @@ export const NextIcon = styled.img`
   height: 20px;
 `;
 
+export const ExampleBox = styled.div`
+  width: 335px;
+  height: 327px;
+  background-color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+`;
+

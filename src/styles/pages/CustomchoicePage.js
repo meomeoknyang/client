@@ -84,18 +84,67 @@ export const CompleteButton = styled.button`
 `;
 
 export const FinalButton = styled.button`
-  padding: 12px;
-  background-color: #ff8c00;
-  color: white;
-  border: none;
-  border-radius: 10px;
+  width: 336px;
+  padding: 16px 110px;
+  background-color: #FF6F00;
+  color: #ffffff;
   font-size: 18px;
+  border: none;
+  border-radius: 20px;
   cursor: pointer;
-  position: absolute;
-  bottom: 20px;
-  width: 90%;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+`;
 
-  &:hover {
-    background-color: #e57a00;
+export const ResultModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+`;
+
+export const ModalContent = styled.div`
+  background-color: #fff;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+`;
+
+export const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+`;
+
+export const TicketImageContainer = styled.div`
+  position: relative;
+  text-align: center;
+  img {
+    width: 100%;
   }
+`;
+
+export const ResultText = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
 `;

@@ -38,7 +38,6 @@ export const Header = styled.h1`
 export const TabContainer = styled.div`
   display: flex;
   width: 100%;
-  justify-content: center;
   margin-top: 16px;
   border-bottom: 1px solid #444444;
 `;
@@ -54,7 +53,7 @@ export const Tab = styled.button`
   flex: 1;
   text-align: center;
   font-weight: ${({ selected }) => (selected ? 'bold' : 'normal')};
-  border-bottom: ${({ selected }) => (selected ? '3px solid #ff5722' : 'none')};
+  border-bottom: ${({ selected }) => (selected ? '2px solid rgba(255, 255, 255, 0.88);' : 'none')};
 `;
 
 export const ExampleBox = styled.div`
@@ -77,9 +76,9 @@ export const ButtonContainer = styled.div`
 `;
 
 export const Button = styled.button`
-  width: 220px;
-  padding: 16px;
-  background-color: #ff5722;
+  width: 336px;
+  padding: 16px 110px;
+  background-color: #FF6F00;
   color: #ffffff;
   font-size: 18px;
   border: none;

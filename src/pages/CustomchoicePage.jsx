@@ -7,7 +7,12 @@ import {
   AddFieldButton,
   CompleteButton,
   FinalButton,
-  WhiteContainer
+  WhiteContainer,
+  ResultModal,
+  ModalContent,
+  CloseButton,
+  ResultText,
+  TicketImageContainer
 } from '../styles/pages/CustomchoicePage';
 import {
   HeaderWrapper,
@@ -19,6 +24,7 @@ import {
 } from '../styles/pages/RandomMenuPage';
 import backIcon from '../assets/svg/back.svg';
 import svgExample from '../assets/svg/example3D.svg';
+import ticketImage from '../assets/svg/ticket.svg';
 
 const CustomchoicePage = () => {
   const navigate = useNavigate();
@@ -26,6 +32,8 @@ const CustomchoicePage = () => {
   const [inputFields, setInputFields] = useState([{ value: '' }]);
   const [showContainer, setShowContainer] = useState(true);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [randomChoice, setRandomChoice] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleTabClick = (tab) => setSelectedTab(tab);
 
@@ -43,6 +51,21 @@ const CustomchoicePage = () => {
       i === index ? { ...field, value } : field
     );
     setInputFields(updatedFields);
+  };
+
+  const handleRandomChoice = () => {
+    const nonEmptyChoices = inputFields.filter((field) => field.value.trim() !== '');
+    if (nonEmptyChoices.length > 0) {
+      const randomIndex = Math.floor(Math.random() * nonEmptyChoices.length);
+      setRandomChoice(nonEmptyChoices[randomIndex].value);
+      setIsModalOpen(true);
+    } else {
+      alert('선택지를 입력해주세요!');
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -88,9 +111,21 @@ const CustomchoicePage = () => {
       )}
 
       {isCompleted && (
-        <FinalButton onClick={() => console.log('식당 메뉴 뽑기 clicked!')}>
-          식당 메뉴 뽑기
+        <FinalButton onClick={handleRandomChoice}>
+          {selectedTab} 메뉴 뽑기
         </FinalButton>
+      )}
+
+      {isModalOpen && (
+        <ResultModal>
+          <ModalContent>
+            <CloseButton onClick={closeModal}>×</CloseButton>
+            <TicketImageContainer>
+              <img src={ticketImage} alt="티켓 이미지" />
+              <ResultText>{randomChoice}</ResultText>
+            </TicketImageContainer>
+          </ModalContent>
+        </ResultModal>
       )}
     </CustomchoicePageContainer>
   );

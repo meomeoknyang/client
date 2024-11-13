@@ -9,6 +9,6 @@ export const SplashContainer = styled.div`
 `;
 
 export const LogoImage = styled.img`
-  width: 128px; /* 로고 크기 설정 */
+  width: 192.459px; /* 로고 크기 설정 */
   height: auto;
 `;

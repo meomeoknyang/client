@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CustomPageContainer, HeaderWrapper, BackIcon, Header, ButtonContainer, Button, NextIcon } from '../styles/pages/CustomPage';
-import { TabContainer, Tab, ExampleBox } from '../styles/pages/RandomMenuPage';
+import { CustomPageContainer, HeaderWrapper, BackIcon, Header, ButtonContainer, Button, NextIcon, ExampleBox } from '../styles/pages/CustomPage';
+import { TabContainer, Tab } from '../styles/pages/RandomMenuPage';
 import backIcon from '../assets/svg/back.svg';
 import svgExample from '../assets/svg/example3D2.svg';
 import nextIcon from '../assets/svg/next.svg';
