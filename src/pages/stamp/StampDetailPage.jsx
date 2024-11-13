@@ -7,16 +7,16 @@ import downIcon from '../../assets/svg/arrow_down.svg'
 import rightIcon from '../../assets/svg/arrow_right.svg'
 import mapIcon from '../../assets/svg/map.svg'
 import editIcon from '../../assets/svg/edit.svg'
-import logoIcon from '../../assets/logo.png'
+import logoIcon from '../../assets/logotext.png'
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 const StampDetailPage = () => {
-
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('home'); 
+    const { id } = useParams();
     const handleClick = (type) => {
         setActiveTab(type);
-        if (type === 'home') {
+        if (type === 'home')  {
             navigate(`/stamp/restaurant/detail`);
         } else if (type === 'menu') {
             navigate(`/stamp/restaurant/detail/menu`);
@@ -89,9 +89,6 @@ const StampDetailPage = () => {
                     <SubTab onClick={()=>handleClick('picture')} $isActive={activeTab === 'picture'}>사진</SubTab>
                     <SubTab onClick={()=>handleClick('review')} $isActive={activeTab === 'review'}>리뷰</SubTab>
                 </Tap>
-                <Partner>
-
-                </Partner>
                 <div style={{borderBottom: "8px solid #F5F5F5"}}>
                     <Menut>
                         <div>메뉴</div>
@@ -513,11 +510,6 @@ const Menut = styled.div`
         align-items: center;
         gap: 4px;
     }
-`
-
-const Partner = styled.div`
-
-
 `
 const SubTab = styled.div`
     font-size: 16px;

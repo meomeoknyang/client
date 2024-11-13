@@ -11,10 +11,12 @@ const FixedContainer = styled.div`
 `;
 
 const ContentContainer = styled.div`
-
     background: #F0F0F3;
     display: flex;
     justify-content: center;
+    margin-top: 143px;
+    margin-bottom: 65px;
+
 `;
 
 const Overlay = styled.div`

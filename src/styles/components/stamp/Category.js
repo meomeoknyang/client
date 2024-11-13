@@ -27,33 +27,8 @@ const CgView = styled.div`
     justify-content: space-between;
     align-items: center;
     gap: 6px;
-    padding-left:20px;
     align-items: center;
-    -ms-overflow-style: none; 
-    scrollbar-width: none;
-
-    &::-webkit-scrollbar {
-        display: none;
-    }
 `
 
-const Filter = styled.div`
-    background-color : #ECECEC;
-    width: 26px;
-    height: 26px;
-    border-radius: 10px;
-    position: relative;
-    left: 12px;
-    top: 5px;
-    
-`
 
-const Back = styled.div`
-    width: 58px;
-    height: 36px;
-    position: absolute;
-    right: 0px;
-    background: linear-gradient(270deg, white 90%, rgba(255, 255, 255, 0) 100%);
-`
-
-export {CgChips, CgView, Filter, Back};
+export {CgChips, CgView};

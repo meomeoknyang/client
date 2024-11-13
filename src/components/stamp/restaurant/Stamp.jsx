@@ -1,8 +1,9 @@
 import { Container, Detail, Visit } from "../../../styles/components/stamp/Stamp";
 import { Main, Breaktime, Price, Distance } from "./DetailContainer";
 import starIcon from "../../../assets/svg/star.svg"
+import stampIcon from "../../../assets/svg/stamp.svg"
+import { useState } from "react";
 const Stamp = () => {
-
     return(
         <Container>
             <Detail>
@@ -25,7 +26,8 @@ const Stamp = () => {
                 </div>
             </Detail>
             <Visit>
-                <span>N번째 방문</span>
+                <span className="active">N번째 방문</span>
+                <img src={stampIcon} alt="stamp" />
             </Visit>
         </Container>
     );

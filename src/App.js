@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import GlobalStyle from './styles/GlobalStyle';
 import LoginPage from './pages/LoginPage';
-import ReStampPage from './pages/stamp/ReStampPage';
+import RestaurantPage from './pages/stamp/RestaurantPage';
 import ReviewPage from './pages/ReviewPage';
 import ReviewCompletePage from './pages/ReviewCompletePage';
-import StampSearchPage from './pages/stamp/StampSearchPage';
-import CaStampPage from './pages/stamp/CaStampPage';
+import RestaurantSearchPage from './pages/stamp/RestaurantSearchPage.jsx';
+import CafePage from './pages/stamp/CafePage';
 import StampDetailPage from './pages/stamp/StampDetailPage';
 import MapPage from './pages/MapPage';
 
@@ -20,14 +20,14 @@ function App() {
           {/* 예시 네비게이션이 필요한 페이지들 */}
           <Route path="/home" element={<Layout $hasNavigation><LoginPage /></Layout>} />
           <Route path="/stamp/restaurant" >
-            <Route index element={<Layout $hasNavigation> <ReStampPage/></Layout>}/>
+            <Route index element={<Layout $hasNavigation> <RestaurantPage/></Layout>}/>
           </Route>
           <Route path='/stamp/restaurant/detail' element={<Layout><StampDetailPage/></Layout>} />
 
           <Route path="/stamp/cafe" >
-            <Route index element={<Layout $hasNavigation> <CaStampPage/></Layout>}/>
+            <Route index element={<Layout $hasNavigation> <CafePage/></Layout>}/>
           </Route>
-          <Route path='/stamp/search' element={<Layout $hasNavigation><StampSearchPage/></Layout>} />
+          <Route path='/stamp/search' element={<Layout $hasNavigation><RestaurantSearchPage/></Layout>} />
           <Route path="/random" element={<Layout $hasNavigation> </Layout>}/>
           <Route path="/mypage" element={<Layout $hasNavigation> </Layout>}/>
           <Route path="/home" element={<Layout hasNavigation><LoginPage /></Layout>} />
