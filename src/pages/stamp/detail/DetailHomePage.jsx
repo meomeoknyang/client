@@ -25,6 +25,8 @@ const DetailHomePage = () => {
             navigate(`${baseurl}/review`);
         } else if (type === 'picture') {
             navigate(`${baseurl}/picture`);
+        } else if (type === 'reviewWrite'){
+            navigate(`/review/${id}`);
         }
     };
 
@@ -104,7 +106,6 @@ const DetailHomePage = () => {
                     <Menut>
                         <div>메뉴</div>
                         <span>21</span>
-                        <p>메뉴판 이미지로 보기</p>
                     </Menut>
                     <MenuContainer>
                         <MenuItem>
@@ -139,7 +140,7 @@ const DetailHomePage = () => {
                     </MenuContainer>
                     <End>
                         <div className='line'/>
-                        <button>메뉴 전체보기 <img src={rightIcon} alt="" /></button>
+                        <button onClick={()=>handleClick('menu')} $isActive={activeTab === 'menu'}>메뉴 전체보기 <img src={rightIcon} alt="" /></button>
                     </End>
 
                     
@@ -164,7 +165,7 @@ const DetailHomePage = () => {
                         
                     <End>
                         <div className='line'/>
-                        <button>사진/영상 더보기 <img src={rightIcon} alt="" /></button>
+                        <button onClick={()=>handleClick('pciture')} $isActive={activeTab === 'picture'}>사진/영상 더보기 <img src={rightIcon} alt="" /></button>
                     </End>
                 </div>
 
@@ -172,7 +173,7 @@ const DetailHomePage = () => {
                 <div>
                     <Menut>
                         <div>학생들의 리얼한 리뷰</div>
-                        <p> <img src={editIcon} alt="" /> 리뷰쓰기</p>
+                        <p onClick={()=>handleClick('reviewWrite')} $isActive={activeTab === 'reviewWrite'}> <img src={editIcon} alt="" /> 리뷰쓰기</p>
                     </Menut>
                     <Review>
                     {reviews.map((review, index) => (
@@ -218,7 +219,7 @@ const DetailHomePage = () => {
 
                     <End>
                         <div className="line" />
-                        <button>
+                        <button onClick={()=>handleClick('review')} $isActive={activeTab === 'review'}>
                             후기 더보기 
                             <img src={rightIcon} alt="더보기" />
                         </button>
@@ -239,7 +240,11 @@ const DetailHomePage = () => {
             <Navi>
                 <div style={{padding:"16px 24px", display:"flex", gap:"8px",fontSize:"16px", borderTop:"1px solid rgba(0, 0, 0, 0.10)"}}>
                         <button style={{width:"97px", padding:"12px 18px", borderRadius: "5px", border: "1px solid rgba(0, 0, 0, 0.20)", backgroundColor: "#fff",fontWeight:"700"}}>경로찾기</button>
-                        <button style={{width:"247px",padding:"12px 84px", borderRadius: "5px",backgroundColor: "#FF6F00", color:"#fff", border:"none",fontWeight:"700"}}>도장깨기</button>
+                        <button
+                            style={{width:"247px",padding:"12px 84px", borderRadius: "5px",backgroundColor: "#FF6F00", color:"#fff", border:"none",fontWeight:"700"}}
+                            onClick={()=>handleClick('reviewWrite')} $isActive={activeTab === 'reviewWrite'}>
+                                도장깨기
+                        </button>
                 </div>
             </Navi>
         </div>

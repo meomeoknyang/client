@@ -28,7 +28,7 @@ function App() {
           <Route path='/restaurant/detail/:id' element={<Layout><DetailHomePage/></Layout>} />
           <Route path='/restaurant/detail/:id/menu' element={<Layout><DetailMenuPage/></Layout>} />
           <Route path='/restaurant/detail/:id/picture' element={<Layout><DetailPicturePage/></Layout>} />
-          <Route path='/restaurant/detail/review' element={<Layout><DetailReviewPage/></Layout>} />
+          <Route path='/restaurant/detail/:id/review' element={<Layout><DetailReviewPage/></Layout>} />
 
           <Route path="/cafe" >
             <Route index element={<Layout $hasNavigation><CafePage/></Layout>}/>
@@ -42,8 +42,8 @@ function App() {
           <Route path="/mypage" element={<Layout hasNavigation> </Layout>}/>
           {/* 네비게이션이 필요 없는 페이지들 */}
           <Route path="/" element={<Layout><LoginPage /></Layout>} />
-          <Route path="/review" element={<Layout><ReviewPage /></Layout>} />
-          <Route path="/review/complete" element={<Layout><ReviewCompletePage /></Layout>} />
+          <Route path="/review/:id" element={<Layout><ReviewPage /></Layout>} />
+          <Route path="/review/:id/complete" element={<Layout><ReviewCompletePage /></Layout>} />
           
         </Routes>
       </Router>
