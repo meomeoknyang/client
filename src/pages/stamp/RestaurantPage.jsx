@@ -13,10 +13,8 @@ const ReStampPage = () => {
         type: null,
         isOpen: false
     });
-
     const [visited, setVisited] = useState(false);
     const [selectedSorts, setSelectedSorts] = useState('추천순');
-
     const [selectedFoods, setSelectedFoods] = useState({
         한식:false,
         양식:false,
@@ -25,6 +23,7 @@ const ReStampPage = () => {
         중식:false,
         패스트푸드:false
     });
+    
     return (
     <>
         <FixedContainer>

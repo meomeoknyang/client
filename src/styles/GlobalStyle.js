@@ -55,7 +55,7 @@ const GlobalStyle = createGlobalStyle`
     }
 
        
-    *,body {
+    * {
         font-family: 'Noto Sans KR', 'Segoe UI';
         box-sizing: border-box;
     }

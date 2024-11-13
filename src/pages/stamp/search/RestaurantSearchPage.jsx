@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import backIcon from "../../assets/svg/back.svg"
-import clearIcon from "../../assets/svg/clear.svg"
-import locationIcon from "../../assets/svg/location_on.svg"
-import searchIcon from ".././../assets/svg/search.svg"
+import backIcon from "../../../assets/svg/back.svg"
+import clearIcon from "../../../assets/svg/clear.svg"
+import locationIcon from "../../../assets/svg/location_on.svg"
+import searchIcon from ".././../../assets/svg/search.svg"
 import { useState } from "react";
 
 const RestaurantSearchPage = () => {

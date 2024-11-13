@@ -1,29 +1,30 @@
 import styled from 'styled-components';
-import {SubMain, SubBreaktime, SubPrice, SubDistance, SubTag, SubCategory} from '../../components/stamp/restaurant/DetailContainer'
-import menu from '../../assets/menu.png'
-import backIcon from '../../assets/svg/back.svg'
-import starIcon from '../../assets/svg/star.svg'
-import downIcon from '../../assets/svg/arrow_down.svg'
-import rightIcon from '../../assets/svg/arrow_right.svg'
-import mapIcon from '../../assets/svg/map.svg'
-import editIcon from '../../assets/svg/edit.svg'
-import logoIcon from '../../assets/logotext.png'
-import { useState } from 'react';
+import {SubMain, SubBreaktime, SubPrice, SubDistance, SubTag, SubCategory} from '../../../components/stamp/restaurant/DetailContainer'
+import menu from '../../../assets/menu.png'
+import backIcon from '../../../assets/svg/back.svg'
+import starIcon from '../../../assets/svg/star.svg'
+import downIcon from '../../../assets/svg/arrow_down.svg'
+import rightIcon from '../../../assets/svg/arrow_right.svg'
+import mapIcon from '../../../assets/svg/map.svg'
+import editIcon from '../../../assets/svg/edit.svg'
+import logotextIcon from '../../../assets/logotext.png'
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-const StampDetailPage = () => {
+const DetailHomePage = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('home'); 
-    const { id } = useParams();
+    const id = useParams();
+    const baseurl = `/restaurant/detail/${id}`;
     const handleClick = (type) => {
         setActiveTab(type);
         if (type === 'home')  {
-            navigate(`/stamp/restaurant/detail`);
+            navigate(baseurl);
         } else if (type === 'menu') {
-            navigate(`/stamp/restaurant/detail/menu`);
+            navigate(`${baseurl}/menu`);
         } else if (type === 'review') {
-            navigate(`/stamp/restaurant/detail/review`);
+            navigate(`${baseurl}/review`);
         } else if (type === 'picture') {
-            navigate(`/stamp/restaurant/detail/picture`);
+            navigate(`${baseurl}/picture`);
         }
     };
 
@@ -35,13 +36,23 @@ const StampDetailPage = () => {
         { text: "재료가 살아있네~", count: 3 }
     ];
     const totalCount = reviews.reduce((sum, review) => sum + review.count, 0);
+    
+    const handleBack = () => {
+        navigate(-1);
+    }  
+    useEffect(() => {
+        handleLoadDetail(id);
+      }, []);
 
+      const handleLoadDetail = async (id) => {
+        
+      };
     return(
         <div>
             <Container>
                 <ImgContainer>
                     <Header>
-                        <img src={backIcon} alt="back" />
+                        <img onClick={()=>handleBack()} src={backIcon} alt="back" />
                     </Header>
                    
                     <MenuImage src={menu} alt="mainmenu" />
@@ -83,12 +94,12 @@ const StampDetailPage = () => {
                         
                     </InfoWrapper>
                 </MenuDetail>
-                <Tap>
+                <Tab>
                     <SubTab onClick={()=>handleClick('home')} $isActive={activeTab === 'home'}>홈</SubTab>
-                    <SubTab onClick={()=>handleClick('menu')} $isActiveisActive={activeTab === 'menu'}>메뉴</SubTab>
+                    <SubTab onClick={()=>handleClick('menu')} $isActive={activeTab === 'menu'}>메뉴</SubTab>
                     <SubTab onClick={()=>handleClick('picture')} $isActive={activeTab === 'picture'}>사진</SubTab>
                     <SubTab onClick={()=>handleClick('review')} $isActive={activeTab === 'review'}>리뷰</SubTab>
-                </Tap>
+                </Tab>
                 <div style={{borderBottom: "8px solid #F5F5F5"}}>
                     <Menut>
                         <div>메뉴</div>
@@ -199,7 +210,7 @@ const StampDetailPage = () => {
                                         n번째 방문
                                     </VisitCount>
                                 </UserInfo>
-                                <Content>한 줄 리뷰 내용</Content>
+                                <Content>한 줄 리뷰 내용한 줄 리뷰 내용한 줄 리뷰 내용한 줄 리뷰 내용한 줄 리뷰 내용</Content>
                             </ReviewContent>
                         </ReviewCard>
                         ))}
@@ -221,7 +232,7 @@ const StampDetailPage = () => {
                         <span>리뷰운영정책</span>
                         <span>신고센터</span>
                     </TopMenu>
-                    <Logo><img src={logoIcon} alt="" /></Logo>
+                    <Logo><img src={logotextIcon} alt="" /></Logo>
                 </Footer>
             </Container>
 
@@ -237,7 +248,7 @@ const StampDetailPage = () => {
 
 
 
-export default StampDetailPage;
+export default DetailHomePage;
 
 const Footer = styled.div`
     height: 111px;
@@ -301,12 +312,17 @@ const Content = styled.p`
     border-radius: 5px;
     background: rgba(0, 0, 0, 0.04);
     width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const ReviewCard = styled.div`
     margin-top: 20px;
     display: flex;
     gap: 8px;
+    
+    width: 335px;
 `;
 
 const Profile = styled.div`
@@ -323,6 +339,7 @@ const ProfileImg = styled.div`
 
 const ReviewContent = styled.div`
     flex: 1;
+    min-width: 0;
 `;
 
 const UserInfo = styled.div`
@@ -357,7 +374,7 @@ const ReviewItem = styled.div`
         background: #F5F5F5;
         border-radius: 8px;
         overflow: hidden;
-        position: relative; // 추가: 내부 요소들의 기준점
+        position: relative;
         
         .fill {
             height: 100%;
@@ -522,12 +539,10 @@ const SubTab = styled.div`
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    .active{
-    border-bottom: 1px solid black;
-    }
+
 `
 
-const Tap = styled.div`
+const Tab = styled.div`
     display:flex;
 `
 
