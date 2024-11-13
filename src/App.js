@@ -19,15 +19,15 @@ function App() {
         <Routes>
           {/* 예시 네비게이션이 필요한 페이지들 */}
           <Route path="/home" element={<Layout $hasNavigation><LoginPage /></Layout>} />
-          <Route path="/stamp/restaurant" >
+          <Route path="/restaurant" >
             <Route index element={<Layout $hasNavigation> <RestaurantPage/></Layout>}/>
           </Route>
-          <Route path='/stamp/restaurant/detail' element={<Layout><StampDetailPage/></Layout>} />
+          <Route path='/restaurant/detail' element={<Layout><StampDetailPage/></Layout>} />
 
-          <Route path="/stamp/cafe" >
+          <Route path="/cafe" >
             <Route index element={<Layout $hasNavigation> <CafePage/></Layout>}/>
           </Route>
-          <Route path='/stamp/search' element={<Layout $hasNavigation><RestaurantSearchPage/></Layout>} />
+          <Route path='/restaurant/search' element={<Layout $hasNavigation><RestaurantSearchPage/></Layout>} />
           <Route path="/random" element={<Layout $hasNavigation> </Layout>}/>
           <Route path="/mypage" element={<Layout $hasNavigation> </Layout>}/>
           <Route path="/home" element={<Layout hasNavigation><LoginPage /></Layout>} />
