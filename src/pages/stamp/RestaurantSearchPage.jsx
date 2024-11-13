@@ -5,7 +5,7 @@ import locationIcon from "../../assets/svg/location_on.svg"
 import searchIcon from ".././../assets/svg/search.svg"
 import { useState } from "react";
 
-const StampSearchPage = () => {
+const RestaurantSearchPage = () => {
     const [view,setView] = useState(null);
     const [searchInput, setSearchInput] = useState('');
     const [recentSearch, setRecentSearch] = useState([]);
@@ -102,7 +102,7 @@ const StampSearchPage = () => {
 
 ;}
 
-export default StampSearchPage;
+export default RestaurantSearchPage;
 
 const LocMain = styled.div`
     display:flex;
