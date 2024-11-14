@@ -20,7 +20,8 @@ import {
   EmailInput,
   EmailDomain,
 } from '../styles/pages/Loginpage';
-import axios from 'axios';
+import axiosInstance from '../utils/axiosConfig';
+import { setTokens } from '../utils/tokenUtils';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -36,32 +37,15 @@ const LoginPage = () => {
         password: password
       };
 
-      // console.log('로그인 요청:', {
-      //   url: `${process.env.REACT_APP_API_URL}/users/login/`,
-      //   data: requestData
-      // });
-
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/users/login/`,
-        requestData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        }
-      );
-
-      // console.log('로그인 응답:', response);
+      const response = await axiosInstance.post('/users/login/', requestData);
 
       if (response.data.code === 200) {
-        localStorage.setItem('access_token', response.data.data.access);
-        localStorage.setItem('refresh_token', response.data.data.refresh);
+        setTokens(response.data.data.access, response.data.data.refresh);
         navigate('/');
       } else {
         setError(true);
       }
     } catch (error) {
-      // console.error('로그인 에러:', error.response || error);
       setError(true);
     }
   };
