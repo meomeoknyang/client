@@ -43,6 +43,16 @@ export const Option = styled.span`
   cursor: pointer;
 `;
 
+export const InfoIcon = styled.img`
+  width: 12px;
+  height: 12px;
+`;
+
+export const Bar = styled.img`
+  stroke-width: 1px;
+  stroke: rgba(0, 0, 0, 0.20);
+`;
+
 export const Section = styled.div`
   margin-top: 30px;
   padding: 20px;
@@ -120,8 +130,8 @@ export const GradeCard = styled.div`
 `;
 
 export const Icon = styled.img`
-  width: 40px;
-  height: 40px;
+  width: 77px;
+  height: 76px;
   margin-bottom: 10px;
 `;
 

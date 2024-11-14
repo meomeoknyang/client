@@ -1,5 +1,8 @@
 import React from 'react';
-import { Container, Header, ProfileSection, Avatar, UserInfo, UserName, UserOptions, Option, Section, SectionTitle, GradeSlider, GradeCard, Icon, GradeTitle, GradeInfo, ImageSlider, ImageCardContainer, ImageCard, TextOverlay } from '../styles/pages/MyPage';
+import { Container, Header, ProfileSection, Avatar, UserInfo, UserName, InfoIcon, Bar, UserOptions, Option, Section, SectionTitle, GradeSlider, GradeCard, Icon, GradeTitle, GradeInfo, ImageSlider, ImageCardContainer, ImageCard, TextOverlay } from '../styles/pages/MyPage';
+import ReviewIcon from '../assets/svg/review.svg';
+import EditIcon from '../assets/svg/edit.svg';
+import BarIcon from '../assets/svg/bar.svg'
 import Grade1Icon from '../assets/svg/grade1.svg';
 import Grade2Icon from '../assets/svg/grade2.svg';
 import Grade3Icon from '../assets/svg/grade3.svg';
@@ -15,8 +18,15 @@ const MyPage = () => {
         <UserInfo>
           <UserName>감자학생, 닉네임</UserName>
           <UserOptions>
-            <Option>리뷰관리</Option>
-            <Option>내 정보 수정</Option>
+            <Option>
+              <InfoIcon src={ReviewIcon} alt="ReviewInfoIcon" />
+              리뷰관리
+            </Option>
+              <Bar src={BarIcon} alt="Bar" />
+            <Option>
+              <InfoIcon src={EditIcon} alt="EditInfoIcon" />
+              내 정보 수정
+            </Option>
           </UserOptions>
         </UserInfo>
       </ProfileSection>
