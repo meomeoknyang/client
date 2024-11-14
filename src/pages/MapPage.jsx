@@ -7,6 +7,17 @@ import Partnership from '../assets/Map/Partnership.svg';
 import Upward from '../assets/Map/Upward.svg';
 import BottomLogo from '../assets/Map/BottomLogo.svg';
 import SampleRst from '../assets/Map/SampleRst.jpg';
+import RecentRst from '../assets/Map/RecentOpen.png'
+import KoinoCoffee from '../assets/Map/코이노커피.jpg';
+import Baeksojeong from '../assets/Map/백소정-안산한양대점.jpg';
+import BunnyMoon from '../assets/Map/버니문.jpg';
+import PinotNoir from '../assets/Map/삐노누아.jpeg';
+import SisterPizza from '../assets/Map/언니네화덕핏짜.jpg';
+import Yukhwe from '../assets/Map/육회바른연어.jpg';
+import Cabaret from '../assets/Map/카바레식당.jpg';
+import Kounz from '../assets/Map/코운즈.jpg';
+import Proscons from '../assets/Map/프로스콘스_에리카점.jpg';
+import Whicouver from '../assets/Map/휘쿠버_안산본점.jpg';
 import {
   MapContainer,
   SearchBar,
@@ -104,12 +115,12 @@ const PopularRestaurant = () => (
     <Title>오늘 학생들이 <strong>제일 도장깨기 많이 한 곳</strong></Title>
     <RestaurantCardComponent
       image={SampleRst}
-      name="마라미방"
-      category="가게이름"
-      comment='"중국식 계란볶음밥이 맛나"'
-      distance="15분"
-      price="12,000원"
-      reviews="15"
+      name="홍성 마라미방 한대앞점"
+      category="중식"
+      comment='"N번째 또간집입니다..! 진짜 학교갈 때마다 먹어요! "'
+      distance="1분"
+      price="8,900원"
+      reviews="540"
     />
   </div>
 );
@@ -370,16 +381,12 @@ const MapPage = () => {
           <img src={Cafe} alt="카페" />
           <span>카페</span>
         </FilterButton>
-        <FilterButton onClick={() => handleFilterClick('partnership')}>
-          <img src={Partnership} alt="제휴" />
-          <span>제휴</span>
-        </FilterButton>
       </FilterContainer>
 
       <BottomSheet 
-        position={position}
         ref={bottomSheetRef}
         isDragging={isDragging}
+        position={position}
         draggedY={draggedY}
       >
         <BottomSheetHandle 
@@ -397,30 +404,41 @@ const MapPage = () => {
               <ScrollableSection>
                 <CustomTitle>
                   <span className="highlight">하냥</span>
-                  <span className="normal">님이 미방문 하신 곳</span>
+                  <span className="normal">님을 위한 오늘의 PICK</span>
                 </CustomTitle>
                 <ScrollContent>
-                  {Array.from({ length: 10 }).map((_, index) => (
+                  {[
+                    { image: KoinoCoffee, name: '코이노커피', comment: '일단 매장이 넓고 깔끔해요!', distance: '5분', price: '5,900원' },
+                    { image: Baeksojeong, name: '백소정 안산한양대점', comment: '돈카츠는 못참지', distance: '1분', price: '14,620원' },
+                    { image: BunnyMoon, name: '버니문', comment: '분위기 너무 좋고 사진 너무 이쁘게 나오는..', distance: '2분', price: '4,600원' },
+                    { image: PinotNoir, name: '삐노누아', comment: '거리도 가깝고 가격도 싸고 맛있어서 자주..', distance: '2분', price: '4,200원' },
+                    { image: SisterPizza, name: '언니네화덕핏짜', comment: '학교 근처 양식집 중 가장 맛있다고 단언할..', distance: '4분', price: '15,200원' },
+                    { image: Yukhwe, name: '육회바른연어 안산한양대점', comment: '엄청 맛있고 특별한 건 아니지만 점심 특선..', distance: '1분', price: '7,700원' },
+                    { image: Cabaret, name: '카바레식당', comment: '맛도 좋고 흘러나오는 음악도 좋아요', distance: '2분', price: '9,500원' },
+                    { image: Kounz, name: '코운즈', comment: '학교 앞에 일상적으로 가기도 좋고 특별한..', distance: '5분', price: '10,300원' },
+                    { image: Proscons, name: '프로스콘스 에리카점', comment: '빵이 몽땅 맛있어서 곤란한 카페', distance: '3분', price: '5,540원' },
+                    { image: Whicouver, name: '휘쿠버 안산본점', comment: '원두가 세 가지 종류나 있어서 취향대로..', distance: '3분', price: '3,900원' }
+                  ].map((store, index) => (
                     <ScrollRestaurantCardComponent
                       key={index}
-                      image={SampleRst}
-                      name="가게 이름"
-                      comment='"좋아요 제일 많은 댓글"'
-                      distance="n분"
-                      price="12,000원"
+                      image={store.image}
+                      name={store.name}
+                      comment={store.comment}
+                      distance={store.distance}
+                      price={store.price}
                     />
                   ))}
                 </ScrollContent>
               </ScrollableSection>
               <Title><strong>가장 최근에 오픈한 곳</strong></Title>
               <MainRestaurantCard
-                image={SampleRst}
-                name="가게 이름"
-                category="카테고리"
-                comment='"좋아요 제일 많은 댓글"'
-                distance="n분"
-                price="12,000원"
-                reviews="15"
+                image={RecentRst}
+                name="행컵 안산한양대점"
+                category="도시락,컵밥"
+                comment='"양도 푸짐하고 가성비 대박인 안산 한양대 맛집!!"'
+                distance="3분"
+                price="5,980원"
+                reviews="46"
               />
               <UpwardButton src={Upward} alt="위로 가기" onClick={toggleBottomSheet} />
               <BottomLogoImage src={BottomLogo} alt="Bottom Logo" />
