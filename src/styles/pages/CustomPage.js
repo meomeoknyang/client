@@ -9,7 +9,6 @@ export const CustomPageContainer = styled.div`
   color: #ffffff;
   height: 100vh;
   position: relative;
-  justify-content: space-between; /* This makes the layout distribute space evenly */
 `;
 
 export const HeaderWrapper = styled.div`
@@ -75,8 +74,6 @@ export const ExampleBox = styled.div`
   height: 327px;
   background-color: #e0e0e0;
   display: flex;
-  align-items: center;
-  justify-content: center;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 `;
