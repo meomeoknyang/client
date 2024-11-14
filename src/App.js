@@ -10,6 +10,8 @@ import RestaurantSearchPage from './pages/stamp/RestaurantSearchPage.jsx';
 import CafePage from './pages/stamp/CafePage';
 import StampDetailPage from './pages/stamp/StampDetailPage';
 import MapPage from './pages/MapPage';
+import SignupPage from './pages/SignupPage';
+import SignupDetailPage from './pages/SignupDetailPage';
 
 function App() {
   return (
@@ -18,7 +20,6 @@ function App() {
       <Router>
         <Routes>
           {/* 예시 네비게이션이 필요한 페이지들 */}
-          <Route path="/home" element={<Layout $hasNavigation><LoginPage /></Layout>} />
           <Route path="/restaurant" >
             <Route index element={<Layout $hasNavigation> <RestaurantPage/></Layout>}/>
           </Route>
@@ -30,14 +31,16 @@ function App() {
           <Route path='/restaurant/search' element={<Layout $hasNavigation><RestaurantSearchPage/></Layout>} />
           <Route path="/random" element={<Layout $hasNavigation> </Layout>}/>
           <Route path="/mypage" element={<Layout $hasNavigation> </Layout>}/>
-          <Route path="/home" element={<Layout hasNavigation><LoginPage /></Layout>} />
           <Route path="/random" element={<Layout hasNavigation> </Layout>}/>
           <Route path="/map" element={<Layout $hasNavigation><MapPage /></Layout>} />
           <Route path="/mypage" element={<Layout hasNavigation> </Layout>}/>
           {/* 네비게이션이 필요 없는 페이지들 */}
-          <Route path="/" element={<Layout><LoginPage /></Layout>} />
+          <Route path="/" element={<Layout></Layout>} />
+          <Route path="/login" element={<Layout><LoginPage /></Layout>} />
+          <Route path="/signup" element={<Layout><SignupPage /></Layout>} />
           <Route path="/review" element={<Layout><ReviewPage /></Layout>} />
           <Route path="/review/complete" element={<Layout><ReviewCompletePage /></Layout>} />
+          <Route path="/signup/detail" element={<Layout><SignupDetailPage /></Layout>} />
           
         </Routes>
       </Router>
