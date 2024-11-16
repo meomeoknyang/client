@@ -10,11 +10,18 @@ import editIcon from '../../../assets/svg/edit.svg'
 import logotextIcon from '../../../assets/logotext.png'
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 const DetailHomePage = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('home'); 
-    const id = useParams();
+    const [data, setData] = useState([]);
+    const {id} = useParams();
     const baseurl = `/restaurant/detail/${id}`;
+    const categoryNames = data && data.categories ? data.categories.map(category => category.name).join(', ') : '';
+    const reviewCount = data?.comments?.length || 0;
+    const displayRating = data && data.average_rating !== undefined ? 
+    (data.average_rating === -1 ? '0' : data.average_rating.toFixed(1)) : '0';
+    const breakTimeText =  data?.break_times?.length > 0 ? data.break_times[0] : '타임 없음';
     const handleClick = (type) => {
         setActiveTab(type);
         if (type === 'home')  {
@@ -30,25 +37,57 @@ const DetailHomePage = () => {
         }
     };
 
-    const reviews = [
-        { text: "여기 없어지면 에리카 퇴학합니다.", count: 55 },
-        { text: "지갑 지키고 싶을 때, 여기 추천", count: 30 },
-        { text: "할머니집 같이 정 많은 식당", count: 16 },
-        { text: "동기들과 함께 가면 럭키비키~", count: 7 },
-        { text: "재료가 살아있네~", count: 3 }
-    ];
+    const reviews = data.keywords ? data.keywords : [];
     const totalCount = reviews.reduce((sum, review) => sum + review.count, 0);
     
     const handleBack = () => {
         navigate(-1);
     }  
     useEffect(() => {
-        handleLoadDetail(id);
-      }, []);
+        if(id) {
+            handleLoadDetail(id);
+        }
+      }, [id]);
 
-      const handleLoadDetail = async (id) => {
-        
+      const handleLoadDetail = async (key) => {
+        try{
+            const response = await axios.get(`https://port-0-server-m3eidei15754d939.sel4.cloudtype.app/restaurants/${key}/`)
+            if (!response) {
+                console.error('데이터가 없습니다');
+                setData([]);
+                return;
+            }
+            setData(response.data);
+            console.log(response.data);
+        }catch(error){
+            console.error(error);
+            setData([]);
+        }
       };
+
+      const handleFindWay = () => {
+        if (!data || !data.name) {
+            alert("가게 정보가 없습니다.");
+            return;
+        }
+    
+        const searchQuery = encodeURIComponent(data.name);
+        
+        // 모바일 여부 체크
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (isMobile) {
+            const kakaoMapUrl = `kakaomap://search?q=${searchQuery}`;
+            window.location.href = kakaoMapUrl;
+            
+            setTimeout(() => {
+                window.location.href = `https://map.kakao.com/link/search/${searchQuery}`;
+            }, 1000);
+        } else {
+            window.open(`https://map.kakao.com/link/search/${searchQuery}`);
+        }
+    };
+
     return(
         <div>
             <Container>
@@ -57,40 +96,42 @@ const DetailHomePage = () => {
                         <img onClick={()=>handleBack()} src={backIcon} alt="back" />
                     </Header>
                    
-                    <MenuImage src={menu} alt="mainmenu" />
+                    <MenuImage src={data.image_url} alt="mainmenu" />
                 </ImgContainer>
                 <MenuDetail>
                     <MenuTitle>
-                        <SubCategory text={"한식"}/>
-                            <SubMain text={"두루정"}/>
+                        <SubCategory text={categoryNames}/>
+                            <SubMain text={data.name}/>
                             <RatingWrapper>
                                 <StarIcon src={starIcon} alt="star"/>
-                                <Rating>3.8</Rating>
+                                <Rating>{displayRating}</Rating>
                                 <ReviewCount>
-                                    리뷰 15개
-                                    <img src={rightIcon} alt="right" />
+                                    리뷰 {reviewCount}개
+                                    <img src={rightIcon} alt="right" onClick={()=>handleClick('review')} />
                                 </ReviewCount>
                                 
                             </RatingWrapper>
                     </MenuTitle>
                     <InfoWrapper>
                         <InfoItem>
-                            <SubDistance text={"3분"}/>
-                            <img src={downIcon} alt="down" />
+                            <SubDistance text={data.distance_from_gate}/>
                             <LocationButton>
                                 <img src={mapIcon} alt="" />
                                 위치
                             </LocationButton>
                         </InfoItem>
                         <InfoItem>
-                            <SubBreaktime text={"15:00~17:00"}/>
+                            <SubBreaktime text={breakTimeText}/>
                         </InfoItem>
                         <InfoItem>
-                            <SubPrice text={"12,000"}/>
+                            <SubPrice text={data.average_price}/>
                         </InfoItem>
                         <div style={{display:'flex',flexDirection:"row", gap:"4px", marginTop:"5px"}}>
-                            <SubTag text={"다수추천"}/>
+                            {/**
+                             <SubTag text={"다수추천"}/>
                             <SubTag text={"가성비"}/>
+                             */}
+                            
 
                         </div>
                         
@@ -151,15 +192,21 @@ const DetailHomePage = () => {
                         <div>사진</div>
                     </Menut>
                     <PickContainer>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
+                        {data && data.images && data.images.length > 0 ? (
+                            data.images.slice(0,9).map((image,index)=>(
+                                <img key={index}
+                                src={image.url}
+                                alt={`메뉴 ${index + 1}`}/>
+                            ))
+                        ) : (
+                            <div style={{
+                                gridColumn: "1 / -1",
+                                textAlign: "center",
+                                padding: "20px",
+                                color: "rgba(0,0,0,0.5)",
+                                fontSize: "12px"
+                            }}  > 등록된 사진이 없습니다. </div>
+                        )} 
 
                     </PickContainer>
                         
@@ -176,45 +223,65 @@ const DetailHomePage = () => {
                         <p onClick={()=>handleClick('reviewWrite')} $isActive={activeTab === 'reviewWrite'}> <img src={editIcon} alt="" /> 리뷰쓰기</p>
                     </Menut>
                     <Review>
-                    {reviews.map((review, index) => (
-                            <ReviewItem 
+                    {data && data.keywords && data.keywords.length > 0 ? (
+                            data.keywords.slice(0,5).map((words,index)=>(
+                                <ReviewItem 
                                 key={index} 
                                 $index={index}
-                                $percent={(review.count / totalCount) * 100}
+                                $percent={(words.count / totalCount) * 100}
                             >
                                 <div className="graph">
                                     <div className="fill"/>
                                     <div className="content">
-                                        <div className="text">{review.text}</div>
-                                        <div className="count">{review.count}</div>
+                                        <div className="text">{words.description}</div>
+                                        <div className="count">{words.count}</div>
                                     </div>
                                 </div>
                             </ReviewItem>
-                        ))}
+                            ))
+                        ) : (
+                            <div style={{
+                                textAlign: "center",
+                                padding: "20px",
+                                color: "rgba(0,0,0,0.5)",
+                                fontSize: "12px"
+                            }}  > 등록된 키워드가 없습니다. </div>
+                        )} 
+                        
                         <ReviewOverlay />
                     </Review>
                     <End><div className='line'/></End>
                     <ReviewList>
-                        {[1, 2, 3].map((_, index) => (
+                    
+                        {data && data.comments && data.comments.length > 0 ? (
+                            data.comments.slice(0,3).map((review, index) => (
                             <ReviewCard key={index}>
-                            <Profile>
-                                <ProfileImg />
-                            </Profile>
-                            <ReviewContent>
-                                <UserInfo>
-                                    <UserTop>
-                                        <span className="nickname">닉네임</span>
-                                        <span className="badge">청춘</span>
-                                    </UserTop>
-                                    
-                                    <VisitCount>
-                                        n번째 방문
-                                    </VisitCount>
-                                </UserInfo>
-                                <Content>한 줄 리뷰 내용한 줄 리뷰 내용한 줄 리뷰 내용한 줄 리뷰 내용한 줄 리뷰 내용</Content>
-                            </ReviewContent>
-                        </ReviewCard>
-                        ))}
+                                <Profile>
+                                    <ProfileImg />
+                                </Profile>
+                                <ReviewContent>
+                                    <UserInfo>
+                                        <UserTop>
+                                            <span className="nickname">{review.user}</span>
+                                            <span className="badge">{review.title}</span>
+                                        </UserTop>
+                                        
+                                        <VisitCount>
+                                            {review.visit_count}번째 방문
+                                        </VisitCount>
+                                    </UserInfo>
+                                    <Content>{review.comment}</Content>
+                                </ReviewContent>
+                            </ReviewCard>
+                            ))
+                        ):(
+                            <div style={{
+                                textAlign: "center",
+                                padding: "20px",
+                                color: "rgba(0,0,0,0.5)",
+                                fontSize: "12px"
+                            }}  > 등록된 리뷰가 없습니다. </div>
+                        )}
                     </ReviewList>
 
                     <End>
@@ -239,7 +306,8 @@ const DetailHomePage = () => {
 
             <Navi>
                 <div style={{padding:"16px 24px", display:"flex", gap:"8px",fontSize:"16px", borderTop:"1px solid rgba(0, 0, 0, 0.10)"}}>
-                        <button style={{width:"97px", padding:"12px 18px", borderRadius: "5px", border: "1px solid rgba(0, 0, 0, 0.20)", backgroundColor: "#fff",fontWeight:"700"}}>경로찾기</button>
+                        <button style={{width:"97px", padding:"12px 18px", borderRadius: "5px", border: "1px solid rgba(0, 0, 0, 0.20)", backgroundColor: "#fff",fontWeight:"700"}}
+                        onClick={()=>{handleFindWay()}}>경로찾기</button>
                         <button
                             style={{width:"247px",padding:"12px 84px", borderRadius: "5px",backgroundColor: "#FF6F00", color:"#fff", border:"none",fontWeight:"700"}}
                             onClick={()=>handleClick('reviewWrite')} $isActive={activeTab === 'reviewWrite'}>
@@ -429,10 +497,11 @@ const PickContainer = styled.div`
     gap: 4px;
     padding: 20px 20px 6px 20px;
 
-    div {
+    img {
         aspect-ratio: 1/1;
         background-color: #F5F5F5;
         border-radius: 4px;
+        object-fit: cover;
     }
 
 `
@@ -455,7 +524,6 @@ const End = styled.div`
 
     & > button {
         position: relative;
-        z-index: 1;
         border-radius: 50px;
         background: #F2F2F2;
         display: inline-flex;
@@ -598,13 +666,14 @@ const LocationButton = styled.button`
     border:none;
     display: flex;
     align-items: center;
+    height: 16px;
 `;
 const MenuTitle = styled.div`
     display:flex;
     flex-direction:column;
 `
 const MenuDetail = styled.div`
-    padding: 17px 20px 40px 20px;
+    padding: 17px 20px 20px 20px;
     border-bottom: 8px solid #F5F5F5;
 `
 const MenuImage = styled.img`
