@@ -4,12 +4,17 @@ import { useEffect, useState } from 'react';
 import backIcon from '../../../assets/svg/back.svg'
 import editIcon from '../../../assets/svg/edit.svg'
 import logotextIcon from '../../../assets/logotext.png'
-import rightIcon from '../../../assets/svg/arrow_right.svg'
+import closeIcon from '../../../assets/svg/Close.svg'
+//import rightIcon from '../../../assets/svg/arrow_right.svg'
+import { useRestaurant } from "../../../api/Restaurant";
+import axios from "axios";
 
 const DetailReviewPage = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('review'); 
-    const id = useParams();
+    const {id} = useParams();
+    const [reviews, setReviews] = useState();
+    const { restaurantData, loading, error, fetchRestaurantData } = useRestaurant();
     const baseurl = `/restaurant/detail/${id}`;
     const handleClick = (type) => {
         setActiveTab(type);
@@ -21,33 +26,59 @@ const DetailReviewPage = () => {
             navigate(`${baseurl}/review`);
         } else if (type === 'picture') {
             navigate(`${baseurl}/picture`);
+        } else if (type === 'reviewWrite'){
+            navigate(`/review/${id}`);
         }
     };
     const handleBack = () => {
         navigate(-1);
-    }
-    useEffect(() => {
-        handleLoadDetail(id);
-      }, []);
-
-    const handleLoadDetail = async (id) => {
-    
     };
-    
-    const reviews = [
-        { text: "여기 없어지면 에리카 퇴학합니다.", count: 55 },
-        { text: "지갑 지키고 싶을 때, 여기 추천", count: 30 },
-        { text: "할머니집 같이 정 많은 식당", count: 16 },
-        { text: "동기들과 함께 가면 럭키비키~", count: 7 },
-        { text: "재료가 살아있네~", count: 3 }
-    ];
+    const handleList = () => {
+        navigate(`/restaurant`);
+    };
 
-    const totalCount = reviews.reduce((sum, review) => sum + review.count, 0);
+    const getReivew = async(key) => {
+        try{
+            const response = await axios.get(`https://port-0-server-m3eidei15754d939.sel4.cloudtype.app/reviews/restaurant/${key}/`)
+            if (!response) {
+                console.error('데이터가 없습니다');
+                setReviews([]);
+                return;
+            }
+            setReviews(response.data);
+            console.log(response.data);
+        }catch(error){
+            console.error(error);
+            setReviews([]);
+        }
+    };
+    useEffect(() => {
+        if (id) {
+          fetchRestaurantData(id);
+          getReivew(id);
+        }
+      }, [id, fetchRestaurantData]);
+    
+      if (loading) return <div>로딩 중...</div>;
+      if (error) return <div>에러가 발생했습니다.</div>;
+      if (!restaurantData) {
+        return <p>로딩 중...</p>
+        };
+    
+
+    
+
+    const keyword = restaurantData.keywords ? restaurantData.keywords : [];
+    const totalCount = keyword.reduce((sum, keyword) => sum + keyword.count, 0);
     return(
         <div>
-            <Header>
-                        <img src={backIcon} alt="back" onClick={()=>handleBack()} />
-                        <div className='name'>두루정</div>
+            <Header>   
+                <div style={{display:"flex", gap:"8px", alignItems:"center"}}>
+                    <img src={backIcon} alt="back" onClick={()=>handleBack()} />
+                    <div className='name'>{restaurantData.name}</div>
+                </div>
+                <img onClick={()=>handleList()}src={closeIcon} alt="close" />
+
             </Header>
             <Tab>
                 <SubTab onClick={()=>handleClick('home')} $isActive={activeTab === 'home'}>홈</SubTab>
@@ -58,63 +89,71 @@ const DetailReviewPage = () => {
 
             <div>
                     <Menut>
-                        <div>학생들의 리얼한 리뷰</div>
-                        <p> <img src={editIcon} alt="" /> 리뷰쓰기</p>
+                        <div >학생들의 리얼한 리뷰</div>
+                        <p onClick={()=>handleClick('reviewWrite')} > <img src={editIcon} alt="" /> 리뷰쓰기</p>
                     </Menut>
                     <Review>
-                    {reviews.map((review, index) => (
-                            <ReviewItem 
+                    {restaurantData && restaurantData.keywords && restaurantData.keywords.length > 0 ? (
+                            restaurantData.keywords.slice(0,5).map((words,index)=>(
+                                <ReviewItem 
                                 key={index} 
                                 $index={index}
-                                $percent={(review.count / totalCount) * 100}
+                                $percent={(words.count / totalCount) * 100}
                             >
                                 <div className="graph">
                                     <div className="fill"/>
                                     <div className="content">
-                                        <div className="text">{review.text}</div>
-                                        <div className="count">{review.count}</div>
+                                        <div className="text">{words.keywords__description}</div>
+                                        <div className="count">{words.count}</div>
                                     </div>
                                 </div>
                             </ReviewItem>
-                        ))}
+                            ))
+                        ) : (
+                            <div style={{
+                                textAlign: "center",
+                                padding: "20px",
+                                color: "rgba(0,0,0,0.5)",
+                                fontSize: "12px"
+                            }}  > 등록된 키워드가 없습니다. </div>
+                        )} 
 
                     </Review>
                     <ReviewList>
-                        {[1, 2, 3].map((_, index) => (
+                        {reviews && reviews.length > 0 ? (
+                            
+                            reviews.map((review, index) => (
                             <ReviewCard key={index}>
-                            <Profile>
-                                <ProfileImg />
-                            </Profile>
-                            <ReviewContent>
-                                <UserInfo>
-                                    <UserTop>
-                                        <span className="nickname">닉네임</span>
-                                        <span className="badge">청춘</span>
-                                    </UserTop>
-                                    
-                                    <VisitCount>
-                                        n번째 방문
-                                    </VisitCount>
-                                    <Date>
-                                        2024.11.13
-                                    </Date>
-                                </UserInfo>
-                                <Content>
-                                    여기는 언제가도 평타. 오늘은 가서 돼지김치짜글이 먹었는데 이것도 맛있었음! 점심 먹기에는 적당한 듯 합니다.여기는 언제가도 평타. 오늘은 가서 돼지김치짜글이 먹었는데 이것도 맛있었음! 점심 먹기에는 적당한 듯 합니다.
-
-                                </Content>
-                            </ReviewContent>
-                        </ReviewCard>
-                        ))}
+                                <Profile>
+                                    <ProfileImg />
+                                </Profile>
+                                <ReviewContent>
+                                    <UserInfo>
+                                        <UserTop>
+                                            <span className="nickname">{review.user.nickname}</span>
+                                            <span className="badge">{review.user.title}</span>
+                                        </UserTop>
+                                        
+                                        <VisitCount>
+                                            {review.visit_count}번째 방문
+                                        </VisitCount>
+                                        <Date>
+                                        {review.created_at.split('T')[0]}
+                                        </Date>
+                                    </UserInfo>
+                                    <Content>{review.comment}</Content>
+                                </ReviewContent>
+                            </ReviewCard>
+                            ))
+                        ):(
+                            <div style={{
+                                textAlign: "center",
+                                padding: "20px 20px 40px 20px",
+                                color: "rgba(0,0,0,0.5)",
+                                fontSize: "12px"
+                            }}  > 등록된 리뷰가 없습니다. </div>
+                        )}
                     </ReviewList>
-
-                    <End>
-                        <div className="line" />
-                        <button>
-                            더보기 
-                            <img src={rightIcon} alt="더보기" />
-                        </button>
-                    </End>
                 </div>
 
                 <Footer>
@@ -135,44 +174,6 @@ const DetailReviewPage = () => {
 
 export default DetailReviewPage;
 
-const End = styled.div`
-    position: relative;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    .line {
-        position: absolute;
-        top: 50%;
-        left: 20px;
-        right: 20px;
-        height: 1px;
-        background: #E4E4E4;
-    }
-
-    & > button {
-        position: relative;
-        z-index: 1;
-        border-radius: 50px;
-        background: #F2F2F2;
-        display: inline-flex;
-        padding: 8px 20px;
-        justify-content: center;
-        align-items: center;
-        border: none;
-        color: rgba(0, 0, 0, 0.55);
-        font-size: 12px;
-        font-weight: 600;
-        height:30px;
-
-        & > img {
-            width: 16px;
-            height: 20px;
-            opacity: 0.3;
-        }
-    }
-`
 
 const Footer = styled.div`
     height: 111px;
@@ -339,7 +340,7 @@ const Menut = styled.div`
     display: flex;
     align-items: center;
     gap: 2px;
-    padding:20px 0 0 20px;
+    padding:36px 0 12px 20px;
 
     &> div {
         font-size: 18px;
@@ -368,13 +369,12 @@ const Header = styled.div`
     padding: 11px 20px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap:8px;
     .name{
     color: rgba(0, 0, 0, 0.99);
     font-size: 20px;
     font-weight: 700;
-
-    }
 `
 const SubTab = styled.div`
     font-size: 16px;

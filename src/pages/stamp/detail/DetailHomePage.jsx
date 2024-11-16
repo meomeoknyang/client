@@ -1,27 +1,28 @@
 import styled from 'styled-components';
-import {SubMain, SubBreaktime, SubPrice, SubDistance, SubTag, SubCategory} from '../../../components/stamp/restaurant/DetailContainer'
-import menu from '../../../assets/menu.png'
+import {SubMain, SubBreaktime, SubPrice, SubDistance, SubCategory} from '../../../components/stamp/restaurant/DetailContainer'
+//import menu from '../../../assets/menu.png'
 import backIcon from '../../../assets/svg/back.svg'
 import starIcon from '../../../assets/svg/star.svg'
-import downIcon from '../../../assets/svg/arrow_down.svg'
+//import downIcon from '../../../assets/svg/arrow_down.svg'
+import closeIcon from '../../../assets/svg/Close.svg'
 import rightIcon from '../../../assets/svg/arrow_right.svg'
 import mapIcon from '../../../assets/svg/map.svg'
 import editIcon from '../../../assets/svg/edit.svg'
 import logotextIcon from '../../../assets/logotext.png'
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import { useRestaurant } from '../../../api/Restaurant';
 const DetailHomePage = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('home'); 
-    const [data, setData] = useState([]);
     const {id} = useParams();
+    const { restaurantData, loading, error, fetchRestaurantData } = useRestaurant();
     const baseurl = `/restaurant/detail/${id}`;
-    const categoryNames = data && data.categories ? data.categories.map(category => category.name).join(', ') : '';
-    const reviewCount = data?.comments?.length || 0;
-    const displayRating = data && data.average_rating !== undefined ? 
-    (data.average_rating === -1 ? '0' : data.average_rating.toFixed(1)) : '0';
-    const breakTimeText =  data?.break_times?.length > 0 ? data.break_times[0] : '타임 없음';
+    const categoryNames = restaurantData && restaurantData.categories ? restaurantData.categories.map(category => category.name).join(', ') : '';
+    const reviewCount = restaurantData?.comments?.length || 0;
+    const displayRating = restaurantData && restaurantData.average_rating !== undefined ? 
+    (restaurantData.average_rating === -1 ? '0' : restaurantData.average_rating.toFixed(1)) : '0';
+    const breakTimeText =  restaurantData?.break_times?.length > 0 ? restaurantData.break_times[0] : '타임 없음';
     const handleClick = (type) => {
         setActiveTab(type);
         if (type === 'home')  {
@@ -37,43 +38,36 @@ const DetailHomePage = () => {
         }
     };
 
-    const reviews = data.keywords ? data.keywords : [];
-    const totalCount = reviews.reduce((sum, review) => sum + review.count, 0);
+
     
     const handleBack = () => {
         navigate(-1);
     }  
-    useEffect(() => {
-        if(id) {
-            handleLoadDetail(id);
-        }
-      }, [id]);
+    const handleList = () => {
+        navigate(`/restaurant`);
+    }  
 
-      const handleLoadDetail = async (key) => {
-        try{
-            const response = await axios.get(`https://port-0-server-m3eidei15754d939.sel4.cloudtype.app/restaurants/${key}/`)
-            if (!response) {
-                console.error('데이터가 없습니다');
-                setData([]);
-                return;
-            }
-            setData(response.data);
-            console.log(response.data);
-        }catch(error){
-            console.error(error);
-            setData([]);
+      useEffect(() => {
+        if (id) {
+          fetchRestaurantData(id);
         }
-      };
+      }, [id, fetchRestaurantData]);
+    
+      if (loading) return <div>로딩 중...</div>;
+      if (error) return <div>에러가 발생했습니다.</div>;
+      if (!restaurantData) {
+        return <p>로딩 중...</p>
+        };
+
+    const reviews = restaurantData.keywords ? restaurantData.keywords : [];
+    const totalCount = reviews.reduce((sum, review) => sum + review.count, 0);
 
       const handleFindWay = () => {
-        if (!data || !data.name) {
+        if (!restaurantData || !restaurantData.name) {
             alert("가게 정보가 없습니다.");
             return;
         }
-    
-        const searchQuery = encodeURIComponent(data.name);
-        
-        // 모바일 여부 체크
+        const searchQuery = encodeURIComponent(restaurantData.name);
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         
         if (isMobile) {
@@ -94,14 +88,15 @@ const DetailHomePage = () => {
                 <ImgContainer>
                     <Header>
                         <img onClick={()=>handleBack()} src={backIcon} alt="back" />
+                        <img onClick={()=>handleList()}src={closeIcon} alt="close" />
                     </Header>
                    
-                    <MenuImage src={data.image_url} alt="mainmenu" />
+                    <MenuImage src={restaurantData.image_url} alt="mainmenu" />
                 </ImgContainer>
                 <MenuDetail>
                     <MenuTitle>
                         <SubCategory text={categoryNames}/>
-                            <SubMain text={data.name}/>
+                            <SubMain text={restaurantData.name}/>
                             <RatingWrapper>
                                 <StarIcon src={starIcon} alt="star"/>
                                 <Rating>{displayRating}</Rating>
@@ -114,7 +109,7 @@ const DetailHomePage = () => {
                     </MenuTitle>
                     <InfoWrapper>
                         <InfoItem>
-                            <SubDistance text={data.distance_from_gate}/>
+                            <SubDistance text={restaurantData.distance_from_gate}/>
                             <LocationButton>
                                 <img src={mapIcon} alt="" />
                                 위치
@@ -124,7 +119,7 @@ const DetailHomePage = () => {
                             <SubBreaktime text={breakTimeText}/>
                         </InfoItem>
                         <InfoItem>
-                            <SubPrice text={data.average_price}/>
+                            <SubPrice text={restaurantData.average_price}/>
                         </InfoItem>
                         <div style={{display:'flex',flexDirection:"row", gap:"4px", marginTop:"5px"}}>
                             {/**
@@ -146,42 +141,33 @@ const DetailHomePage = () => {
                 <div style={{borderBottom: "8px solid #F5F5F5"}}>
                     <Menut>
                         <div>메뉴</div>
-                        <span>21</span>
+                        <span>{restaurantData.menus ? restaurantData.menus.length : 0}</span>
                     </Menut>
                     <MenuContainer>
-                        <MenuItem>
-                            <MenuImg/>
-                            <div style={{display: "flex", flexDirection: "column", gap:"4px"}}>
-                                <MenuName>파채옥 두루치기</MenuName>
-                                <MenuPrice>12,000원</MenuPrice>
+                        {restaurantData && restaurantData.menus && restaurantData.menus.slice(0, 4).map((menu) => (
+                            <MenuItem key={menu.id}>
+                                <MenuImg src={menu.image_url} />
+                                <div style={{display: "flex", flexDirection: "column", gap:"4px"}}>
+                                    <MenuName>{menu.name}</MenuName>
+                                    <MenuPrice>{menu.price.toLocaleString()}원</MenuPrice>
+                                </div>
+                            </MenuItem>
+                        ))}
+                        {(!restaurantData?.menus || restaurantData.menus.length === 0) && (
+                            <div style={{
+                                gridColumn: "1 / -1",
+                                textAlign: "center",
+                                padding: "20px",
+                                color: "rgba(0,0,0,0.5)",
+                                fontSize: "12px"
+                            }}>
+                                등록된 메뉴가 없습니다.
                             </div>
-                        </MenuItem>
-                        <MenuItem>
-                            <MenuImg/>
-                            <div style={{display: "flex", flexDirection: "column", gap:"4px"}}>
-                                <MenuName>파채옥 두루치기</MenuName>
-                                <MenuPrice>12,000원</MenuPrice>
-                            </div>
-                        </MenuItem>
-                        <MenuItem>
-                            <MenuImg/>
-                            <div style={{display: "flex", flexDirection: "column", gap:"4px"}}>
-                                <MenuName>파채옥 두루치기</MenuName>
-                                <MenuPrice>12,000원</MenuPrice>
-                            </div>
-                        </MenuItem>
-                        <MenuItem>
-                            <MenuImg/>
-                            <div style={{display: "flex", flexDirection: "column", gap:"4px"}}>
-                                <MenuName>파채옥 두루치기</MenuName>
-                                <MenuPrice>12,000원</MenuPrice>
-                            </div>
-                        </MenuItem>
-                        
+                        )}
                     </MenuContainer>
                     <End>
                         <div className='line'/>
-                        <button onClick={()=>handleClick('menu')} $isActive={activeTab === 'menu'}>메뉴 전체보기 <img src={rightIcon} alt="" /></button>
+                        <StyledButton onClick={()=>handleClick('menu')} $isActive={activeTab === 'menu'}>메뉴 전체보기 <img src={rightIcon} alt="" /></StyledButton>
                     </End>
 
                     
@@ -192,8 +178,8 @@ const DetailHomePage = () => {
                         <div>사진</div>
                     </Menut>
                     <PickContainer>
-                        {data && data.images && data.images.length > 0 ? (
-                            data.images.slice(0,9).map((image,index)=>(
+                        {restaurantData && restaurantData.images && restaurantData.images.length > 0 ? (
+                            restaurantData.images.slice(0,9).map((image,index)=>(
                                 <img key={index}
                                 src={image.url}
                                 alt={`메뉴 ${index + 1}`}/>
@@ -212,7 +198,7 @@ const DetailHomePage = () => {
                         
                     <End>
                         <div className='line'/>
-                        <button onClick={()=>handleClick('pciture')} $isActive={activeTab === 'picture'}>사진/영상 더보기 <img src={rightIcon} alt="" /></button>
+                        <StyledButton onClick={()=>handleClick('picture')} $isActive={activeTab === 'picture'}>사진/영상 더보기 <img src={rightIcon} alt="" /></StyledButton>
                     </End>
                 </div>
 
@@ -223,8 +209,8 @@ const DetailHomePage = () => {
                         <p onClick={()=>handleClick('reviewWrite')} $isActive={activeTab === 'reviewWrite'}> <img src={editIcon} alt="" /> 리뷰쓰기</p>
                     </Menut>
                     <Review>
-                    {data && data.keywords && data.keywords.length > 0 ? (
-                            data.keywords.slice(0,5).map((words,index)=>(
+                    {restaurantData && restaurantData.keywords && restaurantData.keywords.length > 0 ? (
+                            restaurantData.keywords.slice(0,5).map((words,index)=>(
                                 <ReviewItem 
                                 key={index} 
                                 $index={index}
@@ -233,7 +219,7 @@ const DetailHomePage = () => {
                                 <div className="graph">
                                     <div className="fill"/>
                                     <div className="content">
-                                        <div className="text">{words.description}</div>
+                                        <div className="text">{words.keywords__description}</div>
                                         <div className="count">{words.count}</div>
                                     </div>
                                 </div>
@@ -252,9 +238,8 @@ const DetailHomePage = () => {
                     </Review>
                     <End><div className='line'/></End>
                     <ReviewList>
-                    
-                        {data && data.comments && data.comments.length > 0 ? (
-                            data.comments.slice(0,3).map((review, index) => (
+                        {restaurantData && restaurantData.comments && restaurantData.comments.length > 0 ? (
+                            restaurantData.comments.slice(0,3).map((review, index) => (
                             <ReviewCard key={index}>
                                 <Profile>
                                     <ProfileImg />
@@ -286,10 +271,10 @@ const DetailHomePage = () => {
 
                     <End>
                         <div className="line" />
-                        <button onClick={()=>handleClick('review')} $isActive={activeTab === 'review'}>
+                        <StyledButton onClick={()=>handleClick('review')} $isActive={activeTab === 'review'}>
                             후기 더보기 
                             <img src={rightIcon} alt="더보기" />
-                        </button>
+                        </StyledButton>
                     </End>
                 </div>
 
@@ -521,28 +506,28 @@ const End = styled.div`
         height: 1px;
         background: #E4E4E4;
     }
+`;
 
-    & > button {
-        position: relative;
-        border-radius: 50px;
-        background: #F2F2F2;
-        display: inline-flex;
-        padding: 8px 20px;
-        justify-content: center;
-        align-items: center;
-        border: none;
-        color: rgba(0, 0, 0, 0.55);
-        font-size: 12px;
-        font-weight: 600;
-        height:30px;
+const StyledButton = styled.button`
+    position: relative;
+    border-radius: 50px;
+    background: #F2F2F2;
+    display: inline-flex;
+    padding: 8px 20px;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    color: ${props => props.$isActive ? '#000' : 'rgba(0, 0, 0, 0.55)'};
+    font-size: 12px;
+    font-weight: 600;
+    height: 30px;
 
-        & > img {
-            width: 16px;
-            height: 20px;
-            opacity: 0.3;
-        }
+    & > img {
+        width: 16px;
+        height: 20px;
+        opacity: ${props => props.$isActive ? '1' : '0.3'};
     }
-`
+`;
 
 const MenuName = styled.span`
     font-size: 12px;
@@ -565,7 +550,10 @@ const MenuImg = styled.div`
     aspect-ratio: 1/1;
     border-radius: 10px;
     background-color: #F5F5F5;
-`
+    background-image: ${props => props.src ? `url(${props.src})` : 'none'};
+    background-size: cover;
+    background-position: center;
+`;
 
 const MenuContainer = styled.div`
     display: grid;
@@ -601,6 +589,7 @@ const Menut = styled.div`
         gap: 4px;
     }
 `
+
 const SubTab = styled.div`
     font-size: 16px;
     font-weight: 700;
@@ -705,7 +694,9 @@ const ImgContainer = styled.div`
 `
 
 const Header = styled.div`
-    height:35px;
+    width: 375px;
     position: absolute;
     padding: 11px 20px;
+    display: flex;
+    justify-content: space-between;
 `

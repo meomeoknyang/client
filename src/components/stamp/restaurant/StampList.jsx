@@ -27,6 +27,7 @@ const StampList = ( {restaurants, isContacted, visited} ) => {
                     distance={restaurant.distance_from_gate}
                     contact={restaurant.contact}
                     isContacted = {isContacted}
+                    mainImg = {restaurant.image_url}
                 />
             ))}
 

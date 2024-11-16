@@ -11,18 +11,24 @@ const Container = styled.div`
 `
 
 const Detail = styled.div`
-    color: #fff;
+    color:#fff;
     width: 193px;
     height: 128px;
     border-radius: 5px 0px 0px 5px;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) -20.31%, rgba(0, 0, 0, 0.55) 73.64%), url(${menu}) lightgray 50% / cover no-repeat;
-    display:flex;
-    & div{
-        width: 152px;
-        margin: auto;
-        position: relative;
-    }
-`
+    display: flex;
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.00) -20.31%,
+        rgba(0, 0, 0, 0.55) 73.64%
+    ), url(${props => props.src}) lightgray 50% / cover no-repeat;
+
+  & > div {
+    width: 152px;
+    margin: auto;
+    position: relative;
+    z-index: 1;
+  }
+`;
 
 const Visit = styled.div`
     width: 142px;

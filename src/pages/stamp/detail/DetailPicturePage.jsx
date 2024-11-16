@@ -3,13 +3,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import backIcon from '../../../assets/svg/back.svg'
 import logotextIcon from '../../../assets/logotext.png'
+import closeIcon from '../../../assets/svg/Close.svg'
+import { useRestaurant } from "../../../api/Restaurant";
 
 const DetailPicturePage = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('picture'); 
-    const id = useParams();
+    const {id} = useParams();
     const baseurl = `/restaurant/detail/${id}`;
-    
+    const { restaurantData, loading, error, fetchRestaurantData } = useRestaurant();
     const handleClick = (type) => {
         setActiveTab(type);
         if (type === 'home')  {
@@ -20,23 +22,36 @@ const DetailPicturePage = () => {
             navigate(`${baseurl}/review`);
         } else if (type === 'picture') {
             navigate(`${baseurl}/picture`);
+        } else if (type === 'reviewWrite'){
+            navigate(`/review/${id}`);
         }
     };
     const handleBack = () => {
         navigate(-1);
     }
+    const handleList = () => {
+        navigate(`/restaurant`);
+    };  
     useEffect(() => {
-        handleLoadDetail(id);
-      }, []);
-
-      const handleLoadDetail = async (id) => {
-        
-      };
+        if (id) {
+          fetchRestaurantData(id);
+        }
+      }, [id, fetchRestaurantData]);
+    
+      if (loading) return <div>로딩 중...</div>;
+      if (error) return <div>에러가 발생했습니다.</div>;
+      if (!restaurantData) {
+        return <p>로딩 중...</p>
+        };
     return(
         <div>
-            <Header>
-                        <img src={backIcon} alt="back" onClick={()=>handleBack()} />
-                        <div className='name'>두루정</div>
+            <Header>   
+                <div style={{display:"flex", gap:"8px", alignItems:"center"}}>
+                    <img src={backIcon} alt="back" onClick={()=>handleBack()} />
+                    <div className='name'>{restaurantData.name}</div>
+                </div>
+                <img onClick={()=>handleList()}src={closeIcon} alt="close" />
+
             </Header>
             <Tab>
                 <SubTab onClick={()=>handleClick('home')} $isActive={activeTab === 'home'}>홈</SubTab>
@@ -119,6 +134,7 @@ const Header = styled.div`
     padding: 11px 20px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap:8px;
     .name{
     color: rgba(0, 0, 0, 0.99);

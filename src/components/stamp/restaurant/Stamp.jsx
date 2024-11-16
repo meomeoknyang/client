@@ -4,7 +4,7 @@ import starIcon from "../../../assets/svg/star.svg"
 import stampIcon from "../../../assets/svg/stamp.svg"
 import nostampIcon from "../../../assets/svg/nostamp.svg"
 import { useNavigate } from "react-router-dom";
-const Stamp = ({ id, name, rating, categories, breakTimes, distance, price, contact, isContacted }) => {
+const Stamp = ({ id, name, rating, categories, breakTimes, distance, price, contact, isContacted, mainImg }) => {
     const navigate = useNavigate();
     const categoryNames = categories?.length > 0 ? categories[0].name || '' : '';
     const displayRating = rating === -1 ? '0' : rating.toFixed(1);
@@ -15,7 +15,7 @@ const Stamp = ({ id, name, rating, categories, breakTimes, distance, price, cont
 
     return(
         <Container onClick={()=>handleClick(id)}>
-            <Detail>
+            <Detail src={mainImg}>
                 <div>
                     <div style={{
                         display: "flex",

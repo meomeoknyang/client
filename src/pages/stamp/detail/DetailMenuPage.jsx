@@ -2,12 +2,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import backIcon from '../../../assets/svg/back.svg'
+import { useRestaurant } from '../../../api/Restaurant';
+import closeIcon from '../../../assets/svg/Close.svg'
 
 const DetailMenuPage = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('menu'); 
     const isMain = true;
-    const id = useParams();
+    const { restaurantData, loading, error, fetchRestaurantData } = useRestaurant();
+    const {id} = useParams();
     const baseurl = `/restaurant/detail/${id}`;
     const handleClick = (type) => {
         setActiveTab(type);
@@ -19,23 +22,37 @@ const DetailMenuPage = () => {
             navigate(`${baseurl}/review`);
         } else if (type === 'picture') {
             navigate(`${baseurl}/picture`);
+        } else if (type === 'reviewWrite'){
+            navigate(`/review/${id}`);
         }
     };
     const handleBack = () => {
         navigate(-1);
     }
+    const handleList = () => {
+        navigate(`/restaurant`);
+    }  
     useEffect(() => {
-        handleLoadDetail(id);
-      }, []);
+        if (id) {
+          fetchRestaurantData(id);
+        }
+      }, [id, fetchRestaurantData]);
+    
+      if (loading) return <div>로딩 중...</div>;
+      if (error) return <div>에러가 발생했습니다.</div>;
+      if (!restaurantData) {
+        return <p>로딩 중...</p>
+        };
 
-      const handleLoadDetail = async (id) => {
-        
-      };
     return(
         <div>
-            <Header>
-                        <img src={backIcon} alt="back" onClick={()=>handleBack()} />
-                        <div className='name'>두루정</div>
+            <Header>   
+                <div style={{display:"flex", gap:"8px", alignItems:"center"}}>
+                    <img src={backIcon} alt="back" onClick={()=>handleBack()} />
+                    <div className='name'>{restaurantData.name}</div>
+                </div>
+                    <img onClick={()=>handleList()}src={closeIcon} alt="close" />
+
                     </Header>
                 <Tab>
                     <SubTab onClick={()=>handleClick('home')} $isActive={activeTab === 'home'}>홈</SubTab>
@@ -44,20 +61,31 @@ const DetailMenuPage = () => {
                     <SubTab onClick={()=>handleClick('review')} $isActive={activeTab === 'review'}>리뷰</SubTab>
                 </Tab>
                 <MenuList>
-                        {[1, 2, 3, 4, 5].map((_, index) => (
-                            <MenuCard key={index}>
+                        {restaurantData && restaurantData.menus && restaurantData.menus.map((menu) => (
+                            <MenuCard key={menu.id}>
                             <Profile>
                                 <ProfileImg />
                             </Profile>
                             <MenuContent>
                                 <MenuName>
-                                        <span className="name">메뉴이름</span>
-                                        <span className={isMain ? "badge" : 'private'}>대표</span>
+                                        <span className="name">{menu.name}</span>
+                                        {menu.is_special && <span className={isMain ? "badge" : "private"}>대표</span>}
                                 </MenuName>
-                                <div className='menuprice'>12,000d원</div>
+                                <div className='menuprice'>{menu.price.toLocaleString()}원</div>
                             </MenuContent>
                         </MenuCard>
                         ))}
+                        {(!restaurantData?.menus || restaurantData.menus.length === 0) && (
+                            <div style={{
+                                gridColumn: "1 / -1",
+                                textAlign: "center",
+                                padding: "20px",
+                                color: "rgba(0,0,0,0.5)",
+                                fontSize: "12px"
+                            }}>
+                                등록된 메뉴가 없습니다.
+                            </div>
+                        )}
                     </MenuList>
 
         </div>
@@ -135,6 +163,7 @@ const Header = styled.div`
     padding: 11px 20px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap:8px;
     .name{
     color: rgba(0, 0, 0, 0.99);
