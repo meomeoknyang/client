@@ -4,18 +4,35 @@ import clearIcon from "../../../assets/svg/clear.svg"
 import locationIcon from "../../../assets/svg/location_on.svg"
 import searchIcon from ".././../../assets/svg/search.svg"
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const RestaurantSearchPage = () => {
-    const [view,setView] = useState(null);
+    const navigate = useNavigate();
+    const [view,setView] = useState(false);
     const [searchInput, setSearchInput] = useState('');
     const [recentSearch, setRecentSearch] = useState([]);
+    const [menuList, setMenuList] = useState([]);
+    const [placeList, setPlaceList] = useState([]);
 
-    const handleInputChange = (e) => {
-        setSearchInput(e.target.value);
-        setView(e.target.value.trim() !== '');
+    const handleLoad = (key) => {
+        navigate('/map')
+    }
+    const handleBack = () => {
+        navigate(-1);
+    }
+    const handleInputSearch = (e) => {
+        if (!e.target) return;
+        const value = e.target.value;
+        setSearchInput(value);
+        if (value.trim()) {
+            setView(true);
+            handleRealTimeSearch(value);
+        } else {
+            setView(false);
+        }
     };
 
- 
     const handleKeyDown = (e) => {
         if(e.key === 'Enter' && searchInput.trim() !== '') {
             setRecentSearch((prev) => {
@@ -23,6 +40,7 @@ const RestaurantSearchPage = () => {
                 return [searchInput, ...filtered].slice(0, 5);
             });
             setSearchInput('');
+            setView(false);
         }
     };
 
@@ -30,20 +48,55 @@ const RestaurantSearchPage = () => {
         setRecentSearch(prev => prev.filter(item => item !== term));
     };
 
-    const handleResent = (text) => {
-        setSearchInput(text);
-        setView(true);
+    const handleResent = (term) => {
+        setSearchInput(term);
+        
+        if (term.trim()) {
+            setView(true);
+            handleRealTimeSearch(term);
+        } else {
+            setView(false);
+        }
     }
+
+    const handleRealTimeSearch = async (text) => {
+        try {
+            const response = await axios.get(`https://port-0-server-m3eidei15754d939.sel4.cloudtype.app/search/restaurant/?q=${text}`);
+            const {status, data} = response;
+            if(status === 200){
+                setMenuList(data.data.menus);
+                setPlaceList(data.data.places);
+            } else {
+                console.log("실패")
+            }
+
+        } catch (error) {
+            console.error(error);
+        };
+        
+    };
+
+    const highlightText = (text, searchInput) => {
+        if (!searchInput) return text;
+        
+        const parts = text.split(searchInput);
+        return parts.map((part, i) => (
+            <>
+                {part}
+                {i !== parts.length - 1 && <span style={{ color: '#FF6F00' }}>{searchInput}</span>}
+            </>
+        ));
+    };
 
     return(
         <>
             <Input>
-                <img src={backIcon} alt="" />
+                <img onClick={()=>handleBack()} src={backIcon} alt="" />
                 <input
                     type="text"
                     placeholder="어떤 가게를 찾으세요?"
                     value={searchInput}
-                    onChange={handleInputChange}
+                    onChange={handleInputSearch}
                     onKeyDown={handleKeyDown} />
             </Input>
             <Contents>
@@ -71,30 +124,40 @@ const RestaurantSearchPage = () => {
             </Contents>
             
             {view ? <SearchList>
-                <Search>
-                    <img  src={searchIcon} alt="search" />
-                    <span>삼겹살</span>
-                </Search>
-                <Search>
-                    <img  src={searchIcon} alt="search" />
-                    <span>대패 삼겹살</span>
-                </Search>
-                <div style={{height:"9px", background:"#F0F0F3"}}/>
-                <Location>
-                    <LocMain>
-                        <img src={locationIcon} alt="location" />
-                        <span>91콩삼콩나물삼겹살</span>
-                    </LocMain>
-                    <LocDetail>정문에서 도보 3분 거리</LocDetail>
-                </Location>
-                <Location>
-                    <LocMain>
-                        <img src={locationIcon} alt="location" />
-                        <span>하루삼겹</span>
-                    </LocMain>
-                    <LocDetail>정문에서 도보 3분 거리</LocDetail>
-                </Location>
+                <MenuResult>
+                {
+                    
+                    menuList.length > 0 && menuList.map((value, index) => {
+                        return (
+                        
+                            <Search key={index}>
+                                <img src={searchIcon} alt="search" />
+                                <span onClick={() => handleResent(value.name)}>
+                                    {highlightText(value.name, searchInput)}
+                                </span>
+                            </Search>
+                                                
+                    )})
+                }
+                </MenuResult>
                 
+                <PlacesResult>
+                {
+                    
+                    placeList.length > 0 && placeList.map((value, index) => {
+                        return(
+                            <Location key={index}>
+                                <LocMain>
+                                    <img src={locationIcon} alt="location" />
+                                    <span onClick={() => handleLoad(value.id)}>{highlightText(value.name, searchInput)}</span>
+                                </LocMain>
+                                <LocDetail>정문에서 도보 {value.distance_from_gate}분 거리</LocDetail>
+                            </Location>
+                        
+                        ) 
+                    })
+                }
+                </PlacesResult>   
             </SearchList>: ''}
             
         </>
@@ -103,6 +166,21 @@ const RestaurantSearchPage = () => {
 ;}
 
 export default RestaurantSearchPage;
+
+const MenuResult = styled.div`
+    max-height: 167px;
+    overflow-y: auto;
+    background: #fff;
+    z-index: 1;
+`
+
+const PlacesResult = styled.div`
+    max-height: 240px;
+    overflow-y: auto;
+    background: #fff;
+    z-index: 1;
+    border-top: 9px solid #F0F0F3;
+`
 
 const LocMain = styled.div`
     display:flex;
@@ -170,7 +248,7 @@ const Input = styled.div`
         font-size: 16px;
         font-weight: 500;
         width:100%;
-
+        outline: none;
         border:none;
         display:block;
         
@@ -178,7 +256,7 @@ const Input = styled.div`
 `
 
 const Contents = styled.div`
-    height:100%
+    height:100%;
     display:flex;
     flex-direction:column;
     margin-bottom: 55px;
@@ -207,6 +285,7 @@ const BoxWrapper = styled.div`
 `
 
 const Box = styled.div`
+
     display: inline-flex;
     padding: 8px 16px;
     justify-content: center;
@@ -225,6 +304,8 @@ const Box = styled.div`
     }
 `
 const SearchList = styled.div`
-    position:fixed;
-    top:56px;
+    position: absolute;
+    top: 56px; 
+    width: 375px;
+    
 `

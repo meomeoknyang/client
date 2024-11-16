@@ -2,32 +2,56 @@ import { Container, Detail, Visit } from "../../../styles/components/stamp/Stamp
 import { Main, Breaktime, Price, Distance } from "./DetailContainer";
 import starIcon from "../../../assets/svg/star.svg"
 import stampIcon from "../../../assets/svg/stamp.svg"
-import { useState } from "react";
-const Stamp = () => {
+import nostampIcon from "../../../assets/svg/nostamp.svg"
+import { useNavigate } from "react-router-dom";
+const Stamp = ({ id, name, rating, categories, breakTimes, distance, price, contact, isContacted }) => {
+    const navigate = useNavigate();
+    const categoryNames = categories?.length > 0 ? categories[0].name || '' : '';
+    const displayRating = rating === -1 ? '0' : rating.toFixed(1);
+    const breakTimeText =  breakTimes.length > 0 ? breakTimes[0] : '타임 X';
+    const handleClick = (number) => {
+        navigate(`/restaurant/detail/${number}`)
+    };
+
     return(
-        <Container>
+        <Container onClick={()=>handleClick(id)}>
             <Detail>
-                <div style={{ width:"152px", position:"relative", top:"18px", left:"20.5px"}}>
-                    <div style={{display:"flex", gap:"4px"}}>
-                        <Main text={"가게이름"}/>
-                        <div style={{display: "flex", alignItems:"center"} }>
-                            <img src={starIcon} alt="star" style={{width:"10px", height:"10px"}} />
-                            <span style={{fontSize:"10px", fontWeight:"500"}}>5.0</span>
-                            <span style={{fontSize:"8px", fontWeight:"500", marginLeft:"4px"}}>메뉴</span>
+                <div>
+                    <div style={{
+                        display: "flex",
+                        flexDirection: "column"
+
+                    }}>
+                        <div style={{display:"flex", gap:"4px", alignItems: "center", marginBottom: "20px"}}>
+                            <Main text={name}/>
+                            <div style={{display: "flex", alignItems: "center"}}>
+                                <img src={starIcon} alt="star" style={{width:"10px", height:"10px"}} />
+                                <span style={{fontSize:"10px", fontWeight:"500", color: "white"}}>{displayRating}</span>
+                                <span style={{fontSize:"8px", fontWeight:"500", marginLeft:"4px", color: "white"}}>{categoryNames}</span>
+                            </div>
                         </div>
+                        <div style={{ display:"flex", gap:"4px", flexDirection:"column"}}>
+                            <Breaktime text={breakTimeText} />
+                            <Price text={price}/>
+                            <Distance text={`${distance}분`} />
+                        </div>
+                        
                     </div>
-                    
-                    <div style={{display:"flex", flexDirection:"column",gap:"4px", marginTop:"28px"}}>
-                        <Breaktime text={"15:00 - 17:00"}></Breaktime>
-                        <Price text={"12,000"}></Price>
-                        <Distance text={"3분"}></Distance>
-                    </div>
-                    
                 </div>
             </Detail>
             <Visit>
-                <span className="active">N번째 방문</span>
-                <img src={stampIcon} alt="stamp" />
+                {isContacted ?
+                    <>
+                        <span className="active">{contact}번째 방문</span>
+                        <img src={stampIcon} alt="stamp" />
+                    </> 
+                :
+                    <>
+                        <span>미방문</span>
+                        <img src={nostampIcon} alt="nostamp" />
+                    </> 
+                }
+                
             </Visit>
         </Container>
     );

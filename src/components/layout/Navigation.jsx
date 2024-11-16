@@ -29,9 +29,9 @@ const Navigation = () => {
                 </Menu>
 
                 <Menu
-                    onClick={() => handleClick('stamp/restaurant')}
+                    onClick={() => handleClick('restaurant')}
                     style={{
-                        opacity: currentPath === 'stamp' ? 1 : 0.24
+                        opacity: currentPath === 'restaurant' ? 1 : 0.24
                     }}
                 >
                     <img src={approvalIcon} alt="stamp" />
