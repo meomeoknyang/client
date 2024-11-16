@@ -18,13 +18,13 @@ const Category = ({setBottomSheet, visited, setVisited}) => {
     };
 
     return (
-        <div style={{height:"60px", display:"flex", position:"relative",justifyContent: "center"}}>
+        <div style={{height:"55px", display:"flex", position:"relative",justifyContent: "flex-start", marginLeft:"20px"}}>
             <CgView>
                 <div style={{
                     display: "flex",
-                    gap: "20px"
+                    gap: "8px"
                 }}>
-                    <ChipWrapper width="59px" text = {"방문"} onClick={() => handleVisit('visited')}
+                    <ChipWrapper width="45px" text = {"방문"} onClick={() => handleVisit('visited')}
                         isSelected={visited === 'visited'}
                         />
                     <ChipWrapper width="59px" text = {"미방문"} onClick={() => handleVisit('unvisited')}

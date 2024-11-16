@@ -15,13 +15,20 @@ const Detail = styled.div`
     width: 193px;
     height: 128px;
     border-radius: 5px 0px 0px 5px;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) -20.31%, rgba(0, 0, 0, 0.55) 73.64%),
-                    url(${menu}) lightgray 50% / cover no-repeat;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) -20.31%, rgba(0, 0, 0, 0.55) 73.64%), url(${menu}) lightgray 50% / cover no-repeat;
+    display:flex;
+    & div{
+        width: 152px;
+        margin: auto;
+        position: relative;
+    }
 `
 
 const Visit = styled.div`
     width: 142px;
-
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
     & >span {
         position: relative;
         top: 16px;
@@ -34,7 +41,7 @@ const Visit = styled.div`
     }
     & > img {
         position: relative;
-        left: 65px;
+        left: 25px;
         top: 35px;
 
     }

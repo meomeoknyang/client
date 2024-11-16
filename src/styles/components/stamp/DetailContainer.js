@@ -1,8 +1,10 @@
 import styled from "styled-components";
 
 const Title = styled.div`
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 700;
+    letter-spacing: -0.48px;
+    max-width:101px;
 `
 
 const Information = styled.div`
