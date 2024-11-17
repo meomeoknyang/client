@@ -1,53 +1,61 @@
-import {CgView} from '../../../styles/components/stamp/Category';
 import ChipWrapper from './ChipWrapper';
+import styled from 'styled-components';
 
-const Category = ({setBottomSheet, visited, setVisited}) => {
-    const handleClick = (type) => {
-        setBottomSheet({
-            type:type,
-            isOpen: true
-        });
-        
-    };
-    const handleVisit = (type) => {
-        setVisited(type);
-    };
+const Category = ({ setBottomSheet, visited, setVisited, selectedSorts }) => {
 
+    const searchParams = new URLSearchParams(window.location.search);
+    const selectedCategories = searchParams.getAll('categories');
+
+    const getSortWidth = (sort) => {
+        switch (sort) {
+            case '추천순':
+            case '거리순':
+            case '별점순':
+                return '68px';
+            case '리뷰많은순':
+            case '가격낮은순':
+                return '88px';
+            default:
+                return '68px';
+        }
+    };
     return (
-        <div style={{height:"55px", display:"flex", position:"relative",justifyContent: "flex-start", marginLeft:"20px"}}>
-            <CgView>
-                <div style={{
-                    display: "flex",
-                    gap: "8px"
-                }}>
-                    <ChipWrapper 
-                        width="45px" 
-                        text="방문" 
-                        onClick={() => handleVisit('visited')}
-                        isSelected={visited === 'visited'}
-                    />
-                    <ChipWrapper 
-                        width="59px" 
-                        text="미방문" 
-                        onClick={() => handleVisit('unvisited')}
-                        isSelected={visited === 'unvisited'}
-                    />
-                    <ChipWrapper 
-                        onClick={() => handleClick('sort')} 
-                        width="72px" 
-                        text="추천순"  
-                        icon="drop"
-                    />
-                    <ChipWrapper 
-                        onClick={() => handleClick('category')} 
-                        width="81px" 
-                        text="카테고리" 
-                        icon="drop"
-                    />
-                </div>
-            </CgView>
-        </div>
+        <Container>
+
+            <ChipWrapper
+                text="방문"
+                width="45px"
+                isSelected={visited === 'visited'}
+                onClick={() => setVisited('visited')}
+            />
+            <ChipWrapper
+                text="미방문"
+                width="56px"
+                isSelected={visited === 'unvisited'}
+                onClick={() => setVisited('unvisited')}
+            />
+            <ChipWrapper
+                text={selectedSorts}
+                width={getSortWidth(selectedSorts)}
+                icon="drop"
+                onClick={() => setBottomSheet({ type: 'sort', isOpen: true })}
+                isSelected={selectedSorts !== '추천순'}
+            />
+            <ChipWrapper
+                text="카테고리"
+                width="78px"
+                icon="drop"
+                onClick={() => setBottomSheet({ type: 'category', isOpen: true })}
+                isSelected={selectedCategories.length > 0}
+            />
+        </Container>
     );
 };
+
+const Container = styled.div`
+    display: flex;
+    gap: 8px;
+    margin: 12px 20px;
+`;
 
 export default Category;
