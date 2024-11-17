@@ -50,14 +50,19 @@ const RestaurantSearchPage = () => {
 
     const handleResent = (term) => {
         setSearchInput(term);
-        
+        setSearchInput(term);
         if (term.trim()) {
             setView(true);
             handleRealTimeSearch(term);
+            getMenuList(term);
         } else {
             setView(false);
-        }
-    }
+        }    
+    };
+
+    const getMenuList = (clickmenu) => {
+        navigate(`/restaurant/?menu_name=${clickmenu}`)
+    };
 
     const handleRealTimeSearch = async (text) => {
         try {

@@ -4,12 +4,16 @@ import Category from '../../components/stamp/restaurant/Category';
 import StampList from '../../components/stamp/restaurant/StampList';
 import {FixedContainer, ContentContainer, Title,Search, Header} from '../../styles/pages/StampPage';
 import searchIcon from '../../assets/svg/search.svg?react';
-import { useNavigate} from 'react-router-dom';
+import closeIcon from '../../assets/svg/Close.svg';
+import { useNavigate, useSearchParams} from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import SortBottomSheet from '../../components/stamp/restaurant/bottomsheet/SortBottomSheet';
 import CategoryBottomSheet from '../../components/stamp/restaurant/bottomsheet/CategoryBottomSheet';
+import styled from 'styled-components';
 const ReStampPage = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const [currentSearch, setCurrentSearch] = useState('');
     const [bottomSheet, setBottomSheet] = useState({
         type: null,
         isOpen: false
@@ -28,12 +32,39 @@ const ReStampPage = () => {
     const [data, setData] = useState(null);
 
     useEffect(() => {
-        handleLoadDetail();
-    }, []);
+        const menuName = searchParams.get('menu_name');
+        
+        if (menuName) {
+            setCurrentSearch(menuName);
+            handleLoadMenu(menuName);
+        } else {
+            setCurrentSearch('');
+            handleLoadDetail();
+        }
+    }, [searchParams]);
 
     const handleLoadDetail = async () => {
         try {
             const response = await axios.get('https://port-0-server-m3eidei15754d939.sel4.cloudtype.app/restaurants/');
+            const restaurantsData = response.data.data;
+
+            if (!restaurantsData) {
+                console.error('데이터가 없습니다');
+                setData([]);
+                return;
+            }
+    
+            setData(restaurantsData);
+            console.log(restaurantsData);
+        } catch (error) {
+            console.error(error);
+            setData(null);
+        }
+    };
+
+    const handleLoadMenu = async (menuName) => {
+        try {
+            const response = await axios.get(`https://port-0-server-m3eidei15754d939.sel4.cloudtype.app/restaurants/?menu_name=${menuName}`);
             const restaurantsData = response.data.data;
 
             if (!restaurantsData) {
@@ -78,9 +109,30 @@ const ReStampPage = () => {
     return (
     <>
         <FixedContainer>
-            <Header>
+        <Header>
                 <Title>도장깨기</Title>
-                <Search src={searchIcon} alt='search' onClick={() => navigate('/restaurant/search')}/>
+                {currentSearch && (
+                    <SearchInfo>
+                        <span>{currentSearch}</span>
+                    </SearchInfo>
+                )}
+                {currentSearch ? (
+                    <BackButton 
+                        src={closeIcon} 
+                        alt='back'
+                        onClick={() => {
+                            navigate('/restaurant');
+                            handleLoadDetail();
+                            setCurrentSearch('');
+                        }}
+                    />
+                ) : (
+                    <Search 
+                        src={searchIcon} 
+                        alt='search' 
+                        onClick={() => navigate('/restaurant/search')}
+                    />
+                )}
             </Header>
             <Tap/>
             <Category setBottomSheet={setBottomSheet} visited={visited} setVisited={setVisited} />
@@ -113,3 +165,18 @@ const ReStampPage = () => {
     );
   };
 export default ReStampPage;
+
+const SearchInfo = styled.div`
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    font-size: 14px;
+    color: #333;
+    padding: 2px 10px 2px 80px;
+`;
+const BackButton = styled.img`
+    flex: 0 0 auto;
+    cursor: pointer;
+`;
