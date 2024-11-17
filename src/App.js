@@ -15,6 +15,8 @@ import DetailMenuPage from './pages/stamp/detail/DetailMenuPage.jsx';
 import DetailPicturePage from './pages/stamp/detail/DetailPicturePage.jsx';
 import DetailReviewPage from './pages/stamp/detail/DetailReviewPage.jsx';
 import { RestaurantProvider } from './api/Restaurant.js';
+import SignupPage from './pages/SignupPage';
+import SignupDetailPage from './pages/SignupDetailPage';
 
 
 function App() {
@@ -41,10 +43,19 @@ function App() {
           <Route path="/cafe" >
             <Route index element={<Layout $hasNavigation><CafePage/></Layout>}/>
           </Route>
-
+         
+          <Route path="/random" element={<Layout $hasNavigation> </Layout>}/>
+          <Route path="/mypage" element={<Layout $hasNavigation> </Layout>}/>
+          <Route path="/random" element={<Layout hasNavigation> </Layout>}/>
+          <Route path="/map" element={<Layout $hasNavigation><MapPage /></Layout>} />
+          <Route path="/mypage" element={<Layout hasNavigation> </Layout>}/>
           {/* 네비게이션이 필요 없는 페이지들 */}
+          <Route path="/" element={<Layout></Layout>} />
+          <Route path="/login" element={<Layout><LoginPage /></Layout>} />
+          <Route path="/signup" element={<Layout><SignupPage /></Layout>} />
           <Route path="/review" element={<Layout><ReviewPage /></Layout>} />
           <Route path="/review/complete" element={<Layout><ReviewCompletePage /></Layout>} />
+          <Route path="/signup/detail" element={<Layout><SignupDetailPage /></Layout>} />
         </Routes>
         </RestaurantProvider>
       </Router>
