@@ -50,6 +50,7 @@ import {
   StoreImageGrid,
   StoreImage
 } from '../styles/pages/MapPage';
+import axiosInstance from '../utils/axiosConfig';
 
 // 새로운 RestaurantCard 컴포넌트 생성
 const RestaurantCardComponent = ({ image, name, category, comment, distance, price, reviews }) => (
@@ -170,29 +171,35 @@ const MapPage = () => {
   const [markers, setMarkers] = useState([]);
   const [selectedStore, setSelectedStore] = useState(null);
   const [showStoreInfo, setShowStoreInfo] = useState(false);
+  const [visitedLocations, setVisitedLocations] = useState([]);
+  const [unvisitedLocations, setUnvisitedLocations] = useState([]);
 
-  // 위치 데이터 정의
-  const locationData = {
-    visit: [
-      { lat: 37.2993728, lng: 126.8385143 },
-      { lat: 37.2997033, lng: 126.8383398 }
-    ],
-    notVisit: [
-      { lat: 37.3002292, lng: 126.8385632 },
-      { lat: 37.3002292, lng: 126.8385632 }
-    ],
-    restaurant: [
-      { lat: 37.3004723, lng: 126.8391517 },
-      { lat: 37.3003648, lng: 126.8402343 }
-    ],
-    cafe: [
-      { lat: 37.3008948, lng: 126.8376333 },
-      { lat: 37.3008948, lng: 126.8376333 }
-    ],
-    partnership: [
-      { lat: 37.3008948, lng: 126.8376333 },
-      { lat: 37.3011745, lng: 126.8374041 }
-    ]
+  // 위치 데이터를 가져오는 함수 추가
+  const fetchLocations = async (isVisited) => {
+    try {
+      console.log(`${isVisited ? '방문' : '미방문'} 위치 데이터 요청`);
+      
+      // 레스토랑과 카페 데이터를 동시에 요청
+      const [restaurantResponse, cafeResponse] = await Promise.all([
+        axiosInstance.get(`/restaurants/locations/?visited=${isVisited}`),
+        axiosInstance.get(`/cafes/locations/?visited=${isVisited}`)
+      ]);
+
+      console.log('레스토랑 응답:', restaurantResponse.data);
+      console.log('카페 응답:', cafeResponse);
+      
+      if (restaurantResponse.data.code === 200 && cafeResponse.data.code === 200) {
+        // 레스토랑과 카페 데이터 합치기
+        return [
+          ...restaurantResponse.data.data.map(loc => ({ ...loc, type: 'restaurant' })),
+          ...cafeResponse.data.data.map(loc => ({ ...loc, type: 'cafe' }))
+        ];
+      }
+      return [];
+    } catch (error) {
+      console.error('위치 데이터 가져오기 실패:', error);
+      return [];
+    }
   };
 
   useEffect(() => {
@@ -222,23 +229,31 @@ const MapPage = () => {
     }
   }, []);
 
-  // 마커 생성 함수 수정
-  const createMarkers = (locations) => {
-    // 기존 마커들 제거
+  // createMarkers 함수 수정
+  const createMarkers = async (type) => {
+    // 기존 마커 제거
     markers.forEach(marker => marker.setMap(null));
     
-    // 새로운 마커 생성
+    let locations = [];
+    if (type === 'visit' || type === 'notVisit') {
+      locations = await fetchLocations(type === 'visit');
+      console.log(`${type} 마커 생성할 위치:`, locations);
+    }
+
     const newMarkers = locations.map(loc => {
       const marker = new window.kakao.maps.Marker({
-        position: new window.kakao.maps.LatLng(loc.lat, loc.lng),
+        position: new window.kakao.maps.LatLng(
+          Number(loc.latitude), 
+          Number(loc.longitude)
+        ),
         map: map,
         clickable: true // 마커 클릭 이벤트가 지도 클릭 이벤트를 막도록 설정
       });
 
-      // 마커 클릭 이벤트 등록
+      // 마커 클릭 이벤트
       window.kakao.maps.event.addListener(marker, 'click', () => {
         const storeData = {
-          name: "가게이름",
+          name: loc.name,
           category: "카테고리",
           breakTime: "브레이크 시간",
           distance: "15분",
@@ -259,10 +274,10 @@ const MapPage = () => {
     setMarkers(newMarkers);
   };
 
-  // 필터 버튼 클릭 핸들러
+  // 필터 버튼 클릭 핸들러 수정
   const handleFilterClick = (type) => {
-    if (map && locationData[type]) {
-      createMarkers(locationData[type]);
+    if (map && (type === 'visit' || type === 'notVisit')) {
+      createMarkers(type);
     }
   };
 
