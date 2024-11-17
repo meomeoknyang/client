@@ -18,11 +18,36 @@ const DetailHomePage = () => {
     const {id} = useParams();
     const { restaurantData, loading, error, fetchRestaurantData } = useRestaurant();
     const baseurl = `/restaurant/detail/${id}`;
-    const categoryNames = restaurantData && restaurantData.categories ? restaurantData.categories.map(category => category.name).join(', ') : '';
-    const reviewCount = restaurantData?.comments?.length || 0;
-    const displayRating = restaurantData && restaurantData.average_rating !== undefined ? 
-    (restaurantData.average_rating === -1 ? '0' : restaurantData.average_rating.toFixed(1)) : '0';
-    const breakTimeText =  restaurantData?.break_times?.length > 0 ? restaurantData.break_times[0] : '타임 없음';
+
+    useEffect(() => {
+        if (id) {
+          fetchRestaurantData(id);
+        }
+      }, [id, fetchRestaurantData]);
+    
+      if (loading) return <div>로딩 중...</div>;
+      if (error) return <div>에러가 발생했습니다.</div>;
+      if (!restaurantData || !restaurantData.data) {
+        return <p>로딩 중...</p>
+        };
+    const categoryNames = restaurantData.data && restaurantData.data.categories ? restaurantData.data.categories.map(category => category.name).join(', ') : '';
+    const reviewCount = restaurantData.data?.comments?.length || 0;
+    const displayRating = restaurantData.data && restaurantData.data.average_rating !== undefined ? 
+    (restaurantData.data.average_rating === -1 ? '0' : restaurantData.data.average_rating.toFixed(1)) : '0';
+    const formatBreakTime = (breakTimes) => {
+        if (!breakTimes?.start_time || !breakTimes?.end_time) {
+            return '타임 없음';
+        }
+        try {
+            const startTime = breakTimes.start_time.slice(0, 5);
+            const endTime = breakTimes.end_time.slice(0, 5);
+            return `${startTime} - ${endTime}`;
+        } catch {
+            return '타임 없음';
+        }
+    };
+    
+    const breakTimeText = formatBreakTime(restaurantData.data?.break_times);
     const handleClick = (type) => {
         setActiveTab(type);
         if (type === 'home')  {
@@ -47,27 +72,17 @@ const DetailHomePage = () => {
         navigate(`/restaurant`);
     }  
 
-      useEffect(() => {
-        if (id) {
-          fetchRestaurantData(id);
-        }
-      }, [id, fetchRestaurantData]);
-    
-      if (loading) return <div>로딩 중...</div>;
-      if (error) return <div>에러가 발생했습니다.</div>;
-      if (!restaurantData) {
-        return <p>로딩 중...</p>
-        };
 
-    const reviews = restaurantData.keywords ? restaurantData.keywords : [];
+
+    const reviews = restaurantData.data.keywords ? restaurantData.data.keywords : [];
     const totalCount = reviews.reduce((sum, review) => sum + review.count, 0);
 
       const handleFindWay = () => {
-        if (!restaurantData || !restaurantData.name) {
+        if (!restaurantData.data || !restaurantData.data.name) {
             alert("가게 정보가 없습니다.");
             return;
         }
-        const searchQuery = encodeURIComponent(restaurantData.name);
+        const searchQuery = encodeURIComponent(restaurantData.data.name);
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         
         if (isMobile) {
@@ -91,12 +106,12 @@ const DetailHomePage = () => {
                         <img onClick={()=>handleList()}src={closeIcon} alt="close" />
                     </Header>
                    
-                    <MenuImage src={restaurantData.image_url} alt="mainmenu" />
+                    <MenuImage src={restaurantData.data.image_url} alt="mainmenu" />
                 </ImgContainer>
                 <MenuDetail>
                     <MenuTitle>
                         <SubCategory text={categoryNames}/>
-                            <SubMain text={restaurantData.name}/>
+                            <SubMain text={restaurantData.data.name}/>
                             <RatingWrapper>
                                 <StarIcon src={starIcon} alt="star"/>
                                 <Rating>{displayRating}</Rating>
@@ -109,7 +124,7 @@ const DetailHomePage = () => {
                     </MenuTitle>
                     <InfoWrapper>
                         <InfoItem>
-                            <SubDistance text={restaurantData.distance_from_gate}/>
+                            <SubDistance text={restaurantData.data.distance_from_gate}/>
                             <LocationButton>
                                 <img src={mapIcon} alt="" />
                                 위치
@@ -119,7 +134,7 @@ const DetailHomePage = () => {
                             <SubBreaktime text={breakTimeText}/>
                         </InfoItem>
                         <InfoItem>
-                            <SubPrice text={restaurantData.average_price}/>
+                            <SubPrice text={restaurantData.data.average_price}/>
                         </InfoItem>
                         <div style={{display:'flex',flexDirection:"row", gap:"4px", marginTop:"5px"}}>
                             {/**
@@ -141,10 +156,10 @@ const DetailHomePage = () => {
                 <div style={{borderBottom: "8px solid #F5F5F5"}}>
                     <Menut>
                         <div>메뉴</div>
-                        <span>{restaurantData.menus ? restaurantData.menus.length : 0}</span>
+                        <span>{restaurantData.data.menus ? restaurantData.data.menus.length : 0}</span>
                     </Menut>
                     <MenuContainer>
-                        {restaurantData && restaurantData.menus && restaurantData.menus.slice(0, 4).map((menu) => (
+                        {restaurantData.data && restaurantData.data.menus && restaurantData.data.menus.slice(0, 4).map((menu) => (
                             <MenuItem key={menu.id}>
                                 <MenuImg src={menu.image_url} />
                                 <div style={{display: "flex", flexDirection: "column", gap:"4px"}}>
@@ -153,7 +168,7 @@ const DetailHomePage = () => {
                                 </div>
                             </MenuItem>
                         ))}
-                        {(!restaurantData?.menus || restaurantData.menus.length === 0) && (
+                        {(!restaurantData.data?.menus || restaurantData.data.menus.length === 0) && (
                             <div style={{
                                 gridColumn: "1 / -1",
                                 textAlign: "center",
@@ -178,8 +193,8 @@ const DetailHomePage = () => {
                         <div>사진</div>
                     </Menut>
                     <PickContainer>
-                        {restaurantData && restaurantData.images && restaurantData.images.length > 0 ? (
-                            restaurantData.images.slice(0,9).map((image,index)=>(
+                        {restaurantData.data && restaurantData.data.images && restaurantData.data.images.length > 0 ? (
+                            restaurantData.data.images.slice(0,9).map((image,index)=>(
                                 <img key={index}
                                 src={image.url}
                                 alt={`메뉴 ${index + 1}`}/>
@@ -209,8 +224,8 @@ const DetailHomePage = () => {
                         <p onClick={()=>handleClick('reviewWrite')} $isActive={activeTab === 'reviewWrite'}> <img src={editIcon} alt="" /> 리뷰쓰기</p>
                     </Menut>
                     <Review>
-                    {restaurantData && restaurantData.keywords && restaurantData.keywords.length > 0 ? (
-                            restaurantData.keywords.slice(0,5).map((words,index)=>(
+                    {restaurantData.data && restaurantData.data.keywords && restaurantData.data.keywords.length > 0 ? (
+                            restaurantData.data.keywords.slice(0,5).map((words,index)=>(
                                 <ReviewItem 
                                 key={index} 
                                 $index={index}
@@ -238,8 +253,8 @@ const DetailHomePage = () => {
                     </Review>
                     <End><div className='line'/></End>
                     <ReviewList>
-                        {restaurantData && restaurantData.comments && restaurantData.comments.length > 0 ? (
-                            restaurantData.comments.slice(0,3).map((review, index) => (
+                        {restaurantData.data && restaurantData.data.comments && restaurantData.data.comments.length > 0 ? (
+                            restaurantData.data.comments.slice(0,3).map((review, index) => (
                             <ReviewCard key={index}>
                                 <Profile>
                                     <ProfileImg />

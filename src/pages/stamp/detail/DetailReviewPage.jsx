@@ -39,14 +39,14 @@ const DetailReviewPage = () => {
 
     const getReivew = async(key) => {
         try{
-            const response = await axios.get(`https://port-0-server-m3eidei15754d939.sel4.cloudtype.app/reviews/restaurant/${key}/`)
+            const response = await axios.get(`https://port-0-server-m3eidei15754d939.sel4.cloudtype.app/reviews/place/restaurant/${key}/`)
             if (!response) {
                 console.error('데이터가 없습니다');
                 setReviews([]);
                 return;
             }
-            setReviews(response.data);
-            console.log(response.data);
+            setReviews(response.data.data);
+            console.log(response.data.data);
         }catch(error){
             console.error(error);
             setReviews([]);
@@ -68,14 +68,14 @@ const DetailReviewPage = () => {
 
     
 
-    const keyword = restaurantData.keywords ? restaurantData.keywords : [];
+    const keyword = restaurantData.data.keywords ? restaurantData.data.keywords : [];
     const totalCount = keyword.reduce((sum, keyword) => sum + keyword.count, 0);
     return(
         <div>
             <Header>   
                 <div style={{display:"flex", gap:"8px", alignItems:"center"}}>
                     <img src={backIcon} alt="back" onClick={()=>handleBack()} />
-                    <div className='name'>{restaurantData.name}</div>
+                    <div className='name'>{restaurantData.data.name}</div>
                 </div>
                 <img onClick={()=>handleList()}src={closeIcon} alt="close" />
 
@@ -93,8 +93,8 @@ const DetailReviewPage = () => {
                         <p onClick={()=>handleClick('reviewWrite')} > <img src={editIcon} alt="" /> 리뷰쓰기</p>
                     </Menut>
                     <Review>
-                    {restaurantData && restaurantData.keywords && restaurantData.keywords.length > 0 ? (
-                            restaurantData.keywords.slice(0,5).map((words,index)=>(
+                    {restaurantData.data && restaurantData.data.keywords && restaurantData.data.keywords.length > 0 ? (
+                            restaurantData.data.keywords.slice(0,5).map((words,index)=>(
                                 <ReviewItem 
                                 key={index} 
                                 $index={index}

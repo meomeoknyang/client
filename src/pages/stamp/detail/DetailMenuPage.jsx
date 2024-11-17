@@ -40,7 +40,7 @@ const DetailMenuPage = () => {
     
       if (loading) return <div>로딩 중...</div>;
       if (error) return <div>에러가 발생했습니다.</div>;
-      if (!restaurantData) {
+      if (!restaurantData || !restaurantData.data) {
         return <p>로딩 중...</p>
         };
 
@@ -49,7 +49,7 @@ const DetailMenuPage = () => {
             <Header>   
                 <div style={{display:"flex", gap:"8px", alignItems:"center"}}>
                     <img src={backIcon} alt="back" onClick={()=>handleBack()} />
-                    <div className='name'>{restaurantData.name}</div>
+                    <div className='name'>{restaurantData.data.name}</div>
                 </div>
                     <img onClick={()=>handleList()}src={closeIcon} alt="close" />
 
@@ -61,10 +61,10 @@ const DetailMenuPage = () => {
                     <SubTab onClick={()=>handleClick('review')} $isActive={activeTab === 'review'}>리뷰</SubTab>
                 </Tab>
                 <MenuList>
-                        {restaurantData && restaurantData.menus && restaurantData.menus.map((menu) => (
+                        {restaurantData.data && restaurantData.data.menus && restaurantData.data.menus.map((menu) => (
                             <MenuCard key={menu.id}>
                             <Profile>
-                                <ProfileImg />
+                                <ProfileImg src={menu.image_url}/>
                             </Profile>
                             <MenuContent>
                                 <MenuName>
@@ -75,7 +75,7 @@ const DetailMenuPage = () => {
                             </MenuContent>
                         </MenuCard>
                         ))}
-                        {(!restaurantData?.menus || restaurantData.menus.length === 0) && (
+                        {(!restaurantData.data?.menus || restaurantData.data.menus.length === 0) && (
                             <div style={{
                                 gridColumn: "1 / -1",
                                 textAlign: "center",
@@ -142,8 +142,12 @@ const Profile = styled.div`
 const ProfileImg = styled.div`
     width: 92px;
     height: 92px;
+    aspect-ratio: 1/1;
     border-radius: 10px;
-    background: rgba(0, 0, 0, 0.12);
+    background-color: #F5F5F5;
+    background-image: ${props => props.src ? `url(${props.src})` : 'none'};
+    background-size: cover;
+    background-position: center;
 `;
 
 const MenuContent = styled.div`

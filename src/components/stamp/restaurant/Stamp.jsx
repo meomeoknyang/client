@@ -8,11 +8,33 @@ const Stamp = ({ id, name, rating, categories, breakTimes, distance, price, cont
     const navigate = useNavigate();
     const categoryNames = categories?.length > 0 ? categories[0].name || '' : '';
     const displayRating = rating === -1 ? '0' : rating.toFixed(1);
-    const breakTimeText =  breakTimes.length > 0 ? breakTimes[0] : '타임 X';
     const handleClick = (number) => {
         navigate(`/restaurant/detail/${number}`)
     };
 
+    const formatBreakTime = (breakTimes) => {
+        // breakTimes가 없거나 빈 배열이면 early return
+        if (!breakTimes || !Array.isArray(breakTimes) || breakTimes.length === 0) {
+            return '타임 없음';
+        }
+
+        // 첫 번째 breakTime 객체 가져오기
+        const breakTime = breakTimes[0];
+        
+        // start_time이나 end_time이 없으면 early return
+        if (!breakTime?.start_time || !breakTime?.end_time) {
+            return '타임 없음';
+        }
+
+        // 시간 포맷팅
+        const startTime = breakTime.start_time.slice(0, 5);
+        const endTime = breakTime.end_time.slice(0, 5);
+        
+        return `${startTime} - ${endTime}`;
+    };
+
+
+    
     return(
         <Container onClick={()=>handleClick(id)}>
             <Detail src={mainImg}>
@@ -31,7 +53,7 @@ const Stamp = ({ id, name, rating, categories, breakTimes, distance, price, cont
                             </div>
                         </div>
                         <div style={{ display:"flex", gap:"4px", flexDirection:"column"}}>
-                            <Breaktime text={breakTimeText} />
+                            <Breaktime text={formatBreakTime(breakTimes)} />
                             <Price text={price}/>
                             <Distance text={`${distance}분`} />
                         </div>
