@@ -73,7 +73,7 @@ const SubDistance = ({text}) => {
     return(
         <SubInformation>
             <img style={{marginRight:"8px"}} src={BlocationIcon} alt="" />
-            정문에서 도보 {text} 거리
+            정문에서 도보 {text}분 거리
         </SubInformation>
     );
 };

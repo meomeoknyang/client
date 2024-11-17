@@ -14,7 +14,7 @@ const ContentContainer = styled.div`
     background: #F0F0F3;
     display: flex;
     justify-content: center;
-    margin-top: 143px;
+    margin-top: 138px;
     margin-bottom: 65px;
 
 `;
