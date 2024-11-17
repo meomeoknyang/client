@@ -1,4 +1,3 @@
-import axios from 'axios';
 import Tap from '../../components/stamp/Tap'
 import Category from '../../components/stamp/restaurant/Category';
 import StampList from '../../components/stamp/restaurant/StampList';
@@ -10,11 +9,14 @@ import { useEffect, useState } from 'react';
 import SortBottomSheet from '../../components/stamp/restaurant/bottomsheet/SortBottomSheet';
 import CategoryBottomSheet from '../../components/stamp/restaurant/bottomsheet/CategoryBottomSheet';
 import styled from 'styled-components';
-import axiosInstance from '../../utils/axiosConfig';
+import { useRestaurantData } from '../../utils/api/useRestaurantData';
+import { sortFunctions } from '../../utils/sortUtils';
 
-const ReStampPage = () => {
+const RestaurantPage = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+    const { data, setData, fetchRestaurants, showLoginModal, setShowLoginModal } = useRestaurantData();
+
     const [currentSearch, setCurrentSearch] = useState('');
     const [selectedCategories, setSelectedCategories] = useState(() => 
         searchParams.getAll('categories').map(Number)
@@ -22,36 +24,18 @@ const ReStampPage = () => {
     const [bottomSheet, setBottomSheet] = useState({ type: null, isOpen: false });
     const [visited, setVisited] = useState(false);
     const [selectedSorts, setSelectedSorts] = useState('추천순');
-    const [data, setData] = useState(null);
-    const [showLoginModal, setShowLoginModal] = useState(false);
 
-    const fetchRestaurants = async (params) => {
-        try {
-            const response = await axiosInstance.get(`/restaurants/?${params.toString()}`);
-            if (!response.data.data) {
-                setData([]);
-                return;
-            }
-            setData(response.data.data);
-        } catch (error) {
-            if (error.response?.status === 401) {
-                setShowLoginModal(true);
-            } else {
-                console.error('API 호출 에러:', error);
-            }
-            setData(null);
-        }
-    };
-
-    const createUrlParams = (visitType = visited, categories = selectedCategories) => {
+    const createUrlParams = (menuName = currentSearch, visitType = visited, categories = selectedCategories) => {
         const params = new URLSearchParams();
         
-        if (visitType === 'visited') {
-            params.append('visited', 'true');
-        } else if (visitType === 'unvisited') {
-            params.append('visited', 'false');
+        if (menuName) {
+            params.set('menu_name', menuName);
         }
-
+        if (visitType === 'visited') {
+            params.set('visited', 'true');
+        } else if (visitType === 'unvisited') {
+            params.set('visited', 'false');
+        }
         categories.forEach(category => {
             params.append('categories', category);
         });
@@ -62,15 +46,25 @@ const ReStampPage = () => {
     const handleVisitFilter = async (type) => {
         if (visited === type) {
             setVisited(false);
-            navigate('/restaurant');
-            fetchRestaurants(new URLSearchParams());
+            const params = createUrlParams(currentSearch, false, selectedCategories);
+            navigate(`/restaurant/?${params.toString()}`);
+            const newData = await fetchRestaurants(params);
+            setData(sortFunctions[selectedSorts](newData));
             return;
         }
 
-        const params = createUrlParams(type);
-        navigate(`/restaurant?${params.toString()}`);
-        await fetchRestaurants(params);
+        const params = createUrlParams(currentSearch, type, selectedCategories);
+        navigate(`/restaurant/?${params.toString()}`);
+        const newData = await fetchRestaurants(params);
+        setData(sortFunctions[selectedSorts](newData));
         setVisited(type);
+    };
+
+    const handleSortChange = (newSort) => {
+        setSelectedSorts(newSort);
+        if (data) {
+            setData(sortFunctions[newSort](data));
+        }
     };
 
     const handleCategorySelect = async (categoryId, isSelected) => {
@@ -79,58 +73,62 @@ const ReStampPage = () => {
             : selectedCategories.filter(id => id !== categoryId);
         
         setSelectedCategories(newCategories);
-        const params = createUrlParams(visited, newCategories);
-        navigate(`/restaurant?${params.toString()}`);
-        await fetchRestaurants(params);
+        const params = createUrlParams(currentSearch, visited, newCategories);
+        navigate(`/restaurant/?${params.toString()}`);
+        const newData = await fetchRestaurants(params);
+        setData(sortFunctions[selectedSorts](newData));
     };
 
-    const handleLoadMenu = async (menuName) => {
-        try {
-            const response = await axiosInstance.get(`/restaurants/?menu_name=${menuName}`);
-            if (!response.data.data) {
-                setData([]);
-                return;
-            }
-            setData(response.data.data);
-            setCurrentSearch(menuName);
-        } catch (error) {
-            console.error(error);
-            setData(null);
-        }
-    };
+
+
+
 
     const handleResetSearch = async () => {
-        navigate('/restaurant');
+        const params = createUrlParams('', visited, selectedCategories);
+        navigate(`/restaurant/?${params.toString()}`);
         setCurrentSearch('');
-        fetchRestaurants(new URLSearchParams());
+        const newData = await fetchRestaurants(params);
+        setData(sortFunctions[selectedSorts](newData));
     };
 
     useEffect(() => {
-        const currentPath = window.location.pathname;
-        if (currentPath === '/restaurants') {
+        if (window.location.pathname === '/restaurants') {
             navigate('/restaurant', { replace: true });
         }
     }, [navigate]);
 
     useEffect(() => {
-        const categories = searchParams.getAll('categories');
-        const menuName = searchParams.get('menu_name');
-        
-        if (menuName) {
-            handleLoadMenu(menuName);
-        } else if (categories.length > 0) {
-            const categoryIds = categories.map(Number);
-            setSelectedCategories(categoryIds);
-            fetchRestaurants(createUrlParams(visited, categoryIds));
-        } else {
-            fetchRestaurants(new URLSearchParams());
-        }
+        const initializeData = async () => {
+            const params = new URLSearchParams(window.location.search);
+            
+            const menuName = params.get('menu_name');
+            if (menuName) {
+                setCurrentSearch(menuName);
+            }
+    
+            const visitedParam = params.get('visited');
+            if (visitedParam === 'true') {
+                setVisited('visited');
+            } else if (visitedParam === 'false') {
+                setVisited('unvisited');
+            }
+    
+            const categories = params.getAll('categories');
+            if (categories.length > 0) {
+                setSelectedCategories(categories.map(Number));
+            }
+    
+            // 모든 파라미터가 설정된 후 한 번만 데이터 fetch
+            const newData = await fetchRestaurants(params);
+            setData(sortFunctions[selectedSorts](newData));
+        };
+    
+        initializeData();
     }, []);
-
     return (
         <>
             <FixedContainer>
-                <Header>
+            <Header>
                     <Title>도장깨기</Title>
                     {currentSearch && (
                         <SearchInfo>
@@ -153,30 +151,31 @@ const ReStampPage = () => {
                 </Header>
                 <Tap/>
                 <Category 
-                    setBottomSheet={setBottomSheet} 
-                    visited={visited} 
+                    setBottomSheet={setBottomSheet}
+                    visited={visited}
                     setVisited={handleVisitFilter}
+                    selectedSorts={selectedSorts}
                 />
             </FixedContainer>
 
             <ContentContainer>
-                <div style={{background:"#F0F0F3", display:"flex", justifyContent:"center"}}>
+                <div className="bg-[#F0F0F3] flex justify-center">
                     <StampList restaurants={data} visited={visited} />
                 </div>
             </ContentContainer>
 
             <SortBottomSheet 
-                open={bottomSheet.isOpen && bottomSheet.type === 'sort'} 
+                open={bottomSheet.isOpen && bottomSheet.type === 'sort'}
                 setOpen={() => setBottomSheet({type: null, isOpen: false})}
                 selectedSorts={selectedSorts}
-                setSelectedSorts={setSelectedSorts}
+                setSelectedSorts={handleSortChange}
             />
 
             <CategoryBottomSheet 
-                open={bottomSheet.isOpen && bottomSheet.type === 'category'} 
+                open={bottomSheet.isOpen && bottomSheet.type === 'category'}
                 setOpen={() => setBottomSheet({type: null, isOpen: false})}
                 selectedCategories={selectedCategories}
-                onCategorySelect={handleCategorySelect} 
+                onCategorySelect={handleCategorySelect}
             />
 
             {showLoginModal && (
@@ -192,6 +191,8 @@ const ReStampPage = () => {
     );
 };
 
+export default RestaurantPage;
+
 const LoginModal = ({ onConfirm, onCancel }) => (
     <ModalOverlay>
         <Modal>
@@ -205,10 +206,6 @@ const LoginModal = ({ onConfirm, onCancel }) => (
         </Modal>
     </ModalOverlay>
 );
-
-
-
-export default ReStampPage;
 
 const ModalOverlay = styled.div`
     position: fixed;
@@ -274,7 +271,7 @@ const SearchInfo = styled.div`
     gap: 8px;
     font-size: 14px;
     color: #333;
-    padding: 2px 10px 2px 80px;
+    padding: 1px 10px 2px 80px;
 `;
 
 const BackButton = styled.img`
