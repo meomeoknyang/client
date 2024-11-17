@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import backIcon from '../../../assets/svg/back.svg'
-import { useRestaurant } from '../../../api/Restaurant';
+import { useRestaurant } from '../../../utils/api/Restaurant';
 import closeIcon from '../../../assets/svg/Close.svg'
 
 const DetailMenuPage = () => {
@@ -23,7 +23,7 @@ const DetailMenuPage = () => {
         } else if (type === 'picture') {
             navigate(`${baseurl}/picture`);
         } else if (type === 'reviewWrite'){
-            navigate(`/review/${id}`);
+            navigate(`/restaurant/review/${id}`);
         }
     };
     const handleBack = () => {
