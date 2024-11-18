@@ -12,7 +12,7 @@ import logotextIcon from '../../../assets/logotext.png'
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-const DetailHomePage = () => {
+const CafeDetailHomePage = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('home'); 
     const [restaurantData, setRestaurantData] = useState(null);
@@ -22,13 +22,13 @@ const DetailHomePage = () => {
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const baseURL = process.env.REACT_APP_API_URL;
-    const detailurl = `/restaurant/detail/${id}`;
+    const detailurl = `/cafes/detail/${id}`;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`${baseURL}/restaurants/${id}/`);
+                const response = await axios.get(`${baseURL}/cafes/${id}/`);
                 setRestaurantData(response.data.data);
             } catch (err) {
                 setError(err);
@@ -96,7 +96,7 @@ const DetailHomePage = () => {
         } else if (type === 'picture') {
             navigate(`${detailurl}/picture`);
         } else if (type === 'reviewWrite'){
-            navigate(`/restaurant/review/${id}`);
+            navigate(`/cafes/review/${id}`);
         }
     };
 
@@ -104,7 +104,7 @@ const DetailHomePage = () => {
         navigate(-1);
     }  
     const handleList = () => {
-        navigate(`/restaurant`);
+        navigate(`/cafes`);
     }  
 
       const handleFindWay = () => {
@@ -134,13 +134,13 @@ const DetailHomePage = () => {
         }
 
         try {
-            const response = await axios.get(`${baseURL}/restaurants/${placeId}/location/`);
+            const response = await axios.get(`${baseURL}/cafes/${placeId}/location/`);
             if (response.data.code === 200) {
                 const locationData = response.data.data;
                 navigate('/map', {
                     state: {
                         placeId,
-                        type: 'restaurant',
+                        type: 'cafes',
                         latitude: locationData.latitude,
                         longitude: locationData.longitude
                     }
@@ -422,7 +422,7 @@ const DetailHomePage = () => {
 
 
 
-export default DetailHomePage;
+export default CafeDetailHomePage;
 
 
 
@@ -687,6 +687,7 @@ const MenuImg = styled.div`
     background-image: ${props => props.src ? `url(${props.src})` : 'none'};
     background-size: cover;
     background-position: center;
+    
 `;
 
 const MenuContainer = styled.div`

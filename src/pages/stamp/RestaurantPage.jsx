@@ -19,9 +19,7 @@ const RestaurantPage = () => {
     const [showLoginModal, setShowLoginModal] = useState(false);
 
     const [currentSearch, setCurrentSearch] = useState('');
-    const [selectedCategories, setSelectedCategories] = useState(() => 
-        searchParams.getAll('categories').map(Number)
-    );
+    const [selectedCategories, setSelectedCategories] = useState([]);
     const [bottomSheet, setBottomSheet] = useState({ type: null, isOpen: false });
     const [visited, setVisited] = useState(false);
     const [selectedSorts, setSelectedSorts] = useState('추천순');
@@ -115,31 +113,34 @@ const RestaurantPage = () => {
 
     useEffect(() => {
         const initializeData = async () => {
-            const params = new URLSearchParams(window.location.search);
-            
-            const menuName = params.get('menu_name');
+            const menuName = searchParams.get('menu_name');
             if (menuName) {
                 setCurrentSearch(menuName);
+            } else {
+                setCurrentSearch('');
             }
     
-            const visitedParam = params.get('visited');
+            const visitedParam = searchParams.get('visited');
             if (visitedParam === 'true') {
                 setVisited('visited');
             } else if (visitedParam === 'false') {
                 setVisited('unvisited');
+            } else {
+                setVisited(false);
             }
     
-            const categories = params.getAll('categories');
+            const categories = searchParams.getAll('categories');
             if (categories.length > 0) {
                 setSelectedCategories(categories.map(Number));
+            } else {
+                setSelectedCategories([]);
             }
-    
-            const newData = await fetchRestaurants(params);
+            const newData = await fetchRestaurants(searchParams);
             setData(sortFunctions[selectedSorts](newData));
         };
     
         initializeData();
-    }, []);
+    }, [searchParams]);
 
     return (
         <>

@@ -6,7 +6,7 @@ import searchIcon from ".././../../assets/svg/search.svg"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-const RestaurantSearchPage = () => {
+const CafeSearchPage = () => {
     const baseURL = process.env.REACT_APP_API_URL;
     const navigate = useNavigate();
     const [view,setView] = useState(false);
@@ -25,14 +25,14 @@ const RestaurantSearchPage = () => {
         }
         addToRecentSearch(name);
         try {
-            const response = await axios.get(`${baseURL}/restaurants/${placeId}/location/`);
+            const response = await axios.get(`${baseURL}/cafes/${placeId}/location/`);
             
             if (response.data.code === 200) {
                 const locationData = response.data.data;
                 navigate('/map', {
                     state: {
                         placeId: placeId,
-                        type: 'restaurant',
+                        type: 'cafe',
                         latitude: locationData.latitude,
                         longitude: locationData.longitude
                     }
@@ -103,13 +103,13 @@ const RestaurantSearchPage = () => {
         setSearchInput('');
         setView(false);
         
-        navigate(`/restaurant/?menu_name=${menuName}`);
+        navigate(`/cafes/?menu_name=${menuName}`);
     };
 
 
     const handleRealTimeSearch = async (text) => {
         try {
-            const response = await axios.get(`${baseURL}/search/restaurant/?q=${text}`);
+            const response = await axios.get(`${baseURL}/search/cafe/?q=${text}`);
             if(response.status === 200){
                 setMenuList(response.data.data.menus);
                 setPlaceList(response.data.data.places);
@@ -209,7 +209,7 @@ const RestaurantSearchPage = () => {
 
 ;}
 
-export default RestaurantSearchPage;
+export default CafeSearchPage;
 
 const MenuResult = styled.div`
     max-height: 167px;
