@@ -19,9 +19,12 @@ import {
   EmailInputWrapper,
   EmailInput,
   EmailDomain,
+  LoadingOverlay,
+  LoadingImage,
 } from '../styles/pages/Loginpage';
 import axiosInstance from '../utils/axiosConfig';
 import { setTokens } from '../utils/tokenUtils';
+import Loading from '../assets/Login/Loading.gif';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -29,8 +32,10 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
+    setIsLoading(true);
     try {
       const requestData = {
         user_id: userId,
@@ -47,6 +52,8 @@ const LoginPage = () => {
       }
     } catch (error) {
       setError(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -97,6 +104,11 @@ const LoginPage = () => {
         <SignupText>아직 회원이 아니세요?</SignupText>
         <SignupLink onClick={() => navigate('/signup')}>회원가입 하기</SignupLink>
       </SignupWrapper>
+      {isLoading && (
+        <LoadingOverlay>
+          <LoadingImage src={Loading} alt="로딩중" />
+        </LoadingOverlay>
+      )}
     </LoginContainer>
   );
 };

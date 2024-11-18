@@ -4,6 +4,7 @@ import axios from 'axios';
 import BackArrow from '../assets/Login/BackArrow.svg';
 import BackClose from '../assets/Login/BackClose.svg';
 import LoginError from '../assets/Login/LoginError.svg';
+import Loading from '../assets/Login/Loading.gif';
 import * as S from '../styles/pages/SignupDetailPage';
 
 const SignupDetailPage = () => {
@@ -36,7 +37,7 @@ const SignupDetailPage = () => {
   const [emailPrefix, setEmailPrefix] = useState('');
   const emailDomain = '@hanyang.ac.kr';
 
-  const [successMessage, setSuccessMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -71,6 +72,7 @@ const SignupDetailPage = () => {
   };
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     try {
       const department = selectedDepts.join(',');
       const emailWithDomain = formData.email + '@hanyang.ac.kr';
@@ -94,10 +96,10 @@ const SignupDetailPage = () => {
         return;
       }
 
-    //   console.log('Sending request to backend:', {
-    //     url: `${process.env.REACT_APP_API_URL}/users/register/`,
-    //     data: requestData
-    //   });
+      // console.log('Sending request to backend:', {
+      //   url: `${process.env.REACT_APP_API_URL}/users/register/`,
+      //   data: requestData
+      // });
       
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/users/register/`,
@@ -105,19 +107,17 @@ const SignupDetailPage = () => {
       );
 
       if (response.data.code === 201) {
-        setSuccessMessage('회원가입이 성공적으로 완료되었습니다.');
-        setTimeout(() => {
-          navigate('/login');
-        }, 500);
+        navigate('/login');
       }
     } catch (error) {
-      console.error('Error response:', error.response);
+      // console.error('Error response:', error.response);
       const errorData = error.response?.data?.data;
       
       if (errorData) {
         setFormErrors(prev => ({
           ...prev,
           email: '',
+          password: '',
           nickname: ''
         }));
         setError('');
@@ -134,6 +134,20 @@ const SignupDetailPage = () => {
             email: errorData.email[0]
           }));
         }
+        if (errorData.password) {
+          const passwordError = errorData.password[0];
+          if (passwordError === "비밀번호가 너무 일상적인 단어입니다.") {
+            setFormErrors(prev => ({
+              ...prev,
+              password: "비밀번호가 너무 일상적인 단어입니다. 특수문자를 붙여주세요."
+            }));
+          } else {
+            setFormErrors(prev => ({
+              ...prev,
+              password: errorData.password[0]
+            }));
+          }
+        }
         if (errorData.nickname) {
           setError('nickname');
           setFormErrors(prev => ({
@@ -143,6 +157,8 @@ const SignupDetailPage = () => {
         }
         
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -230,12 +246,6 @@ const SignupDetailPage = () => {
         )}
       </S.InputWrapper>
 
-      {successMessage && (
-        <S.SuccessMessage>
-          <span>{successMessage}</span>
-        </S.SuccessMessage>
-      )}
-
       <S.ButtonContainer>
         <S.CompleteButton 
           onClick={handleSubmit}
@@ -244,6 +254,11 @@ const SignupDetailPage = () => {
           완료
         </S.CompleteButton>
       </S.ButtonContainer>
+      {isLoading && (
+        <S.LoadingOverlay>
+          <S.LoadingImage src={Loading} alt="로딩중" />
+        </S.LoadingOverlay>
+      )}
     </S.SignupContainer>
   );
 };
