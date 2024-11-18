@@ -41,7 +41,7 @@ const LoginPage = () => {
 
       if (response.data.code === 200) {
         setTokens(response.data.data.access, response.data.data.refresh);
-        navigate('/');
+        navigate('/restaurant');
       } else {
         setError(true);
       }

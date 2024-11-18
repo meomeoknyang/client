@@ -111,7 +111,7 @@ const SignupDetailPage = () => {
         }, 500);
       }
     } catch (error) {
-    //   console.error('Error response:', error.response);
+      console.error('Error response:', error.response);
       const errorData = error.response?.data?.data;
       
       if (errorData) {
@@ -141,6 +141,7 @@ const SignupDetailPage = () => {
             nickname: errorData.nickname[0]
           }));
         }
+        
       }
     }
   };
