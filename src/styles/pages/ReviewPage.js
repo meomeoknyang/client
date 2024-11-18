@@ -44,7 +44,7 @@ export const RestaurantInfo = styled.div`
 export const Section = styled.div`
   background: white;
   border-radius: 0.625rem;
-  padding: 1.75rem 1.438rem;
+  padding: 1.69rem 1.44rem;
   margin-bottom: 1.25rem;
   box-shadow: 0 0 0.625rem 0.625rem rgba(0, 0, 0, 0.02);
 `;
@@ -253,4 +253,35 @@ export const ReviewTitle = styled.div`
     line-height: normal;
     letter-spacing: -0.0225rem;
   }
+`;
+
+export const StarContainer = styled.div`
+  display: flex;
+  gap: 0rem;
+  margin-top: 1.25rem;
+  margin-bottom: 0.06rem;
+`;
+
+export const StarImage = styled.img`
+  width: 3rem;
+  height: 3rem;
+  cursor: pointer;
+`;
+
+export const LoadingOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+export const LoadingImage = styled.img`
+  width: 9.375rem;
+  height: 9.375rem;
 `;
