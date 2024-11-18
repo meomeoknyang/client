@@ -24,12 +24,12 @@ function App() {
     <>
       <GlobalStyle />
       <Router>
-        <RestaurantProvider>
-          <Routes>
-            {/* 예시 네비게이션이 필요한 페이지들 */}
-            <Route path="/map" element={<Layout hasNavigation><MapPage/></Layout>}/>
-            <Route path="/mypage" element={<Layout hasNavigation> <MyPage/> </Layout>}/>
-            <Route path="/home" element={<Layout $hasNavigation><LoginPage /></Layout>} />
+      <RestaurantProvider>
+        <Routes>
+          {/* 예시 네비게이션이 필요한 페이지들 */}
+          <Route path="/map" element={<Layout $hasNavigation><MapPage/></Layout>}/>
+          <Route path="/mypage" element={<Layout hasNavigation> <MyPage/> </Layout>}/>
+          <Route path="/home" element={<Layout $hasNavigation><LoginPage /></Layout>} />
 
             <Route path="/restaurant">
                 <Route index element={<Layout $hasNavigation><RestaurantPage /></Layout>} />
