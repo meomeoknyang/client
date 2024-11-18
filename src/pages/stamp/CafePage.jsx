@@ -16,7 +16,7 @@ const RestaurantPage = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const [data, setData] = useState(null);
-    const [showLoginModal, setShowLoginModal] = useState(false);
+    const [showLoginModal, setShowLoginModal] = useState(null);
 
     const [currentSearch, setCurrentSearch] = useState('');
     const [selectedCategories, setSelectedCategories] = useState([]);
@@ -26,7 +26,9 @@ const RestaurantPage = () => {
 
     const fetchRestaurants = async (params) => {
         try {
+            console.log('API 요청 URL:', `/cafes/?${params.toString()}`);
             const response = await axiosInstance.get(`/cafes/?${params.toString()}`);
+            console.log('API 응답 데이터:', response.data);
             if (!response.data.data) {
                 setData([]);
                 return [];
@@ -57,26 +59,27 @@ const RestaurantPage = () => {
         categories.forEach(category => {
             params.append('categories', category);
         });
-
+    
         return params;
     };
 
     const handleVisitFilter = async (type) => {
         if (visited === type) {
-            setVisited(false);
-            const params = createUrlParams(currentSearch, false, selectedCategories);
+            setVisited(null);
+            const params = createUrlParams(currentSearch, null, selectedCategories);
             navigate(`/cafes/?${params.toString()}`);
             const newData = await fetchRestaurants(params);
             setData(sortFunctions[selectedSorts](newData));
             return;
         }
-
+    
+        setVisited(type);
         const params = createUrlParams(currentSearch, type, selectedCategories);
         navigate(`/cafes/?${params.toString()}`);
         const newData = await fetchRestaurants(params);
         setData(sortFunctions[selectedSorts](newData));
-        setVisited(type);
     };
+
 
     const handleSortChange = (newSort) => {
         setSelectedSorts(newSort);
@@ -136,11 +139,7 @@ const RestaurantPage = () => {
                 setSelectedCategories([]);
             }
             const newData = await fetchRestaurants(searchParams);
-            if (newData) {
-                setData(sortFunctions[selectedSorts](newData));
-            } else {
-                setData([]);
-            }
+            setData(sortFunctions[selectedSorts](newData));
         };
     
         initializeData();
@@ -174,7 +173,7 @@ const RestaurantPage = () => {
                 <Category 
                     setBottomSheet={setBottomSheet}
                     visited={visited}
-                    onVisitedChange={handleVisitFilter}  
+                    setVisited={handleVisitFilter}  
                     selectedSorts={selectedSorts}
                 />
             </FixedContainer>

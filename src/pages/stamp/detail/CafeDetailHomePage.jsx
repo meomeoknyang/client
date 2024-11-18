@@ -295,7 +295,7 @@ const CafeDetailHomePage = () => {
                 <div>
                     <Menut>
                         <div>학생들의 리얼한 리뷰</div>
-                        <p onClick={()=>handleClick('reviewWrite')} $isActive={activeTab === 'reviewWrite'}> <img src={editIcon} alt="" /> 리뷰쓰기</p>
+                        <p onClick={()=>handleReviewWrite()} $isActive={activeTab === 'reviewWrite'}> <img src={editIcon} alt="" /> 리뷰쓰기</p>
                     </Menut>
                     <Review>
                     {keywords && keywords.length > 0 ? (
@@ -411,7 +411,7 @@ const CafeDetailHomePage = () => {
                             border: "none",
                             fontWeight: "700"
                         }}
-                        onClick={handleReviewWrite}>
+                        onClick={()=>handleReviewWrite()}>
                         도장깨기
                     </button>
                 </div>

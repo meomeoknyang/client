@@ -16,6 +16,8 @@ const DetailReviewPage = () => {
     const [restaurantData, setRestaurantData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const baseURL = process.env.REACT_APP_API_URL;
     const detailurl = `/restaurant/detail/${id}`;
     const handleClick = (type) => {
@@ -78,9 +80,18 @@ const DetailReviewPage = () => {
 
       if (!restaurantData) return <p>로딩 중...</p>;
     
-
+      const handleReviewWrite = () => {
+        if (!isLoggedIn) {
+            setShowLoginModal(true);
+            return;
+        }
+        handleClick('reviewWrite');
+    };
     
-
+    const handleModalClose = () => {
+        setShowLoginModal(false);
+    };
+    
     const { name, keywords } = restaurantData;
     const totalCount = keywords ? keywords.reduce((sum, keyword) => sum + keyword.count, 0) : 0;
     return(
@@ -103,7 +114,7 @@ const DetailReviewPage = () => {
             <div>
                     <Menut>
                         <div >학생들의 리얼한 리뷰</div>
-                        <p onClick={()=>handleClick('reviewWrite')} > <img src={editIcon} alt="" /> 리뷰쓰기</p>
+                        <p onClick={()=>handleReviewWrite()} > <img src={editIcon} alt="" /> 리뷰쓰기</p>
                     </Menut>
                     <Review>
                     {keywords && keywords.length > 0 ? (
@@ -178,7 +189,14 @@ const DetailReviewPage = () => {
                     </TopMenu>
                     <Logo><img src={logotextIcon} alt="" /></Logo>
                 </Footer>
-
+            {showLoginModal && (
+                <LoginModal 
+                    onConfirm={() => {
+                        navigate('/login');
+                    }}
+                    onCancel={handleModalClose}
+                />
+            )}
                 
         </div>
          
@@ -187,6 +205,75 @@ const DetailReviewPage = () => {
 
 export default DetailReviewPage;
 
+const LoginModal = ({ onConfirm, onCancel }) => (
+    <ModalOverlay>
+        <Modal>
+            <ModalContent>
+                <div>로그인이 필요한 서비스입니다.</div>
+                <ModalButtons>
+                    <button onClick={onConfirm}>확인</button>
+                    <button onClick={onCancel}>취소</button>
+                </ModalButtons>
+            </ModalContent>
+        </Modal>
+    </ModalOverlay>
+);
+
+const ModalOverlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+`;
+
+const Modal = styled.div`
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    width: 80%;
+    max-width: 320px;
+`;
+
+const ModalContent = styled.div`
+    text-align: center;
+    
+    & > div:first-child {
+        margin-bottom: 20px;
+        font-size: 16px;
+        font-weight: 500;
+    }
+`;
+
+const ModalButtons = styled.div`
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+
+    button {
+        padding: 8px 24px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+
+        &:first-child {
+            background-color: #FF6F00;
+            color: white;
+        }
+
+        &:last-child {
+            background-color: #F5F5F5;
+            color: #666;
+        }
+    }
+`;
 
 const Footer = styled.div`
     height: 111px;

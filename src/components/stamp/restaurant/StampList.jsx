@@ -12,7 +12,6 @@ const StampList = ( {restaurants, visited} ) => {
         }
         return <div style={{fontSize:"12px", padding:"20px"}}>~ 식당을 불러오는 중 ~</div>;
     }
-    console.log('restaurants:', restaurants);
     return (
         <div style={{display:"flex", flexDirection:"column", alignItmes:"center", paddingTop:"14px"}}>
             {restaurants && restaurants.map((restaurant) => (

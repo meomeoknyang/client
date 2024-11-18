@@ -13,7 +13,7 @@ const StampList = ({ restaurants, visited }) => {
         }
         return <div style={{fontSize:"12px", padding:"20px"}}>해당하는 카페가 없습니다</div>;
     }
-
+    console.log(restaurants)
     return (
         <div style={{display:"flex", flexDirection:"column", alignItmes:"center", paddingTop:"14px"}}>
             {restaurants.map((restaurant) => (

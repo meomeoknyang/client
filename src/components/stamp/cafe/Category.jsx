@@ -1,7 +1,7 @@
 import ChipWrapper from './ChipWrapper';
 import styled from 'styled-components';
 
-const Category = ({ setBottomSheet, visited, onVisitedChange, selectedSorts }) => {
+const Category = ({ setBottomSheet, visited, setVisited, selectedSorts }) => {
 
     const searchParams = new URLSearchParams(window.location.search);
     const selectedCategories = searchParams.getAll('categories');
@@ -23,17 +23,18 @@ const Category = ({ setBottomSheet, visited, onVisitedChange, selectedSorts }) =
 
     return (
         <Container>
+
             <ChipWrapper
                 text="방문"
                 width="45px"
                 isSelected={visited === 'visited'}
-                onClick={() => onVisitedChange('visited')}
+                onClick={() => setVisited('visited')}
             />
             <ChipWrapper
                 text="미방문"
                 width="56px"
                 isSelected={visited === 'unvisited'}
-                onClick={() => onVisitedChange('unvisited')}
+                onClick={() => setVisited('unvisited')}
             />
             <ChipWrapper
                 text={selectedSorts}
