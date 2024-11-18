@@ -135,7 +135,10 @@ const StoreInfo = ({ store }) => (
           {store.name}
           <Category>{store.category}</Category>
         </RestaurantName>
-        <BestComment>{store.breakTime}</BestComment>
+        <BestComment>
+          <span className="label">{store.breakTimeLabel}</span>
+          <span className="value">{store.breakTimeValue}</span>
+        </BestComment>
         <MetaInfo>
           <span className="label">정문에서 </span>
           <span className="value">{store.distance}</span>
@@ -143,8 +146,8 @@ const StoreInfo = ({ store }) => (
           <span className="label">평균 </span>
           <span className="value">{store.price}</span>
           <Divider />
-          <span className="label">리뷰 </span>
-          <span className="value">{store.reviews}개</span>
+          <span className="label">방문자 수 </span>
+          <span className="value">{store.reviews}명</span>
         </MetaInfo>
       </RestaurantInfo>
     </RestaurantCard>
@@ -155,6 +158,61 @@ const StoreInfo = ({ store }) => (
     </StoreImageGrid>
   </div>
 );
+
+// 상세 정보를 가져오는 함수 수정
+const fetchStoreDetail = async (placeId, type) => {
+  try {
+    const endpoint = type === 'cafe' ? 'cafes' : 'restaurants';
+    console.log(`${endpoint}/${placeId} 상세 정보 요청`);
+    
+    const response = await axiosInstance.get(`/${endpoint}/${placeId}/`);
+    console.log('상세 정보 응답:', response.data);
+    
+    if (response.data.code === 200) {
+      const data = response.data.data;
+      
+      // 카테고리 문자열 생성
+      const categories = data.categories?.map(cat => cat.name).join(', ') || '-';
+      
+      // 브레이크 타임 포맷팅 수정
+      const breakTimeLabel = '브레이크';
+      const breakTimeValue = data.break_times?.length > 0 
+        ? data.break_times.map(time => 
+            `${time.start_time.slice(0, 5)}-${time.end_time.slice(0, 5)}`
+          ).join(', ')
+        : '없음';
+      
+      // 거리 포맷팅
+      const distance = `${Math.floor(data.distance_from_gate)}분`;
+      
+      // 가격 포맷팅
+      const price = data.average_price 
+        ? data.average_price.toLocaleString() + '원'
+        : '-';
+      
+      // 이미지 배열 생성 (null/undefined인 경우 빈 문자열 할당)
+      const images = [
+        data.image_url || '',
+        ...(data.menus?.slice(0, 2).map(menu => menu.image_url || '') || ['', ''])
+      ];
+      
+      return {
+        name: data.name,
+        category: categories,
+        breakTimeLabel: breakTimeLabel,  // 라벨과 값을 분리
+        breakTimeValue: breakTimeValue,
+        distance: distance,
+        price: price,
+        reviews: data.visit_count?.toString() || '0',
+        images: images
+      };
+    }
+    return null;
+  } catch (error) {
+    console.error('상세 정보 가져오기 실패:', error);
+    return null;
+  }
+};
 
 const MapPage = () => {
   const [position, setPosition] = useState('middle');
@@ -174,26 +232,47 @@ const MapPage = () => {
   const [visitedLocations, setVisitedLocations] = useState([]);
   const [unvisitedLocations, setUnvisitedLocations] = useState([]);
 
-  // 위치 데이터를 가져오는 함수 추가
-  const fetchLocations = async (isVisited) => {
+  // 위치 데이터를 가져오는 함수 수정
+  const fetchLocations = async (type, isVisited = null) => {
     try {
-      console.log(`${isVisited ? '방문' : '미방문'} 위치 데이터 요청`);
+      let responses = [];
       
-      // 레스토랑과 카페 데이터를 동시에 요청
-      const [restaurantResponse, cafeResponse] = await Promise.all([
-        axiosInstance.get(`/restaurants/locations/?visited=${isVisited}`),
-        axiosInstance.get(`/cafes/locations/?visited=${isVisited}`)
-      ]);
+      if (type === 'restaurant') {
+        console.log('음식점 전체 위치 데이터 요청');
+        // 음식점의 방문, 미방문 데이터 모두 요청
+        responses = await Promise.all([
+          axiosInstance.get('/restaurants/locations/?visited=true'),
+          axiosInstance.get('/restaurants/locations/?visited=false')
+        ]);
+      } else if (type === 'cafe') {
+        console.log('카페 전체 위치 데이터 요청');
+        // 카페의 방문, 미방문 데이터 모두 요청
+        responses = await Promise.all([
+          axiosInstance.get('/cafes/locations/?visited=true'),
+          axiosInstance.get('/cafes/locations/?visited=false')
+        ]);
+      } else {
+        // 방문/미방문 버튼을 위한 기존 로직
+        console.log(`${isVisited ? '방문' : '미방문'} 위치 데이터 요청`);
+        responses = await Promise.all([
+          axiosInstance.get(`/restaurants/locations/?visited=${isVisited}`),
+          axiosInstance.get(`/cafes/locations/?visited=${isVisited}`)
+        ]);
+      }
 
-      console.log('레스토랑 응답:', restaurantResponse.data);
-      console.log('카페 응답:', cafeResponse);
+      console.log('서버 응답:', responses.map(r => r.data));
       
-      if (restaurantResponse.data.code === 200 && cafeResponse.data.code === 200) {
-        // 레스토랑과 카페 데이터 합치기
-        return [
-          ...restaurantResponse.data.data.map(loc => ({ ...loc, type: 'restaurant' })),
-          ...cafeResponse.data.data.map(loc => ({ ...loc, type: 'cafe' }))
-        ];
+      // 모든 응답이 성공인 경우에만 데이터 처리
+      if (responses.every(r => r.data.code === 200)) {
+        const allLocations = responses.flatMap(response => 
+          response.data.data.map(loc => ({
+            ...loc,
+            type: type === 'restaurant' ? 'restaurant' : 
+                  type === 'cafe' ? 'cafe' : 
+                  response.config.url.includes('restaurants') ? 'restaurant' : 'cafe'
+          }))
+        );
+        return allLocations;
       }
       return [];
     } catch (error) {
@@ -236,9 +315,11 @@ const MapPage = () => {
     
     let locations = [];
     if (type === 'visit' || type === 'notVisit') {
-      locations = await fetchLocations(type === 'visit');
-      console.log(`${type} 마커 생성할 위치:`, locations);
+      locations = await fetchLocations(type, type === 'visit');
+    } else if (type === 'restaurant' || type === 'cafe') {
+      locations = await fetchLocations(type);
     }
+    console.log(`${type} 마커 생성할 위치:`, locations);
 
     const newMarkers = locations.map(loc => {
       const marker = new window.kakao.maps.Marker({
@@ -251,21 +332,13 @@ const MapPage = () => {
       });
 
       // 마커 클릭 이벤트
-      window.kakao.maps.event.addListener(marker, 'click', () => {
-        const storeData = {
-          name: loc.name,
-          category: "카테고리",
-          breakTime: "브레이크 시간",
-          distance: "15분",
-          price: "12,000원",
-          reviews: "15",
-          image: SampleRst,
-          images: [SampleRst, SampleRst, SampleRst]
-        };
-        
-        setSelectedStore(storeData);
-        setPosition('middle');
-        setShowStoreInfo(true);
+      window.kakao.maps.event.addListener(marker, 'click', async () => {
+        const storeData = await fetchStoreDetail(loc.place_id, loc.type);
+        if (storeData) {
+          setSelectedStore(storeData);
+          setPosition('middle');
+          setShowStoreInfo(true);
+        }
       });
 
       return marker;
@@ -274,9 +347,9 @@ const MapPage = () => {
     setMarkers(newMarkers);
   };
 
-  // 필터 버튼 클릭 핸들러 수정
+  // handleFilterClick 함수 수정
   const handleFilterClick = (type) => {
-    if (map && (type === 'visit' || type === 'notVisit')) {
+    if (map && (type === 'visit' || type === 'notVisit' || type === 'restaurant' || type === 'cafe')) {
       createMarkers(type);
     }
   };

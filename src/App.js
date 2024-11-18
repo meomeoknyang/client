@@ -27,7 +27,7 @@ function App() {
       <RestaurantProvider>
         <Routes>
           {/* 예시 네비게이션이 필요한 페이지들 */}
-          <Route path="/map" element={<Layout hasNavigation><MapPage/></Layout>}/>
+          <Route path="/map" element={<Layout $hasNavigation><MapPage/></Layout>}/>
           <Route path="/mypage" element={<Layout hasNavigation> <MyPage/> </Layout>}/>
           <Route path="/home" element={<Layout $hasNavigation><LoginPage /></Layout>} />
 
