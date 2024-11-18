@@ -1,7 +1,7 @@
 import Tap from '../../components/stamp/Tap'
 import Category from '../../components/stamp/restaurant/Category';
 import StampList from '../../components/stamp/restaurant/StampList';
-import {FixedContainer, ContentContainer, Title,Search, Header} from '../../styles/pages/StampPage';
+import {FixedContainer, ContentContainer, Title, Search, Header} from '../../styles/pages/StampPage';
 import searchIcon from '../../assets/svg/search.svg?react';
 import closeIcon from '../../assets/svg/Close.svg';
 import { useNavigate, useSearchParams} from 'react-router-dom';
@@ -9,21 +9,39 @@ import { useEffect, useState } from 'react';
 import SortBottomSheet from '../../components/stamp/restaurant/bottomsheet/SortBottomSheet';
 import CategoryBottomSheet from '../../components/stamp/restaurant/bottomsheet/CategoryBottomSheet';
 import styled from 'styled-components';
-import { useRestaurantData } from '../../utils/api/useRestaurantData';
+import axiosInstance from '../../utils/axiosConfig';
 import { sortFunctions } from '../../utils/sortUtils';
 
 const RestaurantPage = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    const { data, setData, fetchRestaurants, showLoginModal, setShowLoginModal } = useRestaurantData();
+    const [data, setData] = useState(null);
+    const [showLoginModal, setShowLoginModal] = useState(false);
 
     const [currentSearch, setCurrentSearch] = useState('');
-    const [selectedCategories, setSelectedCategories] = useState(() => 
-        searchParams.getAll('categories').map(Number)
-    );
+    const [selectedCategories, setSelectedCategories] = useState([]);
     const [bottomSheet, setBottomSheet] = useState({ type: null, isOpen: false });
     const [visited, setVisited] = useState(false);
     const [selectedSorts, setSelectedSorts] = useState('추천순');
+
+    const fetchRestaurants = async (params) => {
+        try {
+            const response = await axiosInstance.get(`/restaurants/?${params.toString()}`);
+            if (!response.data.data) {
+                setData([]);
+                return [];
+            }
+            return response.data.data;
+        } catch (error) {
+            if (error.response?.status === 401) {
+                setShowLoginModal(true);
+            } else {
+                console.error('API 호출 에러:', error);
+            }
+            setData(null);
+            return null;
+        }
+    };
 
     const createUrlParams = (menuName = currentSearch, visitType = visited, categories = selectedCategories) => {
         const params = new URLSearchParams();
@@ -79,10 +97,6 @@ const RestaurantPage = () => {
         setData(sortFunctions[selectedSorts](newData));
     };
 
-
-
-
-
     const handleResetSearch = async () => {
         const params = createUrlParams('', visited, selectedCategories);
         navigate(`/restaurant/?${params.toString()}`);
@@ -99,37 +113,39 @@ const RestaurantPage = () => {
 
     useEffect(() => {
         const initializeData = async () => {
-            const params = new URLSearchParams(window.location.search);
-            
-            const menuName = params.get('menu_name');
+            const menuName = searchParams.get('menu_name');
             if (menuName) {
                 setCurrentSearch(menuName);
+            } else {
+                setCurrentSearch('');
             }
     
-            const visitedParam = params.get('visited');
+            const visitedParam = searchParams.get('visited');
             if (visitedParam === 'true') {
                 setVisited('visited');
             } else if (visitedParam === 'false') {
                 setVisited('unvisited');
+            } else {
+                setVisited(false);
             }
     
-            const categories = params.getAll('categories');
+            const categories = searchParams.getAll('categories');
             if (categories.length > 0) {
                 setSelectedCategories(categories.map(Number));
+            } else {
+                setSelectedCategories([]);
             }
-    
-            // 모든 파라미터가 설정된 후 한 번만 데이터 fetch
-            const newData = await fetchRestaurants(params);
+            const newData = await fetchRestaurants(searchParams);
             setData(sortFunctions[selectedSorts](newData));
         };
     
         initializeData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [searchParams]);
+
     return (
         <>
             <FixedContainer>
-            <Header>
+                <Header>
                     <Title>도장깨기</Title>
                     {currentSearch && (
                         <SearchInfo>

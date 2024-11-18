@@ -1,17 +1,26 @@
-import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from "styled-components";
 
 const Tap = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [activeTab, setActiveTab] = useState(1);
+
+    useEffect(() => {
+        if (location.pathname.includes('/restaurant')) {
+            setActiveTab(1);
+        } else if (location.pathname.includes('/cafes')) {
+            setActiveTab(0);
+        }
+    }, [location.pathname]);
 
     const handleClick = (tabNumber) => {
         setActiveTab(tabNumber);
         if (tabNumber === 1) {
-            navigate('/stamp/restaurant');
+            navigate('/restaurant');
         } else {
-            navigate('/stamp/cafe');
+            navigate('/cafes');
         }
     };
 

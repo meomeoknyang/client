@@ -8,7 +8,7 @@ import ReviewPage from './pages/ReviewPage';
 import ReviewCompletePage from './pages/ReviewCompletePage';
 import RestaurantSearchPage from './pages/stamp/search/RestaurantSearchPage.jsx';
 import RestaurantPage from './pages/stamp/RestaurantPage.jsx'
-import CafePage from './pages/stamp/CafePage';
+
 import DetailHomePage from './pages/stamp/detail/DetailHomePage.jsx';
 import MapPage from './pages/MapPage';
 import DetailMenuPage from './pages/stamp/detail/DetailMenuPage.jsx';
@@ -18,7 +18,14 @@ import { RestaurantProvider } from './utils/api/Restaurant.js';
 import SignupPage from './pages/SignupPage';
 import SignupDetailPage from './pages/SignupDetailPage';
 
-
+import CafePage from './pages/stamp/CafePage';
+import CafeDetailHomePage from './pages/stamp/detail/CafeDetailHomePage.jsx';
+import CafeDetailMenuPage from './pages/stamp/detail/CafeDetailMenuPage.jsx';
+import CafeDetailPicturePage from './pages/stamp/detail/CafeDetailPicturePage.jsx';
+import CafeDetailReviewPage from './pages/stamp/detail/CafeDetailReviewPage.jsx';
+import CafeSearchPage from './pages/stamp/search/CafeSearchPage.jsx';
+import CafeReviewPage from './pages/CafeReviewPage.jsx'
+import CafeReviewCompletePage from './pages/CafeReviewCompletePage.jsx';
 function App() {
   return (
     <>
@@ -43,9 +50,16 @@ function App() {
 
               </Route>
 
-            <Route path="/cafe" >
-              <Route index element={<Layout $hasNavigation><CafePage/></Layout>}/>
-            </Route>
+              <Route path="/cafes">
+                <Route index element={<Layout $hasNavigation><CafePage /></Layout>} />
+                <Route path="detail/:id" element={<Layout><CafeDetailHomePage /></Layout>} />
+                <Route path="detail/:id/menu" element={<Layout><CafeDetailMenuPage /></Layout>} />
+                <Route path="detail/:id/picture" element={<Layout><CafeDetailPicturePage /></Layout>} />
+                <Route path="detail/:id/review" element={<Layout><CafeDetailReviewPage /></Layout>} />
+                <Route path="search" element={<Layout $hasNavigation><CafeSearchPage /></Layout>} />
+                <Route path="review/:id" element={<Layout><CafeReviewPage /></Layout>} />
+                <Route path="review/:id/complete" element={<Layout><CafeReviewCompletePage /></Layout>} />
+              </Route>
           
             <Route path="/random" element={<Layout $hasNavigation> </Layout>}/>
             <Route path="/mypage" element={<Layout $hasNavigation> </Layout>}/>

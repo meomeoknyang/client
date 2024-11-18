@@ -8,7 +8,7 @@ import closeIcon from '../../../assets/svg/Close.svg'
 //import rightIcon from '../../../assets/svg/arrow_right.svg'
 import axios from "axios";
 
-const DetailReviewPage = () => {
+const CafeDetailReviewPage = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('review'); 
     const {id} = useParams();
@@ -19,7 +19,7 @@ const DetailReviewPage = () => {
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const baseURL = process.env.REACT_APP_API_URL;
-    const detailurl = `/restaurant/detail/${id}`;
+    const detailurl = `/cafes/detail/${id}`;
     const handleClick = (type) => {
         setActiveTab(type);
         if (type === 'home')  {
@@ -31,19 +31,19 @@ const DetailReviewPage = () => {
         } else if (type === 'picture') {
             navigate(`${detailurl}/picture`);
         } else if (type === 'reviewWrite'){
-            navigate(`/restaurant/review/${id}`);
+            navigate(`/cafes/review/${id}`);
         }
     };
     const handleBack = () => {
         navigate(-1);
     };
     const handleList = () => {
-        navigate(`/restaurant`);
+        navigate(`/cafes`);
     };
 
     const getReivew = async(key) => {
         try{
-            const response = await axios.get(`${baseURL}/reviews/place/restaurant/${key}/`)
+            const response = await axios.get(`${baseURL}/reviews/place/cafe/${key}/`)
             if (!response) {
                 console.error('데이터가 없습니다');
                 setReviews([]);
@@ -61,7 +61,7 @@ const DetailReviewPage = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`${baseURL}/restaurants/${id}/`);
+                const response = await axios.get(`${baseURL}/cafes/${id}/`);
                 setRestaurantData(response.data.data);
                 await getReivew(id);
             } catch (err) {
@@ -92,6 +92,7 @@ const DetailReviewPage = () => {
         setShowLoginModal(false);
     };
     
+
     const { name, keywords } = restaurantData;
     const totalCount = keywords ? keywords.reduce((sum, keyword) => sum + keyword.count, 0) : 0;
     return(
@@ -189,7 +190,7 @@ const DetailReviewPage = () => {
                     </TopMenu>
                     <Logo><img src={logotextIcon} alt="" /></Logo>
                 </Footer>
-            {showLoginModal && (
+           {showLoginModal && (
                 <LoginModal 
                     onConfirm={() => {
                         navigate('/login');
@@ -203,7 +204,7 @@ const DetailReviewPage = () => {
     );
 };
 
-export default DetailReviewPage;
+export default CafeDetailReviewPage;
 
 const LoginModal = ({ onConfirm, onCancel }) => (
     <ModalOverlay>

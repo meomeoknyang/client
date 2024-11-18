@@ -5,7 +5,7 @@ import backIcon from '../../../assets/svg/back.svg'
 import closeIcon from '../../../assets/svg/Close.svg'
 import axios from 'axios';
 
-const DetailMenuPage = () => {
+const CafeDetailMenuPage = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('menu'); 
     const isMain = true;
@@ -14,7 +14,7 @@ const DetailMenuPage = () => {
     const [error, setError] = useState(null);
     const {id} = useParams();
     const baseURL = process.env.REACT_APP_API_URL;
-    const detailurl = `/restaurant/detail/${id}`;
+    const detailurl = `/cafes/detail/${id}`;
     const handleClick = (type) => {
         setActiveTab(type);
         if (type === 'home')  {
@@ -26,21 +26,21 @@ const DetailMenuPage = () => {
         } else if (type === 'picture') {
             navigate(`${detailurl}/picture`);
         } else if (type === 'reviewWrite'){
-            navigate(`/restaurant/review/${id}`);
+            navigate(`/cafes/review/${id}`);
         }
     };
     const handleBack = () => {
         navigate(-1);
     }
     const handleList = () => {
-        navigate(`/restaurant`);
+        navigate(`/cafes`);
     }  
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`${baseURL}/restaurants/${id}/`);
+                const response = await axios.get(`${baseURL}/cafes/${id}/`);
                 setRestaurantData(response.data.data);
             } catch (err) {
                 setError(err);
@@ -108,7 +108,7 @@ const DetailMenuPage = () => {
     );
 };
 
-export default DetailMenuPage;
+export default CafeDetailMenuPage;
 
 const MenuList = styled.div`
     padding:0 20px;
