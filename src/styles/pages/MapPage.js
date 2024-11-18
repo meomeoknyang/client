@@ -246,6 +246,13 @@ export const Category = styled.span`
 export const BestComment = styled.p`
   margin-top: 0.5rem;
   align-self: stretch;
+  color: rgba(0, 0, 0, 0.76);
+  font-family: "Noto Sans KR";
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 0.75rem; /* 100% */
+  letter-spacing: -0.0625rem;
 
   span {
     &.label {
