@@ -51,6 +51,7 @@ import {
   StoreImage
 } from '../styles/pages/MapPage';
 import axiosInstance from '../utils/axiosConfig';
+import { useLocation } from 'react-router-dom';
 
 // 새로운 RestaurantCard 컴포넌트 생성
 const RestaurantCardComponent = ({ image, name, category, comment, distance, price, reviews }) => (
@@ -163,10 +164,10 @@ const StoreInfo = ({ store }) => (
 const fetchStoreDetail = async (placeId, type) => {
   try {
     const endpoint = type === 'cafe' ? 'cafes' : 'restaurants';
-    console.log(`${endpoint}/${placeId} 상세 정보 요청`);
+    // console.log(`${endpoint}/${placeId} 상세 정보 요청`);
     
     const response = await axiosInstance.get(`/${endpoint}/${placeId}/`);
-    console.log('상세 정보 응답:', response.data);
+    // console.log('상세 정보 응답:', response.data);
     
     if (response.data.code === 200) {
       const data = response.data.data;
@@ -223,6 +224,9 @@ const fetchStoreDetail = async (placeId, type) => {
 };
 
 const MapPage = () => {
+  const location = useLocation();
+  const searchData = location.state;
+  
   const [position, setPosition] = useState('middle');
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
@@ -240,20 +244,59 @@ const MapPage = () => {
   const [visitedLocations, setVisitedLocations] = useState([]);
   const [unvisitedLocations, setUnvisitedLocations] = useState([]);
 
+  useEffect(() => {
+    if (searchData) {
+      const { placeId, type, latitude, longitude } = searchData;
+      
+      if (map) {
+        // 기존 마커 제거
+        markers.forEach(marker => marker.setMap(null));
+        
+        // 새로운 마커 생성
+        const position = new window.kakao.maps.LatLng(
+          Number(latitude),
+          Number(longitude)
+        );
+        
+        const marker = new window.kakao.maps.Marker({
+          position: position,
+          map: map
+        });
+        
+        setMarkers([marker]);
+        
+        // 지도 중심 이동
+        map.setCenter(position);
+        
+        // 상세 정보 표시
+        const fetchAndShowStoreInfo = async () => {
+          const storeData = await fetchStoreDetail(placeId, type);
+          if (storeData) {
+            setSelectedStore(storeData);
+            setPosition('middle');
+            setShowStoreInfo(true);
+          }
+        };
+        
+        fetchAndShowStoreInfo();
+      }
+    }
+  }, [searchData, map]);
+
   // 위치 데이터를 가져오는 함수 수정
   const fetchLocations = async (type, isVisited = null) => {
     try {
       let responses = [];
       
       if (type === 'restaurant') {
-        console.log('음식점 전체 위치 데이터 요청');
+        // console.log('음식점 전체 위치 데이터 요청');
         // 음식점의 방문, 미방문 데이터 모두 요청
         responses = await Promise.all([
           axiosInstance.get('/restaurants/locations/?visited=true'),
           axiosInstance.get('/restaurants/locations/?visited=false')
         ]);
       } else if (type === 'cafe') {
-        console.log('카페 전체 위치 데이터 요청');
+        // console.log('카페 전체 위치 데이터 요청');
         // 카페의 방문, 미방문 데이터 모두 요청
         responses = await Promise.all([
           axiosInstance.get('/cafes/locations/?visited=true'),
@@ -261,14 +304,14 @@ const MapPage = () => {
         ]);
       } else {
         // 방문/미방문 버튼을 위한 기존 로직
-        console.log(`${isVisited ? '방문' : '미방문'} 위치 데이터 요청`);
+        // console.log(`${isVisited ? '방문' : '미방문'} 위치 데이터 요청`);
         responses = await Promise.all([
           axiosInstance.get(`/restaurants/locations/?visited=${isVisited}`),
           axiosInstance.get(`/cafes/locations/?visited=${isVisited}`)
         ]);
       }
 
-      console.log('서버 응답:', responses.map(r => r.data));
+      // console.log('서버 응답:', responses.map(r => r.data));
       
       // 모든 응답이 성공인 경우에만 데이터 처리
       if (responses.every(r => r.data.code === 200)) {
@@ -284,7 +327,7 @@ const MapPage = () => {
       }
       return [];
     } catch (error) {
-      console.error('위치 데이터 가져오기 실패:', error);
+      // console.error('위치 데이터 가져오기 실패:', error);
       return [];
     }
   };
@@ -327,7 +370,7 @@ const MapPage = () => {
     } else if (type === 'restaurant' || type === 'cafe') {
       locations = await fetchLocations(type);
     }
-    console.log(`${type} 마커 생성할 위치:`, locations);
+    // console.log(`${type} 마커 생성할 위치:`, locations);
 
     const newMarkers = locations.map(loc => {
       const marker = new window.kakao.maps.Marker({
