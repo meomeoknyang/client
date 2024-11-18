@@ -11,7 +11,7 @@ import editIcon from '../../../assets/svg/edit.svg'
 import logotextIcon from '../../../assets/logotext.png'
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useRestaurant } from '../../../api/Restaurant';
+import { useRestaurant } from '../../../utils/api/Restaurant';
 const DetailHomePage = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('home'); 
@@ -59,7 +59,7 @@ const DetailHomePage = () => {
         } else if (type === 'picture') {
             navigate(`${baseurl}/picture`);
         } else if (type === 'reviewWrite'){
-            navigate(`/review/${id}`);
+            navigate(`/restaurant/review/${id}`);
         }
     };
 

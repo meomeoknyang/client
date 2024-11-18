@@ -1,115 +1,281 @@
-import axios from 'axios';
 import Tap from '../../components/stamp/Tap'
 import Category from '../../components/stamp/restaurant/Category';
 import StampList from '../../components/stamp/restaurant/StampList';
 import {FixedContainer, ContentContainer, Title,Search, Header} from '../../styles/pages/StampPage';
 import searchIcon from '../../assets/svg/search.svg?react';
-import { useNavigate} from 'react-router-dom';
+import closeIcon from '../../assets/svg/Close.svg';
+import { useNavigate, useSearchParams} from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import SortBottomSheet from '../../components/stamp/restaurant/bottomsheet/SortBottomSheet';
 import CategoryBottomSheet from '../../components/stamp/restaurant/bottomsheet/CategoryBottomSheet';
-const ReStampPage = () => {
+import styled from 'styled-components';
+import { useRestaurantData } from '../../utils/api/useRestaurantData';
+import { sortFunctions } from '../../utils/sortUtils';
+
+const RestaurantPage = () => {
     const navigate = useNavigate();
-    const [bottomSheet, setBottomSheet] = useState({
-        type: null,
-        isOpen: false
-    });
+    const [searchParams] = useSearchParams();
+    const { data, setData, fetchRestaurants, showLoginModal, setShowLoginModal } = useRestaurantData();
+
+    const [currentSearch, setCurrentSearch] = useState('');
+    const [selectedCategories, setSelectedCategories] = useState(() => 
+        searchParams.getAll('categories').map(Number)
+    );
+    const [bottomSheet, setBottomSheet] = useState({ type: null, isOpen: false });
     const [visited, setVisited] = useState(false);
-    const [contacted, setContacted] = useState(false);
     const [selectedSorts, setSelectedSorts] = useState('추천순');
-    const [selectedFoods, setSelectedFoods] = useState({
-        한식:false,
-        양식:false,
-        아시안:false,
-        일식:false,
-        중식:false,
-        패스트푸드:false
-    });
-    const [data, setData] = useState(null);
+
+    const createUrlParams = (menuName = currentSearch, visitType = visited, categories = selectedCategories) => {
+        const params = new URLSearchParams();
+        
+        if (menuName) {
+            params.set('menu_name', menuName);
+        }
+        if (visitType === 'visited') {
+            params.set('visited', 'true');
+        } else if (visitType === 'unvisited') {
+            params.set('visited', 'false');
+        }
+        categories.forEach(category => {
+            params.append('categories', category);
+        });
+
+        return params;
+    };
+
+    const handleVisitFilter = async (type) => {
+        if (visited === type) {
+            setVisited(false);
+            const params = createUrlParams(currentSearch, false, selectedCategories);
+            navigate(`/restaurant/?${params.toString()}`);
+            const newData = await fetchRestaurants(params);
+            setData(sortFunctions[selectedSorts](newData));
+            return;
+        }
+
+        const params = createUrlParams(currentSearch, type, selectedCategories);
+        navigate(`/restaurant/?${params.toString()}`);
+        const newData = await fetchRestaurants(params);
+        setData(sortFunctions[selectedSorts](newData));
+        setVisited(type);
+    };
+
+    const handleSortChange = (newSort) => {
+        setSelectedSorts(newSort);
+        if (data) {
+            setData(sortFunctions[newSort](data));
+        }
+    };
+
+    const handleCategorySelect = async (categoryId, isSelected) => {
+        const newCategories = isSelected 
+            ? [...selectedCategories, categoryId]
+            : selectedCategories.filter(id => id !== categoryId);
+        
+        setSelectedCategories(newCategories);
+        const params = createUrlParams(currentSearch, visited, newCategories);
+        navigate(`/restaurant/?${params.toString()}`);
+        const newData = await fetchRestaurants(params);
+        setData(sortFunctions[selectedSorts](newData));
+    };
+
+
+
+
+
+    const handleResetSearch = async () => {
+        const params = createUrlParams('', visited, selectedCategories);
+        navigate(`/restaurant/?${params.toString()}`);
+        setCurrentSearch('');
+        const newData = await fetchRestaurants(params);
+        setData(sortFunctions[selectedSorts](newData));
+    };
 
     useEffect(() => {
-        handleLoadDetail();
-    }, []);
+        if (window.location.pathname === '/restaurants') {
+            navigate('/restaurant', { replace: true });
+        }
+    }, [navigate]);
 
-    const handleLoadDetail = async () => {
-        try {
-            const response = await axios.get('https://port-0-server-m3eidei15754d939.sel4.cloudtype.app/restaurants/');
-            const restaurantsData = response.data.data;
-
-            if (!restaurantsData) {
-                console.error('데이터가 없습니다');
-                setData([]);
-                return;
+    useEffect(() => {
+        const initializeData = async () => {
+            const params = new URLSearchParams(window.location.search);
+            
+            const menuName = params.get('menu_name');
+            if (menuName) {
+                setCurrentSearch(menuName);
             }
     
-            setData(restaurantsData);
-            console.log(restaurantsData);
-        } catch (error) {
-            console.error(error);
-            setData(null);
-        }
-    };
-
-    useEffect(() => {
-        if (visited === 'visited') {
-            setContacted(true);
-        } else if (visited === 'unvisited') {
-            setContacted(false);
-        } else {
-            setContacted(false);
-        }
-    }, [visited]);
-
-    const getFilteredRestaurants = () => {
-        if (!data) return null;
-
-        const originalData = [...data];
-
-        if (visited === 'visited') {
-            return originalData.filter(restaurant => restaurant.contact >= 1);
-        } else if (visited === 'unvisited') {
-            return originalData.filter(restaurant => restaurant.contact === null || restaurant.contact === 0);
-        }
-
-        return originalData;
-    };
-        
-
+            const visitedParam = params.get('visited');
+            if (visitedParam === 'true') {
+                setVisited('visited');
+            } else if (visitedParam === 'false') {
+                setVisited('unvisited');
+            }
+    
+            const categories = params.getAll('categories');
+            if (categories.length > 0) {
+                setSelectedCategories(categories.map(Number));
+            }
+    
+            // 모든 파라미터가 설정된 후 한 번만 데이터 fetch
+            const newData = await fetchRestaurants(params);
+            setData(sortFunctions[selectedSorts](newData));
+        };
+    
+        initializeData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     return (
-    <>
-        <FixedContainer>
+        <>
+            <FixedContainer>
             <Header>
-                <Title>도장깨기</Title>
-                <Search src={searchIcon} alt='search' onClick={() => navigate('/restaurant/search')}/>
-            </Header>
-            <Tap/>
-            <Category setBottomSheet={setBottomSheet} visited={visited} setVisited={setVisited} />
+                    <Title>도장깨기</Title>
+                    {currentSearch && (
+                        <SearchInfo>
+                            <span>{currentSearch}</span>
+                        </SearchInfo>
+                    )}
+                    {currentSearch ? (
+                        <BackButton 
+                            src={closeIcon} 
+                            alt='back'
+                            onClick={handleResetSearch}
+                        />
+                    ) : (
+                        <Search 
+                            src={searchIcon} 
+                            alt='search' 
+                            onClick={() => navigate('/restaurant/search')}
+                        />
+                    )}
+                </Header>
+                <Tap/>
+                <Category 
+                    setBottomSheet={setBottomSheet}
+                    visited={visited}
+                    setVisited={handleVisitFilter}
+                    selectedSorts={selectedSorts}
+                />
+            </FixedContainer>
 
-        </FixedContainer>
-        <ContentContainer >
-            <div style={{background:"#F0F0F3", display:"flex", justifyContent:"center" }}>
-                <StampList
-                    restaurants={getFilteredRestaurants()} 
-                    isContacted={contacted}
-                    visited = {visited}/>
-            </div>
-        </ContentContainer>
-        
-        <SortBottomSheet 
-                open={bottomSheet.isOpen && bottomSheet.type === 'sort'} 
+            <ContentContainer>
+                <div className="bg-[#F0F0F3] flex justify-center">
+                    <StampList restaurants={data} visited={visited} />
+                </div>
+            </ContentContainer>
+
+            <SortBottomSheet 
+                open={bottomSheet.isOpen && bottomSheet.type === 'sort'}
                 setOpen={() => setBottomSheet({type: null, isOpen: false})}
                 selectedSorts={selectedSorts}
-                setSelectedSorts={setSelectedSorts}
+                setSelectedSorts={handleSortChange}
             />
-        
-        <CategoryBottomSheet 
-            open={bottomSheet.isOpen && bottomSheet.type === 'category'} 
-            setOpen={() => setBottomSheet({type: null, isOpen: false})}
-            selectedFoods={selectedFoods}
-            setSelectedFoods={setSelectedFoods}
-        /> 
-    </>
-    
+
+            <CategoryBottomSheet 
+                open={bottomSheet.isOpen && bottomSheet.type === 'category'}
+                setOpen={() => setBottomSheet({type: null, isOpen: false})}
+                selectedCategories={selectedCategories}
+                onCategorySelect={handleCategorySelect}
+            />
+
+            {showLoginModal && (
+                <LoginModal 
+                    onConfirm={() => {
+                        setShowLoginModal(false);
+                        navigate('/login');
+                    }}
+                    onCancel={() => setShowLoginModal(false)}
+                />
+            )}
+        </>
     );
-  };
-export default ReStampPage;
+};
+
+export default RestaurantPage;
+
+const LoginModal = ({ onConfirm, onCancel }) => (
+    <ModalOverlay>
+        <Modal>
+            <ModalContent>
+                <div>로그인이 필요한 서비스입니다.</div>
+                <ModalButtons>
+                    <button onClick={onConfirm}>확인</button>
+                    <button onClick={onCancel}>취소</button>
+                </ModalButtons>
+            </ModalContent>
+        </Modal>
+    </ModalOverlay>
+);
+
+const ModalOverlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+`;
+
+const Modal = styled.div`
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    width: 80%;
+    max-width: 320px;
+`;
+
+const ModalContent = styled.div`
+    text-align: center;
+    
+    & > div:first-child {
+        margin-bottom: 20px;
+        font-size: 16px;
+        font-weight: 500;
+    }
+`;
+
+const ModalButtons = styled.div`
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+
+    button {
+        padding: 8px 24px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+
+        &:first-child {
+            background-color: #FF6F00;
+            color: white;
+        }
+
+        &:last-child {
+            background-color: #F5F5F5;
+            color: #666;
+        }
+    }
+`;
+
+const SearchInfo = styled.div`
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    font-size: 14px;
+    color: #333;
+    padding: 1px 10px 2px 80px;
+`;
+
+const BackButton = styled.img`
+    flex: 0 0 auto;
+    cursor: pointer;
+`;

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import backIcon from '../../../assets/svg/back.svg'
 import logotextIcon from '../../../assets/logotext.png'
 import closeIcon from '../../../assets/svg/Close.svg'
-import { useRestaurant } from "../../../api/Restaurant";
+import { useRestaurant } from '../../../utils/api/Restaurant';
 
 const DetailPicturePage = () => {
     const navigate = useNavigate();
@@ -23,7 +23,7 @@ const DetailPicturePage = () => {
         } else if (type === 'picture') {
             navigate(`${baseurl}/picture`);
         } else if (type === 'reviewWrite'){
-            navigate(`/review/${id}`);
+            navigate(`/restaurant/review/${id}`);
         }
     };
     const handleBack = () => {

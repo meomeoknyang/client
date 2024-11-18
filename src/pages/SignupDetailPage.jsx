@@ -155,6 +155,7 @@ const SignupDetailPage = () => {
             nickname: errorData.nickname[0]
           }));
         }
+        
       }
     } finally {
       setIsLoading(false);
