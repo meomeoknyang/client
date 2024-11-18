@@ -173,20 +173,20 @@ export const EmailDomain = styled.span`
   pointer-events: none;
 `;
 
-export const SuccessMessage = styled.div`
+export const LoadingOverlay = styled.div`
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 1rem 2rem;
-  border-radius: 0.5rem;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   z-index: 1000;
-  
-  span {
-    font-family: "Noto Sans KR";
-    font-size: 1rem;
-    font-weight: 500;
-  }
+`;
+
+export const LoadingImage = styled.img`
+  width: 9.375rem;
+  height: 9.375rem;
 `; 

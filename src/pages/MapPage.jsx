@@ -50,6 +50,8 @@ import {
   StoreImageGrid,
   StoreImage
 } from '../styles/pages/MapPage';
+import axiosInstance from '../utils/axiosConfig';
+import { useLocation } from 'react-router-dom';
 
 // 새로운 RestaurantCard 컴포넌트 생성
 const RestaurantCardComponent = ({ image, name, category, comment, distance, price, reviews }) => (
@@ -134,7 +136,10 @@ const StoreInfo = ({ store }) => (
           {store.name}
           <Category>{store.category}</Category>
         </RestaurantName>
-        <BestComment>{store.breakTime}</BestComment>
+        <BestComment>
+          <span className="label">{store.breakTimeLabel}</span>
+          <span className="value">{store.breakTimeValue}</span>
+        </BestComment>
         <MetaInfo>
           <span className="label">정문에서 </span>
           <span className="value">{store.distance}</span>
@@ -142,8 +147,8 @@ const StoreInfo = ({ store }) => (
           <span className="label">평균 </span>
           <span className="value">{store.price}</span>
           <Divider />
-          <span className="label">리뷰 </span>
-          <span className="value">{store.reviews}개</span>
+          <span className="label">방문자 수 </span>
+          <span className="value">{store.reviews}명</span>
         </MetaInfo>
       </RestaurantInfo>
     </RestaurantCard>
@@ -155,7 +160,73 @@ const StoreInfo = ({ store }) => (
   </div>
 );
 
+// 상세 정보를 가져오는 함수 수정
+const fetchStoreDetail = async (placeId, type) => {
+  try {
+    const endpoint = type === 'cafe' ? 'cafes' : 'restaurants';
+    // console.log(`${endpoint}/${placeId} 상세 정보 요청`);
+    
+    const response = await axiosInstance.get(`/${endpoint}/${placeId}/`);
+    // console.log('상세 정보 응답:', response.data);
+    
+    if (response.data.code === 200) {
+      const data = response.data.data;
+      
+      // 카테고리 문자열 생성
+      const categories = data.categories?.map(cat => cat.name).join(', ') || '-';
+      
+      // 브레이크 타임 포맷팅 수정
+      const breakTimeLabel = '브레이크';
+      const breakTimeValue = data.break_times?.length > 0 
+        ? data.break_times.map(time => 
+            `${time.start_time.slice(0, 5)}-${time.end_time.slice(0, 5)}`
+          ).join(', ')
+        : '없음';
+      
+      // 거리 포맷팅
+      const distance = `${Math.floor(data.distance_from_gate)}분`;
+      
+      // 가격 포맷팅
+      const price = data.average_price 
+        ? data.average_price.toLocaleString() + '원'
+        : '-';
+      
+      // 이미지 배열 생성 로직 수정
+      const images = [
+        data.image_url || '',  // 대표 이미지
+        ...(data.menus || [])  // menus 배열이 없으면 빈 배열 사용
+          .filter(menu => menu.image_url)  // image_url이 있는 메뉴만 필터링
+          .slice(0, 2)  // 최대 2개의 메뉴 이미지만 사용
+          .map(menu => menu.image_url)
+      ];
+      
+      // 항상 3개의 이미지 슬롯 유지 (빈 문자열로 채움)
+      while (images.length < 3) {
+        images.push('');
+      }
+
+      return {
+        name: data.name,
+        category: categories,
+        breakTimeLabel: breakTimeLabel,  // 라벨과 값을 분리
+        breakTimeValue: breakTimeValue,
+        distance: distance,
+        price: price,
+        reviews: data.visit_count?.toString() || '0',
+        images: images
+      };
+    }
+    return null;
+  } catch (error) {
+    console.error('상세 정보 가져오기 실패:', error);
+    return null;
+  }
+};
+
 const MapPage = () => {
+  const location = useLocation();
+  const searchData = location.state;
+  
   const [position, setPosition] = useState('middle');
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
@@ -170,29 +241,95 @@ const MapPage = () => {
   const [markers, setMarkers] = useState([]);
   const [selectedStore, setSelectedStore] = useState(null);
   const [showStoreInfo, setShowStoreInfo] = useState(false);
+  const [visitedLocations, setVisitedLocations] = useState([]);
+  const [unvisitedLocations, setUnvisitedLocations] = useState([]);
 
-  // 위치 데이터 정의
-  const locationData = {
-    visit: [
-      { lat: 37.2993728, lng: 126.8385143 },
-      { lat: 37.2997033, lng: 126.8383398 }
-    ],
-    notVisit: [
-      { lat: 37.3002292, lng: 126.8385632 },
-      { lat: 37.3002292, lng: 126.8385632 }
-    ],
-    restaurant: [
-      { lat: 37.3004723, lng: 126.8391517 },
-      { lat: 37.3003648, lng: 126.8402343 }
-    ],
-    cafe: [
-      { lat: 37.3008948, lng: 126.8376333 },
-      { lat: 37.3008948, lng: 126.8376333 }
-    ],
-    partnership: [
-      { lat: 37.3008948, lng: 126.8376333 },
-      { lat: 37.3011745, lng: 126.8374041 }
-    ]
+  useEffect(() => {
+    if (searchData) {
+      const { placeId, type, latitude, longitude } = searchData;
+      
+      if (map) {
+        // 기존 마커 제거
+        markers.forEach(marker => marker.setMap(null));
+        
+        // 새로운 마커 생성
+        const position = new window.kakao.maps.LatLng(
+          Number(latitude),
+          Number(longitude)
+        );
+        
+        const marker = new window.kakao.maps.Marker({
+          position: position,
+          map: map
+        });
+        
+        setMarkers([marker]);
+        
+        // 지도 중심 이동
+        map.setCenter(position);
+        
+        // 상세 정보 표시
+        const fetchAndShowStoreInfo = async () => {
+          const storeData = await fetchStoreDetail(placeId, type);
+          if (storeData) {
+            setSelectedStore(storeData);
+            setPosition('middle');
+            setShowStoreInfo(true);
+          }
+        };
+        
+        fetchAndShowStoreInfo();
+      }
+    }
+  }, [searchData, map]);
+
+  // 위치 데이터를 가져오는 함수 수정
+  const fetchLocations = async (type, isVisited = null) => {
+    try {
+      let responses = [];
+      
+      if (type === 'restaurant') {
+        // console.log('음식점 전체 위치 데이터 요청');
+        // 음식점의 방문, 미방문 데이터 모두 요청
+        responses = await Promise.all([
+          axiosInstance.get('/restaurants/locations/?visited=true'),
+          axiosInstance.get('/restaurants/locations/?visited=false')
+        ]);
+      } else if (type === 'cafe') {
+        // console.log('카페 전체 위치 데이터 요청');
+        // 카페의 방문, 미방문 데이터 모두 요청
+        responses = await Promise.all([
+          axiosInstance.get('/cafes/locations/?visited=true'),
+          axiosInstance.get('/cafes/locations/?visited=false')
+        ]);
+      } else {
+        // 방문/미방문 버튼을 위한 기존 로직
+        // console.log(`${isVisited ? '방문' : '미방문'} 위치 데이터 요청`);
+        responses = await Promise.all([
+          axiosInstance.get(`/restaurants/locations/?visited=${isVisited}`),
+          axiosInstance.get(`/cafes/locations/?visited=${isVisited}`)
+        ]);
+      }
+
+      // console.log('서버 응답:', responses.map(r => r.data));
+      
+      // 모든 응답이 성공인 경우에만 데이터 처리
+      if (responses.every(r => r.data.code === 200)) {
+        const allLocations = responses.flatMap(response => 
+          response.data.data.map(loc => ({
+            ...loc,
+            type: type === 'restaurant' ? 'restaurant' : 
+                  type === 'cafe' ? 'cafe' : 
+                  response.config.url.includes('restaurants') ? 'restaurant' : 'cafe'
+          }))
+        );
+        return allLocations;
+      }
+      return [];
+    } catch (error) {
+      // console.error('위치 데이터 가져오기 실패:', error);
+      return [];
+    }
   };
 
   useEffect(() => {
@@ -222,35 +359,37 @@ const MapPage = () => {
     }
   }, []);
 
-  // 마커 생성 함수 수정
-  const createMarkers = (locations) => {
-    // 기존 마커들 제거
+  // createMarkers 함수 수정
+  const createMarkers = async (type) => {
+    // 기존 마커 제거
     markers.forEach(marker => marker.setMap(null));
     
-    // 새로운 마커 생성
+    let locations = [];
+    if (type === 'visit' || type === 'notVisit') {
+      locations = await fetchLocations(type, type === 'visit');
+    } else if (type === 'restaurant' || type === 'cafe') {
+      locations = await fetchLocations(type);
+    }
+    // console.log(`${type} 마커 생성할 위치:`, locations);
+
     const newMarkers = locations.map(loc => {
       const marker = new window.kakao.maps.Marker({
-        position: new window.kakao.maps.LatLng(loc.lat, loc.lng),
+        position: new window.kakao.maps.LatLng(
+          Number(loc.latitude), 
+          Number(loc.longitude)
+        ),
         map: map,
         clickable: true // 마커 클릭 이벤트가 지도 클릭 이벤트를 막도록 설정
       });
 
-      // 마커 클릭 이벤트 등록
-      window.kakao.maps.event.addListener(marker, 'click', () => {
-        const storeData = {
-          name: "가게이름",
-          category: "카테고리",
-          breakTime: "브레이크 시간",
-          distance: "15분",
-          price: "12,000원",
-          reviews: "15",
-          image: SampleRst,
-          images: [SampleRst, SampleRst, SampleRst]
-        };
-        
-        setSelectedStore(storeData);
-        setPosition('middle');
-        setShowStoreInfo(true);
+      // 마커 클릭 이벤트
+      window.kakao.maps.event.addListener(marker, 'click', async () => {
+        const storeData = await fetchStoreDetail(loc.place_id, loc.type);
+        if (storeData) {
+          setSelectedStore(storeData);
+          setPosition('middle');
+          setShowStoreInfo(true);
+        }
       });
 
       return marker;
@@ -259,10 +398,10 @@ const MapPage = () => {
     setMarkers(newMarkers);
   };
 
-  // 필터 버튼 클릭 핸들러
+  // handleFilterClick 함수 수정
   const handleFilterClick = (type) => {
-    if (map && locationData[type]) {
-      createMarkers(locationData[type]);
+    if (map && (type === 'visit' || type === 'notVisit' || type === 'restaurant' || type === 'cafe')) {
+      createMarkers(type);
     }
   };
 
