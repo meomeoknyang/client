@@ -12,6 +12,7 @@ import logotextIcon from '../../../assets/logotext.png'
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRestaurant } from '../../../utils/api/Restaurant';
+import axios from 'axios';
 const DetailHomePage = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('home'); 
@@ -98,6 +99,50 @@ const DetailHomePage = () => {
             window.open(`https://map.kakao.com/link/search/${searchQuery}`);
         }
     };
+
+    const handleLoad = async (placeId) => {
+        if (!placeId) {
+            console.error('유효하지 않은 place_id입니다.');
+            return;
+        }
+    
+        try {
+            const baseURL = process.env.REACT_APP_API_URL;
+            
+            // 식당 위치 정보만 먼저 시도
+            try {
+                const restaurantResponse = await axios.get(`${baseURL}/restaurants/${placeId}/location/`);
+                if (restaurantResponse.data.code === 200) {
+                    const locationData = restaurantResponse.data.data;
+                    navigate('/map', {
+                        state: {
+                            placeId,
+                            type: 'restaurant',
+                            latitude: locationData.latitude,
+                            longitude: locationData.longitude
+                        }
+                    });
+                    return;
+                }
+            } catch (e) {
+                // 식당 요청 실패시 카페 시도
+                const cafeResponse = await axios.get(`${baseURL}/cafes/${placeId}/location/`);
+                if (cafeResponse.data.code === 200) {
+                    const locationData = cafeResponse.data.data;
+                    navigate('/map', {
+                        state: {
+                            placeId,
+                            type: 'cafe',
+                            latitude: locationData.latitude,
+                            longitude: locationData.longitude
+                        }
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('위치 정보 조회 실패:', error);
+        }
+    };
     
 
     return(
@@ -128,7 +173,7 @@ const DetailHomePage = () => {
                     <InfoWrapper>
                         <InfoItem>
                             <SubDistance text={restaurantData.data.distance_from_gate}/>
-                            <LocationButton>
+                            <LocationButton onClick={()=> handleLoad(restaurantData.data.place_id)}>
                                 <img src={mapIcon} alt="" />
                                 위치
                             </LocationButton>
