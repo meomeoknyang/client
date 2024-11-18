@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PhotoClick from '../assets/svg/PhotoClick.svg';
 import Pencil from '../assets/svg/Pencil.svg';
 import Close from '../assets/svg/Close.svg';
@@ -20,14 +20,22 @@ import {
   Divider,
   ReviewTitle
 } from '../styles/pages/ReviewPage';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useRestaurant } from '../utils/api/Restaurant';
 
 const ReviewPage = () => {
+  const {id} = useParams();
+  const { restaurantData, loading, error, fetchRestaurantData } = useRestaurant();
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [review, setReview] = useState('');
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (id) {
+      fetchRestaurantData(id);
+    }
+  }, [id, fetchRestaurantData]);
   const keywords = [
     '여기 없어지면 에리카 퇴학합니다.',
     '지갑 지키고 싶을 때, 여기 추천',
@@ -57,15 +65,24 @@ const ReviewPage = () => {
       alert('필수 항목을 채워주세요.');
       return;
     }
-    navigate('/review/complete');
+    navigate(`/restaurant/review/${id}/complete`);
   };
+
+  const handleClose = () => {
+    navigate(-1);
+  };
+
+  if (loading) return <div>로딩 중...</div>;
+  if (error) return <div>에러가 발생했습니다.</div>;
+  const restaurantName = restaurantData?.data?.name || '식당';
+  const visitCount = restaurantData?.data?.visit_count || 0;
 
   return (
     <PageContainer>
-      <CloseButton src={Close} alt="닫기" />
+      <CloseButton src={Close} alt="닫기" onClick={handleClose} />
       <RestaurantInfo>
-        <h2>두루정 안산한양대점</h2>
-        <span>1번째 도장 깨기네요!</span>
+        <h2>{restaurantName}</h2>
+        <span>{visitCount}번째 도장 깨기네요!</span>
       </RestaurantInfo>
       
       <Section>
@@ -126,7 +143,7 @@ const ReviewPage = () => {
       </Section>
 
       <NextButton 
-        onClick={handleNextClick}
+        onClick={()=>{handleNextClick()}}
         disabled={selectedKeywords.length === 0 || !image || !review.trim()}
       >
         다음

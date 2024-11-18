@@ -6,7 +6,7 @@ import editIcon from '../../../assets/svg/edit.svg'
 import logotextIcon from '../../../assets/logotext.png'
 import closeIcon from '../../../assets/svg/Close.svg'
 //import rightIcon from '../../../assets/svg/arrow_right.svg'
-import { useRestaurant } from "../../../api/Restaurant";
+import { useRestaurant } from '../../../utils/api/Restaurant';
 import axios from "axios";
 
 const DetailReviewPage = () => {
@@ -27,7 +27,7 @@ const DetailReviewPage = () => {
         } else if (type === 'picture') {
             navigate(`${baseurl}/picture`);
         } else if (type === 'reviewWrite'){
-            navigate(`/review/${id}`);
+            navigate(`/restaurant/review/${id}`);
         }
     };
     const handleBack = () => {

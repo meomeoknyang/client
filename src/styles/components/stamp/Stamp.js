@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import menu from '../../../assets/menu.png'
+//import menu from '../../../assets/menu.png'
 const Container = styled.div`
     width: 335px;
     height: 128px;
@@ -33,33 +33,28 @@ const Detail = styled.div`
 const Visit = styled.div`
     width: 142px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: wrap;
-    & >span {
-        position: relative;
-        top: 16px;
-        left: 17px;
+
+    & span.orange {
+        padding: 16px;
         font-size: 16px;
         color: #FF6F00;
+        font-weight: 700;
+        max-width: 142px;
+    }
+
+    & > span {
+        padding: 16px;
+        font-size: 16px;
         font-weight: 700;
         color: rgba(0, 0, 0, 0.30);
-    
+        max-width: 142px;
     }
+
     & > img {
-        position: relative;
-        left: 25px;
-        top: 35px;
-
+        padding: 0 15px 12px 55px;
     }
-
-    .active{
-        position: relative;
-        top: 16px;
-        left: 17px;
-        font-size: 16px;
-        color: #FF6F00;
-        font-weight: 700;
-    }
-`
+`;
 
 export {Container, Detail, Visit} ;

@@ -1,5 +1,5 @@
 import Stamp from "./Stamp";
-const StampList = ( {restaurants, isContacted, visited} ) => {
+const StampList = ( {restaurants, visited} ) => {
     if (!restaurants) {
         return <div style={{fontSize:"12px", padding:"20px"}}>~ 식당을 불러오는 중 ~</div>;
     }
@@ -12,7 +12,7 @@ const StampList = ( {restaurants, isContacted, visited} ) => {
         }
         return <div style={{fontSize:"12px", padding:"20px"}}>~ 식당을 불러오는 중 ~</div>;
     }
-
+    console.log('restaurants:', restaurants);
     return (
         <div style={{display:"flex", flexDirection:"column", alignItmes:"center", paddingTop:"14px"}}>
             {restaurants && restaurants.map((restaurant) => (
@@ -25,8 +25,8 @@ const StampList = ( {restaurants, isContacted, visited} ) => {
                     price={restaurant.average_price}
                     breakTimes={restaurant.break_times}
                     distance={restaurant.distance_from_gate}
-                    contact={restaurant.contact}
-                    isContacted = {isContacted}
+                    visitCount={restaurant.visit_count}
+                    isContacted={restaurant.visit_count > 0} 
                     mainImg = {restaurant.image_url}
                 />
             ))}

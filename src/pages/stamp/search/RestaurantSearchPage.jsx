@@ -11,7 +11,10 @@ const RestaurantSearchPage = () => {
     const navigate = useNavigate();
     const [view,setView] = useState(false);
     const [searchInput, setSearchInput] = useState('');
-    const [recentSearch, setRecentSearch] = useState([]);
+    const [recentSearch, setRecentSearch] = useState(() => {
+        const saved = localStorage.getItem('recentSearches');
+        return saved ? JSON.parse(saved) : [];
+    });
     const [menuList, setMenuList] = useState([]);
     const [placeList, setPlaceList] = useState([]);
 
@@ -34,30 +37,54 @@ const RestaurantSearchPage = () => {
     };
 
     const handleKeyDown = (e) => {
-        if(e.key === 'Enter' && searchInput.trim() !== '') {
-            setRecentSearch((prev) => {
-                const filtered = prev.filter(item => item !== searchInput);
-                return [searchInput, ...filtered].slice(0, 5);
-            });
+        if (e.key === 'Enter' && searchInput.trim() !== '') {
+            addToRecentSearch(searchInput);
             setSearchInput('');
             setView(false);
         }
     };
 
+
+    const addToRecentSearch = (term) => {
+        if (!term || !term.trim()) return;
+        
+        const newSearches = [
+            term,
+            ...recentSearch.filter(item => item !== term)
+        ].slice(0, 5);
+
+        setRecentSearch(newSearches);
+        localStorage.setItem('recentSearches', JSON.stringify(newSearches));
+    };
+
+
+
     const handleRemoveSearch = (term) => {
-        setRecentSearch(prev => prev.filter(item => item !== term));
+        const newSearches = recentSearch.filter(item => item !== term);
+        setRecentSearch(newSearches);
+        localStorage.setItem('recentSearches', JSON.stringify(newSearches));
     };
 
     const handleResent = (term) => {
         setSearchInput(term);
-        
         if (term.trim()) {
             setView(true);
             handleRealTimeSearch(term);
+            addToRecentSearch(term);
         } else {
             setView(false);
-        }
-    }
+        }    
+    };
+
+    const handleMenuClick = (menuName) => {
+        addToRecentSearch(menuName);
+        
+        setSearchInput('');
+        setView(false);
+        
+        navigate(`/restaurant/?menu_name=${menuName}`);
+    };
+
 
     const handleRealTimeSearch = async (text) => {
         try {
@@ -132,7 +159,7 @@ const RestaurantSearchPage = () => {
                         
                             <Search key={index}>
                                 <img src={searchIcon} alt="search" />
-                                <span onClick={() => handleResent(value.name)}>
+                                <span onClick={() => handleMenuClick(value.name)}>
                                     {highlightText(value.name, searchInput)}
                                 </span>
                             </Search>

@@ -34,12 +34,15 @@ const Overlay = styled.div`
 const Header = styled.div`
     height : 35px;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 375px;
+    padding: 0 20px;
 
 `
 const Title = styled.span`
-
+    flex: 0 0 auto;
     position: absolute;
     left: 20px;
     font-weight : 700;
@@ -47,6 +50,7 @@ const Title = styled.span`
 `
 
 const Search = styled.img`
+    flex: 0 0 auto;
     position: absolute;
     right: 20px;
 `

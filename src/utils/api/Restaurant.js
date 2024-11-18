@@ -1,7 +1,13 @@
 import axios from 'axios';
 import { createContext, useCallback, useContext, useState } from 'react';
 
-const RestaurantContext = createContext();
+// 초기값 설정
+const RestaurantContext = createContext({
+  restaurantData: null,
+  loading: false,
+  error: null,
+  fetchRestaurantData: async () => {}
+});
 
 export const RestaurantProvider = ({ children }) => {
   const [restaurantData, setRestaurantData] = useState(null);
@@ -14,7 +20,6 @@ export const RestaurantProvider = ({ children }) => {
       setError(null);
       const response = await axios.get(`https://port-0-server-m3eidei15754d939.sel4.cloudtype.app/restaurants/${id}/`);
       setRestaurantData(response.data);
-      console.log(response.data);
     } catch (error) {
       setError(error);
     } finally {
@@ -36,4 +41,10 @@ export const RestaurantProvider = ({ children }) => {
   );
 };
 
-export const useRestaurant = () => useContext(RestaurantContext);
+export const useRestaurant = () => {
+  const context = useContext(RestaurantContext);
+  if (!context) {
+    throw new Error('useRestaurant must be used within a RestaurantProvider');
+  }
+  return context;
+};
