@@ -190,12 +190,20 @@ const fetchStoreDetail = async (placeId, type) => {
         ? data.average_price.toLocaleString() + '원'
         : '-';
       
-      // 이미지 배열 생성 (null/undefined인 경우 빈 문자열 할당)
+      // 이미지 배열 생성 로직 수정
       const images = [
-        data.image_url || '',
-        ...(data.menus?.slice(0, 2).map(menu => menu.image_url || '') || ['', ''])
+        data.image_url || '',  // 대표 이미지
+        ...(data.menus || [])  // menus 배열이 없으면 빈 배열 사용
+          .filter(menu => menu.image_url)  // image_url이 있는 메뉴만 필터링
+          .slice(0, 2)  // 최대 2개의 메뉴 이미지만 사용
+          .map(menu => menu.image_url)
       ];
       
+      // 항상 3개의 이미지 슬롯 유지 (빈 문자열로 채움)
+      while (images.length < 3) {
+        images.push('');
+      }
+
       return {
         name: data.name,
         category: categories,
