@@ -4,24 +4,27 @@ import { useEffect, useState } from 'react';
 import backIcon from '../../../assets/svg/back.svg'
 import logotextIcon from '../../../assets/logotext.png'
 import closeIcon from '../../../assets/svg/Close.svg'
-import { useRestaurant } from '../../../utils/api/Restaurant';
+import axios from "axios";
 
 const DetailPicturePage = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('picture'); 
     const {id} = useParams();
-    const baseurl = `/restaurant/detail/${id}`;
-    const { restaurantData, loading, error, fetchRestaurantData } = useRestaurant();
+    const [restaurantData, setRestaurantData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const baseURL = process.env.REACT_APP_API_URL;
+    const detailurl = `/restaurant/detail/${id}`;
     const handleClick = (type) => {
         setActiveTab(type);
         if (type === 'home')  {
-            navigate(baseurl);
+            navigate(detailurl);
         } else if (type === 'menu') {
-            navigate(`${baseurl}/menu`);
+            navigate(`${detailurl}/menu`);
         } else if (type === 'review') {
-            navigate(`${baseurl}/review`);
+            navigate(`${detailurl}/review`);
         } else if (type === 'picture') {
-            navigate(`${baseurl}/picture`);
+            navigate(`${detailurl}/picture`);
         } else if (type === 'reviewWrite'){
             navigate(`/restaurant/review/${id}`);
         }
@@ -33,22 +36,33 @@ const DetailPicturePage = () => {
         navigate(`/restaurant`);
     };  
     useEffect(() => {
-        if (id) {
-          fetchRestaurantData(id);
-        }
-      }, [id, fetchRestaurantData]);
-    
-      if (loading) return <div>로딩 중...</div>;
-      if (error) return <div>에러가 발생했습니다.</div>;
-      if (!restaurantData) {
-        return <p>로딩 중...</p>
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const response = await axios.get(`${baseURL}/restaurants/${id}/`);
+                setRestaurantData(response.data.data);
+            } catch (err) {
+                setError(err);
+            } finally {
+                setLoading(false);
+            }
+            
         };
+
+        if (id) {
+            fetchData();
+        }
+    }, [id, baseURL]);
+
+    if (!restaurantData) return <p>로딩 중...</p>;
+
+    const { name, review_images } = restaurantData;
     return(
         <div>
             <Header>   
                 <div style={{display:"flex", gap:"8px", alignItems:"center"}}>
                     <img src={backIcon} alt="back" onClick={()=>handleBack()} />
-                    <div className='name'>{restaurantData.name}</div>
+                    <div className='name'>{name}</div>
                 </div>
                 <img onClick={()=>handleList()}src={closeIcon} alt="close" />
 
@@ -60,11 +74,12 @@ const DetailPicturePage = () => {
                 <SubTab onClick={()=>handleClick('review')} $isActive={activeTab === 'review'}>리뷰</SubTab>
             </Tab>
             <GridContainer>
-                {restaurantData.data && restaurantData.data.review_images && restaurantData.data.review_images.length > 0 ? (
-                    restaurantData.data.review_images.map((imageObj, index) => (
-                        <GridImage 
+            {review_images && review_images.length > 0 ? (
+                    review_images.slice(0, 9).map((imageObj, index) => (
+                        <GridImage
                             key={index}
-                            $imageUrl={imageObj.image_url} // 절대 경로 사용
+                            src={imageObj.image_url || imageObj.image}
+                            alt={`사진 ${index + 1}`}
                         />
                     ))
                 ) : (
@@ -98,12 +113,11 @@ const GridContainer = styled.div`
     padding: 2px;
 `;
 
-const GridImage = styled.div`
+const GridImage = styled.img`
     width: 164px;
-    height: 164px;
+    height: auto;
     border-radius: 10px;
     background-color: #F4F4F4;
-    background-image: ${props => props.$imageUrl ? `url(${props.$imageUrl})` : 'none'};
     background-size: cover;
     background-position: center;
 `;

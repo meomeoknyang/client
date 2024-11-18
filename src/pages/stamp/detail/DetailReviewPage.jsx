@@ -6,7 +6,6 @@ import editIcon from '../../../assets/svg/edit.svg'
 import logotextIcon from '../../../assets/logotext.png'
 import closeIcon from '../../../assets/svg/Close.svg'
 //import rightIcon from '../../../assets/svg/arrow_right.svg'
-import { useRestaurant } from '../../../utils/api/Restaurant';
 import axios from "axios";
 
 const DetailReviewPage = () => {
@@ -14,18 +13,21 @@ const DetailReviewPage = () => {
     const [activeTab, setActiveTab] = useState('review'); 
     const {id} = useParams();
     const [reviews, setReviews] = useState();
-    const { restaurantData, loading, error, fetchRestaurantData } = useRestaurant();
-    const baseurl = `/restaurant/detail/${id}`;
+    const [restaurantData, setRestaurantData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const baseURL = process.env.REACT_APP_API_URL;
+    const detailurl = `/restaurant/detail/${id}`;
     const handleClick = (type) => {
         setActiveTab(type);
         if (type === 'home')  {
-            navigate(baseurl);
+            navigate(detailurl);
         } else if (type === 'menu') {
-            navigate(`${baseurl}/menu`);
+            navigate(`${detailurl}/menu`);
         } else if (type === 'review') {
-            navigate(`${baseurl}/review`);
+            navigate(`${detailurl}/review`);
         } else if (type === 'picture') {
-            navigate(`${baseurl}/picture`);
+            navigate(`${detailurl}/picture`);
         } else if (type === 'reviewWrite'){
             navigate(`/restaurant/review/${id}`);
         }
@@ -39,7 +41,7 @@ const DetailReviewPage = () => {
 
     const getReivew = async(key) => {
         try{
-            const response = await axios.get(`https://port-0-server-m3eidei15754d939.sel4.cloudtype.app/reviews/place/restaurant/${key}/`)
+            const response = await axios.get(`${baseURL}/reviews/place/restaurant/${key}/`)
             if (!response) {
                 console.error('데이터가 없습니다');
                 setReviews([]);
@@ -52,30 +54,41 @@ const DetailReviewPage = () => {
             setReviews([]);
         }
     };
+
     useEffect(() => {
-        if (id) {
-          fetchRestaurantData(id);
-          getReivew(id);
-        }
-      }, [id, fetchRestaurantData]);
-    
-      if (loading) return <div>로딩 중...</div>;
-      if (error) return <div>에러가 발생했습니다.</div>;
-      if (!restaurantData) {
-        return <p>로딩 중...</p>
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const response = await axios.get(`${baseURL}/restaurants/${id}/`);
+                setRestaurantData(response.data.data);
+                await getReivew(id);
+            } catch (err) {
+                setError(err);
+            } finally {
+                setLoading(false);
+            }
+            
         };
+
+        if (id) {
+            fetchData();
+        }
+    }, [id, baseURL]);
+    
+
+      if (!restaurantData) return <p>로딩 중...</p>;
     
 
     
 
-    const keyword = restaurantData.data.keywords ? restaurantData.data.keywords : [];
-    const totalCount = keyword.reduce((sum, keyword) => sum + keyword.count, 0);
+    const { name, keywords } = restaurantData;
+    const totalCount = keywords ? keywords.reduce((sum, keyword) => sum + keyword.count, 0) : 0;
     return(
         <div>
             <Header>   
                 <div style={{display:"flex", gap:"8px", alignItems:"center"}}>
                     <img src={backIcon} alt="back" onClick={()=>handleBack()} />
-                    <div className='name'>{restaurantData.data.name}</div>
+                    <div className='name'>{name}</div>
                 </div>
                 <img onClick={()=>handleList()}src={closeIcon} alt="close" />
 
@@ -93,13 +106,13 @@ const DetailReviewPage = () => {
                         <p onClick={()=>handleClick('reviewWrite')} > <img src={editIcon} alt="" /> 리뷰쓰기</p>
                     </Menut>
                     <Review>
-                    {restaurantData.data && restaurantData.data.keywords && restaurantData.data.keywords.length > 0 ? (
-                            restaurantData.data.keywords.slice(0,5).map((words,index)=>(
-                                <ReviewItem 
-                                key={index} 
-                                $index={index}
-                                $percent={(words.count / totalCount) * 100}
-                            >
+                    {keywords && keywords.length > 0 ? (
+                    keywords.slice(0,5).map((words,index) => (
+                        <ReviewItem 
+                            key={index} 
+                            $index={index}
+                            $percent={(words.count / totalCount) * 100}
+                        >
                                 <div className="graph">
                                     <div className="fill"/>
                                     <div className="content">

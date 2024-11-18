@@ -2,26 +2,29 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import backIcon from '../../../assets/svg/back.svg'
-import { useRestaurant } from '../../../utils/api/Restaurant';
 import closeIcon from '../../../assets/svg/Close.svg'
+import axios from 'axios';
 
 const DetailMenuPage = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('menu'); 
     const isMain = true;
-    const { restaurantData, loading, error, fetchRestaurantData } = useRestaurant();
+    const [restaurantData, setRestaurantData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const {id} = useParams();
-    const baseurl = `/restaurant/detail/${id}`;
+    const baseURL = process.env.REACT_APP_API_URL;
+    const detailurl = `/restaurant/detail/${id}`;
     const handleClick = (type) => {
         setActiveTab(type);
         if (type === 'home')  {
-            navigate(baseurl);
+            navigate(detailurl);
         } else if (type === 'menu') {
-            navigate(`${baseurl}/menu`);
+            navigate(`${detailurl}/menu`);
         } else if (type === 'review') {
-            navigate(`${baseurl}/review`);
+            navigate(`${detailurl}/review`);
         } else if (type === 'picture') {
-            navigate(`${baseurl}/picture`);
+            navigate(`${detailurl}/picture`);
         } else if (type === 'reviewWrite'){
             navigate(`/restaurant/review/${id}`);
         }
@@ -32,24 +35,37 @@ const DetailMenuPage = () => {
     const handleList = () => {
         navigate(`/restaurant`);
     }  
+
     useEffect(() => {
-        if (id) {
-          fetchRestaurantData(id);
-        }
-      }, [id, fetchRestaurantData]);
-    
-      if (loading) return <div>로딩 중...</div>;
-      if (error) return <div>에러가 발생했습니다.</div>;
-      if (!restaurantData || !restaurantData.data) {
-        return <p>로딩 중...</p>
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const response = await axios.get(`${baseURL}/restaurants/${id}/`);
+                setRestaurantData(response.data.data);
+            } catch (err) {
+                setError(err);
+            } finally {
+                setLoading(false);
+            }
         };
+
+        if (id) {
+            fetchData();
+        }
+    }, [id, baseURL]);
+
+    if (loading) return <div>로딩 중...</div>;
+    if (error) return <div>에러가 발생했습니다.</div>;
+    if (!restaurantData) return <p>로딩 중...</p>;
+
+    const { name, menus } = restaurantData;
 
     return(
         <div>
             <Header>   
                 <div style={{display:"flex", gap:"8px", alignItems:"center"}}>
                     <img src={backIcon} alt="back" onClick={()=>handleBack()} />
-                    <div className='name'>{restaurantData.data.name}</div>
+                    <div className='name'>{name}</div>
                 </div>
                     <img onClick={()=>handleList()}src={closeIcon} alt="close" />
 
@@ -61,7 +77,7 @@ const DetailMenuPage = () => {
                     <SubTab onClick={()=>handleClick('review')} $isActive={activeTab === 'review'}>리뷰</SubTab>
                 </Tab>
                 <MenuList>
-                        {restaurantData.data && restaurantData.data.menus && restaurantData.data.menus.map((menu) => (
+                        {menus && menus.map((menu) => (
                             <MenuCard key={menu.id}>
                             <Profile>
                                 <ProfileImg src={menu.image_url}/>
@@ -75,7 +91,7 @@ const DetailMenuPage = () => {
                             </MenuContent>
                         </MenuCard>
                         ))}
-                        {(!restaurantData.data?.menus || restaurantData.data.menus.length === 0) && (
+                        {(!menus || menus.length === 0) && (
                             <div style={{
                                 gridColumn: "1 / -1",
                                 textAlign: "center",

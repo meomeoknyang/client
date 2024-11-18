@@ -6,8 +6,8 @@ import searchIcon from ".././../../assets/svg/search.svg"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
 const RestaurantSearchPage = () => {
+    const baseURL = process.env.REACT_APP_API_URL;
     const navigate = useNavigate();
     const [view,setView] = useState(false);
     const [searchInput, setSearchInput] = useState('');
@@ -18,39 +18,21 @@ const RestaurantSearchPage = () => {
     const [menuList, setMenuList] = useState([]);
     const [placeList, setPlaceList] = useState([]);
 
-    // 위치정보 조회를 위한 함수
     const handleLoad = async (placeId) => {
-        // console.log('handleLoad called with placeId:', placeId);
-        
         if (!placeId) {
             console.error('유효하지 않은 place_id입니다.');
             return;
         }
-
+    
         try {
-            // 환경변수 사용으로 변경
-            const baseURL = process.env.REACT_APP_API_URL;
+            const response = await axios.get(`${baseURL}/restaurants/${placeId}/location/`);
             
-            // 식당과 카페 위치 정보를 모두 시도
-            const restaurantResponse = await axios.get(`${baseURL}/restaurants/${placeId}/location/`);
-            const cafeResponse = await axios.get(`${baseURL}/cafes/${placeId}/location/`);
-            
-            let locationData;
-            let type;
-            
-            if (restaurantResponse.data.code === 200) {
-                locationData = restaurantResponse.data.data;
-                type = 'restaurant';
-            } else if (cafeResponse.data.code === 200) {
-                locationData = cafeResponse.data.data;
-                type = 'cafe';
-            }
-            
-            if (locationData) {
+            if (response.data.code === 200) {
+                const locationData = response.data.data;
                 navigate('/map', {
                     state: {
                         placeId: placeId,
-                        type: type,
+                        type: 'restaurant',
                         latitude: locationData.latitude,
                         longitude: locationData.longitude
                     }
@@ -127,19 +109,14 @@ const RestaurantSearchPage = () => {
 
     const handleRealTimeSearch = async (text) => {
         try {
-            const response = await axios.get(`https://port-0-server-m3eidei15754d939.sel4.cloudtype.app/search/restaurant/?q=${text}`);
-            const {status, data} = response;
-            if(status === 200){
-                setMenuList(data.data.menus);
-                setPlaceList(data.data.places);
-            } else {
-                console.log("실패")
+            const response = await axios.get(`${baseURL}/search/restaurant/?q=${text}`);
+            if(response.status === 200){
+                setMenuList(response.data.data.menus);
+                setPlaceList(response.data.data.places);
             }
-
         } catch (error) {
             console.error(error);
-        };
-        
+        }
     };
 
     const highlightText = (text, searchInput) => {
