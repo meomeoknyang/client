@@ -60,16 +60,18 @@ const DetailPicturePage = () => {
                 <SubTab onClick={()=>handleClick('review')} $isActive={activeTab === 'review'}>리뷰</SubTab>
             </Tab>
             <GridContainer>
-                <GridImage/>
-                <GridImage/>
-                <GridImage/>
-                <GridImage/>
-                <GridImage/>
-                <GridImage/>
-                <GridImage/>
-                <GridImage/>
-
-                
+                {restaurantData.data && restaurantData.data.review_images && restaurantData.data.review_images.length > 0 ? (
+                    restaurantData.data.review_images.map((imageObj, index) => (
+                        <GridImage 
+                            key={index}
+                            $imageUrl={imageObj.image_url} // 절대 경로 사용
+                        />
+                    ))
+                ) : (
+                    <NoImageMessage>
+                        등록된 사진이 없습니다.
+                    </NoImageMessage>
+                )}
             </GridContainer>
             <Footer>
                     <TopMenu>
@@ -90,7 +92,7 @@ export default DetailPicturePage;
 const GridContainer = styled.div`
     display: grid;
     grid-template-columns: repeat(2, 164px);
-    margin:20px 0;
+    margin: 20px 0;
     gap: 7px;
     justify-content: center;
     padding: 2px;
@@ -98,11 +100,20 @@ const GridContainer = styled.div`
 
 const GridImage = styled.div`
     width: 164px;
-    height: 164px; //auto변경예정
-    object-fit: cover;
-    background-color: #F4F4F4;
+    height: 164px;
     border-radius: 10px;
+    background-color: #F4F4F4;
+    background-image: ${props => props.$imageUrl ? `url(${props.$imageUrl})` : 'none'};
+    background-size: cover;
+    background-position: center;
+`;
 
+const NoImageMessage = styled.div`
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 20px;
+    color: rgba(0,0,0,0.5);
+    font-size: 14px;
 `;
 
 const Footer = styled.div`

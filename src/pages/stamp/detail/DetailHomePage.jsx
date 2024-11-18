@@ -22,6 +22,7 @@ const DetailHomePage = () => {
     useEffect(() => {
         if (id) {
           fetchRestaurantData(id);
+          
         }
       }, [id, fetchRestaurantData]);
     
@@ -30,6 +31,7 @@ const DetailHomePage = () => {
       if (!restaurantData || !restaurantData.data) {
         return <p>로딩 중...</p>
         };
+    console.log(restaurantData);   
     const categoryNames = restaurantData.data && restaurantData.data.categories ? restaurantData.data.categories.map(category => category.name).join(', ') : '';
     const reviewCount = restaurantData.data?.comments?.length || 0;
     const displayRating = restaurantData.data && restaurantData.data.average_rating !== undefined ? 
@@ -96,6 +98,7 @@ const DetailHomePage = () => {
             window.open(`https://map.kakao.com/link/search/${searchQuery}`);
         }
     };
+    
 
     return(
         <div>
@@ -192,12 +195,19 @@ const DetailHomePage = () => {
                     <Menut>
                         <div>사진</div>
                     </Menut>
+
                     <PickContainer>
-                        {restaurantData.data && restaurantData.data.images && restaurantData.data.images.length > 0 ? (
-                            restaurantData.data.images.slice(0,9).map((image,index)=>(
-                                <img key={index}
-                                src={image.url}
-                                alt={`메뉴 ${index + 1}`}/>
+                        {restaurantData.data && restaurantData.data.review_images && restaurantData.data.review_images.length > 0 ? (
+                            restaurantData.data.review_images.slice(0,9).map((imageObj, index) => (
+                                <img 
+                                    key={index}
+                                    src={imageObj.image_url || imageObj.image}
+                                    alt={`메뉴 ${index + 1}`}
+                                    onError={(e) => {
+                                        console.log('Image load error for URL:', imageObj.image_url || imageObj.image);
+                                        e.target.style.backgroundColor = '#F5F5F5';
+                                    }}
+                                />
                             ))
                         ) : (
                             <div style={{
@@ -206,9 +216,10 @@ const DetailHomePage = () => {
                                 padding: "20px",
                                 color: "rgba(0,0,0,0.5)",
                                 fontSize: "12px"
-                            }}  > 등록된 사진이 없습니다. </div>
+                            }}> 
+                                등록된 사진이 없습니다. 
+                            </div>
                         )} 
-
                     </PickContainer>
                         
                     <End>
@@ -502,6 +513,7 @@ const PickContainer = styled.div`
         background-color: #F5F5F5;
         border-radius: 4px;
         object-fit: cover;
+        object-position: center;
     }
 
 `
