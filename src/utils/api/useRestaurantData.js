@@ -10,7 +10,7 @@ export const useRestaurantData = () => {
             const response = await axiosInstance.get(`/restaurants/?${params.toString()}`);
             if (!response.data.data) {
                 setData([]);
-                return;
+                return [];
             }
             return response.data.data;
         } catch (error) {
