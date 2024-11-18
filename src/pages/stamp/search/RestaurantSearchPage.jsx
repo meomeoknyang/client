@@ -18,9 +18,48 @@ const RestaurantSearchPage = () => {
     const [menuList, setMenuList] = useState([]);
     const [placeList, setPlaceList] = useState([]);
 
-    const handleLoad = (key) => {
-        navigate('/map')
-    }
+    // 위치정보 조회를 위한 함수
+    const handleLoad = async (placeId) => {
+        // console.log('handleLoad called with placeId:', placeId);
+        
+        if (!placeId) {
+            console.error('유효하지 않은 place_id입니다.');
+            return;
+        }
+
+        try {
+            // 환경변수 사용으로 변경
+            const baseURL = process.env.REACT_APP_API_URL;
+            
+            // 식당과 카페 위치 정보를 모두 시도
+            const restaurantResponse = await axios.get(`${baseURL}/restaurants/${placeId}/location/`);
+            const cafeResponse = await axios.get(`${baseURL}/cafes/${placeId}/location/`);
+            
+            let locationData;
+            let type;
+            
+            if (restaurantResponse.data.code === 200) {
+                locationData = restaurantResponse.data.data;
+                type = 'restaurant';
+            } else if (cafeResponse.data.code === 200) {
+                locationData = cafeResponse.data.data;
+                type = 'cafe';
+            }
+            
+            if (locationData) {
+                navigate('/map', {
+                    state: {
+                        placeId: placeId,
+                        type: type,
+                        latitude: locationData.latitude,
+                        longitude: locationData.longitude
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('위치 정보 조회 실패:', error);
+        }
+    };
     const handleBack = () => {
         navigate(-1);
     }
@@ -172,18 +211,19 @@ const RestaurantSearchPage = () => {
                 {
                     
                     placeList.length > 0 && placeList.map((value, index) => {
-                        return(
+                        // console.log('Place item:', value);
+                        return (
                             <Location key={index}>
                                 <LocMain>
                                     <img src={locationIcon} alt="location" />
-                                    <span onClick={() => handleLoad(value.id)}>{highlightText(value.name, searchInput)}</span>
+                                    <span onClick={() => handleLoad(value.place_id)}>
+                                        {highlightText(value.name, searchInput)}
+                                    </span>
                                 </LocMain>
                                 <LocDetail>정문에서 도보 {value.distance_from_gate}분 거리</LocDetail>
                             </Location>
-                        
-                        ) 
-                    })
-                }
+                        );
+                    })}
                 </PlacesResult>   
             </SearchList>: ''}
             
