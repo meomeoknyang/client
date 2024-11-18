@@ -24,8 +24,8 @@ import CafeDetailMenuPage from './pages/stamp/detail/CafeDetailMenuPage.jsx';
 import CafeDetailPicturePage from './pages/stamp/detail/CafeDetailPicturePage.jsx';
 import CafeDetailReviewPage from './pages/stamp/detail/CafeDetailReviewPage.jsx';
 import CafeSearchPage from './pages/stamp/search/CafeSearchPage.jsx';
-
-
+import CafeReviewPage from './pages/CafeReviewPage.jsx'
+import CafeReviewCompletePage from './pages/CafeReviewCompletePage.jsx';
 function App() {
   return (
     <>
@@ -57,11 +57,8 @@ function App() {
                 <Route path="detail/:id/picture" element={<Layout><CafeDetailPicturePage /></Layout>} />
                 <Route path="detail/:id/review" element={<Layout><CafeDetailReviewPage /></Layout>} />
                 <Route path="search" element={<Layout $hasNavigation><CafeSearchPage /></Layout>} />
-                {/*
                 <Route path="review/:id" element={<Layout><CafeReviewPage /></Layout>} />
                 <Route path="review/:id/complete" element={<Layout><CafeReviewCompletePage /></Layout>} />
-                */}
-                
               </Route>
           
             <Route path="/random" element={<Layout $hasNavigation> </Layout>}/>

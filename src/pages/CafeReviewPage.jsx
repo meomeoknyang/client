@@ -31,7 +31,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useRestaurant } from '../utils/api/Restaurant';
 import axiosInstance from '../utils/axiosConfig';
 
-const ReviewPage = () => {
+const CafeReviewPage = () => {
   const {id} = useParams();
   const navigate = useNavigate();
   const [restaurantData, setRestaurantData] = useState(null);
@@ -45,10 +45,10 @@ const ReviewPage = () => {
   const [imageFile, setImageFile] = useState(null);
   const [userVisitCount, setUserVisitCount] = useState(0);
 
-  const fetchRestaurantData = async () => {
+  const fetchRestaurantData = async (id) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get(`/restaurants/${id}/`);
+      const response = await axiosInstance.get(`/cafes/${id}/`);
       if (response.data.status === 'success') {
         setRestaurantData(response.data);
         setUserVisitCount(response.data.data.visit_count);
@@ -63,7 +63,7 @@ const ReviewPage = () => {
 
   useEffect(() => {
     if (id) {
-      fetchRestaurantData();
+      fetchRestaurantData(id);
     }
   }, [id]);
 
@@ -118,7 +118,7 @@ const ReviewPage = () => {
 
     try {
       const formData = new FormData();
-      formData.append('place_type', 'restaurant');
+      formData.append('place_type', 'cafe');
       formData.append('place_id', id);
       formData.append('rating', rating);
       formData.append('comment', review);
@@ -135,22 +135,8 @@ const ReviewPage = () => {
         formData.append('images', imageFile);
       }
 
-      console.log('Sending review data:', {
-        place_type: 'restaurant',
-        place_id: id,
-        rating,
-        comment: review,
-        keywords: keywordIndices,
-        image: imageFile ? 'Image file attached' : 'No image'
-      });
-
-      //FormData 내용 확인을 위한 디버깅 코드
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ': ' + pair[1]);
-      }
-
       const response = await axiosInstance.post(
-        `/reviews/place/restaurant/${id}/`,
+        `/reviews/place/cafe/${id}/`,
         formData,
         {
           headers: {
@@ -159,10 +145,8 @@ const ReviewPage = () => {
         }
       );
 
-      // console.log('Review submission response:', response.data);
-
       if (response.status === 200 || response.status === 201) {
-        navigate(`/restaurant/review/${id}/complete`, {
+        navigate(`/cafes/review/${id}/complete`, {
           state: { userVisitCount: userVisitCount }
         });
       } else {
@@ -175,7 +159,6 @@ const ReviewPage = () => {
       setIsSubmitting(false);
     }
   };
-
 
   const handleClose = () => {
     navigate(-1);
@@ -277,4 +260,4 @@ const ReviewPage = () => {
   );
 };
 
-export default ReviewPage;
+export default CafeReviewPage;
