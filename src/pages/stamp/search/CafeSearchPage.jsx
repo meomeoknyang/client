@@ -112,6 +112,7 @@ const CafeSearchPage = () => {
             const response = await axios.get(`${baseURL}/search/cafe/?q=${text}`);
             if(response.status === 200){
                 setMenuList(response.data.data.menus);
+                console.log(response.data.data)
                 setPlaceList(response.data.data.places);
             }
         } catch (error) {

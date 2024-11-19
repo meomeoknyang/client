@@ -33,10 +33,10 @@ const RestaurantPage = () => {
             }
             return response.data.data;
         } catch (error) {
-            if (error.response?.status === 401) {
+            if (error.response?.status === 500) {
                 setShowLoginModal(true);
             } else {
-                console.error('API 호출 에러:', error);
+                console.error('login error:', error);
             }
             setData(null);
             return null;
