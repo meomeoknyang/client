@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import GlobalStyle from './styles/GlobalStyle';
 import LoginPage from './pages/LoginPage';
@@ -33,6 +33,7 @@ function App() {
       <Router>
       <RestaurantProvider>
         <Routes>
+        <Route path="/" element={<Navigate to="/restaurant" replace />} />
           {/* 예시 네비게이션이 필요한 페이지들 */}
           <Route path="/map" element={<Layout $hasNavigation><MapPage/></Layout>}/>
           <Route path="/mypage" element={<Layout hasNavigation> <MyPage/> </Layout>}/>
