@@ -14,6 +14,23 @@ import StampPage from './pages/StampPage';
 import ReviewPage from './pages/ReviewPage';
 import ReviewCompletePage from './pages/ReviewCompletePage';
 
+import DetailHomePage from './pages/stamp/detail/DetailHomePage.jsx';
+import MapPage from './pages/MapPage';
+import DetailMenuPage from './pages/stamp/detail/DetailMenuPage.jsx';
+import DetailPicturePage from './pages/stamp/detail/DetailPicturePage.jsx';
+import DetailReviewPage from './pages/stamp/detail/DetailReviewPage.jsx';
+import { RestaurantProvider } from './utils/api/Restaurant.js';
+import SignupPage from './pages/SignupPage';
+import SignupDetailPage from './pages/SignupDetailPage';
+
+import CafePage from './pages/stamp/CafePage';
+import CafeDetailHomePage from './pages/stamp/detail/CafeDetailHomePage.jsx';
+import CafeDetailMenuPage from './pages/stamp/detail/CafeDetailMenuPage.jsx';
+import CafeDetailPicturePage from './pages/stamp/detail/CafeDetailPicturePage.jsx';
+import CafeDetailReviewPage from './pages/stamp/detail/CafeDetailReviewPage.jsx';
+import CafeSearchPage from './pages/stamp/search/CafeSearchPage.jsx';
+import CafeReviewPage from './pages/CafeReviewPage.jsx'
+import CafeReviewCompletePage from './pages/CafeReviewCompletePage.jsx';
 function App() {
   return (
     <>

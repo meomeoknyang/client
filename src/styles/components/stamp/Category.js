@@ -9,9 +9,22 @@ const CgChips = styled.span`
     border-radius: 48px;
     border: 1px solid rgba(0, 0, 0, 0.10);
     display: flex;
+<<<<<<< HEAD
     flex-direction: column;
     justify-content: center;
     align-items: center
+=======
+    flex-direction: row;
+    justify-content: center;
+    align-items: center
+
+    ${props => props.$isSelected && `
+    border: 1px solid #FF6F00;
+    background: rgba(255, 111, 0, 0.10);
+    color: #FF6F00;
+    align-items: center
+    `}
+>>>>>>> main
     `
 
 const CgView = styled.div`
@@ -20,6 +33,7 @@ const CgView = styled.div`
     justify-content: space-between;
     align-items: center;
     gap: 6px;
+<<<<<<< HEAD
     padding-left:20px;
     align-items: center;
     -ms-overflow-style: none; 
@@ -50,3 +64,10 @@ const Back = styled.div`
 `
 
 export {CgChips, CgView, Filter, Back};
+=======
+    align-items: center;
+`
+
+
+export {CgChips, CgView};
+>>>>>>> main
