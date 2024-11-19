@@ -39,7 +39,6 @@ const Category = ({ setBottomSheet, visited, setVisited, selectedSorts }) => {
                 width={getSortWidth(selectedSorts)}
                 icon="drop"
                 onClick={() => setBottomSheet({ type: 'sort', isOpen: true })}
-                isSelected={selectedSorts !== '추천순'}
             />
             <ChipWrapper
                 text="카테고리"

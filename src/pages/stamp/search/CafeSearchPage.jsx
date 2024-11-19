@@ -216,6 +216,7 @@ const MenuResult = styled.div`
     overflow-y: auto;
     background: #fff;
     z-index: 1;
+    overflow-x: hidden;
 `
 
 const PlacesResult = styled.div`
@@ -224,6 +225,7 @@ const PlacesResult = styled.div`
     background: #fff;
     z-index: 1;
     border-top: 9px solid #F0F0F3;
+    overflow-x: hidden;
 `
 
 const LocMain = styled.div`
@@ -351,5 +353,6 @@ const SearchList = styled.div`
     position: absolute;
     top: 56px; 
     width: 375px;
+    overflow-x: hidden;
     
 `
