@@ -1,10 +1,15 @@
 import styled from "styled-components";
 
 const Title = styled.div`
+<<<<<<< HEAD
+    font-size: 20px;
+    font-weight: 700;
+=======
     font-size: 16px;
     font-weight: 700;
     letter-spacing: -0.48px;
     max-width:101px;
+>>>>>>> main
 `
 
 const Information = styled.div`
@@ -14,6 +19,9 @@ const Information = styled.div`
     flex-direction: row;
     align-items: center;
 `
+<<<<<<< HEAD
+export {Title, Information} ;
+=======
 
 const Tag = styled.div`
     width: fit-content; 
@@ -49,3 +57,4 @@ const SubInformation = styled.div`
 `
 
 export {Title, Information, Tag, SubTitle, SubInformation, SubCategories } ;
+>>>>>>> main

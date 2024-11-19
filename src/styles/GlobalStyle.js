@@ -15,6 +15,8 @@ const GlobalStyle = createGlobalStyle`
     @font-face {
         font-family: 'Noto Sans KR';
         font-style: normal;
+        font-weight: 400;
+        src: url(https://fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Regular.woff) format('woff');}
         font-weight: 100;
         src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.woff)format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Thin.otf) format('opentype');
         }
@@ -22,8 +24,15 @@ const GlobalStyle = createGlobalStyle`
     @font-face {
         font-family: 'Noto Sans KR';
         font-style: normal;
-        font-weight: 300;
-        src: url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.woff2) format('woff2'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.woff) format('woff'),url(//fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Light.otf) format('opentype');
+        font-weight: 500;
+        src:url(https://fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Medium.woff) format('woff');
+        }
+
+    @font-face {
+        font-family: 'Noto Sans KR';
+        font-style: normal;
+        font-weight: 700;
+        src: url(https://fonts.gstatic.com/ea/notosanskr/v2/NotoSansKR-Bold.woff) format('woff');
         }
 
     @font-face {

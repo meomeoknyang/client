@@ -1,5 +1,9 @@
 import styled from "styled-components";
+<<<<<<< HEAD
+import menu from '../../../assets/menu.png'
+=======
 //import menu from '../../../assets/menu.png'
+>>>>>>> main
 const Container = styled.div`
     width: 335px;
     height: 128px;
@@ -11,6 +15,28 @@ const Container = styled.div`
 `
 
 const Detail = styled.div`
+<<<<<<< HEAD
+    color: #fff;
+    width: 193px;
+    height: 128px;
+    border-radius: 5px 0px 0px 5px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) -20.31%, rgba(0, 0, 0, 0.55) 73.64%),
+                    url(${menu}) lightgray 50% / cover no-repeat;
+`
+
+const Visit = styled.div`
+    width: 142px;
+
+    & >span {
+        position: relative;
+        top: 16px;
+        left: 17px;
+        font-size: 16px;
+        color: #FF6F00;
+        font-weight: 700;
+    }
+`
+=======
     color:#fff;
     width: 193px;
     height: 128px;
@@ -56,5 +82,6 @@ const Visit = styled.div`
         padding: 0 15px 12px 55px;
     }
 `;
+>>>>>>> main
 
 export {Container, Detail, Visit} ;
