@@ -112,7 +112,6 @@ const CafeSearchPage = () => {
             const response = await axios.get(`${baseURL}/search/cafe/?q=${text}`);
             if(response.status === 200){
                 setMenuList(response.data.data.menus);
-                console.log(response.data.data)
                 setPlaceList(response.data.data.places);
             }
         } catch (error) {
@@ -217,6 +216,7 @@ const MenuResult = styled.div`
     overflow-y: auto;
     background: #fff;
     z-index: 1;
+    overflow-x: hidden;
 `
 
 const PlacesResult = styled.div`
@@ -225,6 +225,7 @@ const PlacesResult = styled.div`
     background: #fff;
     z-index: 1;
     border-top: 9px solid #F0F0F3;
+    overflow-x: hidden;
 `
 
 const LocMain = styled.div`
@@ -352,5 +353,6 @@ const SearchList = styled.div`
     position: absolute;
     top: 56px; 
     width: 375px;
+    overflow-x: hidden;
     
 `

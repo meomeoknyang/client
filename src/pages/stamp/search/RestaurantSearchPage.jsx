@@ -214,6 +214,7 @@ export default RestaurantSearchPage;
 const MenuResult = styled.div`
     max-height: 167px;
     overflow-y: auto;
+    overflow-x: hidden; 
     background: #fff;
     z-index: 1;
 `
@@ -222,6 +223,7 @@ const PlacesResult = styled.div`
     max-height: 240px;
     overflow-y: auto;
     background: #fff;
+     overflow-x: hidden; 
     z-index: 1;
     border-top: 9px solid #F0F0F3;
 `
@@ -351,5 +353,6 @@ const SearchList = styled.div`
     position: absolute;
     top: 56px; 
     width: 375px;
+    overflow-x: hidden;
     
 `

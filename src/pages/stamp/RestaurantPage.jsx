@@ -1,9 +1,7 @@
 import Tap from '../../components/stamp/Tap'
 import Category from '../../components/stamp/restaurant/Category';
 import StampList from '../../components/stamp/restaurant/StampList';
-import {FixedContainer, ContentContainer, Title, Search, Header} from '../../styles/pages/StampPage';
-import searchIcon from '../../assets/svg/search.svg?react';
-import closeIcon from '../../assets/svg/Close.svg';
+import {FixedContainer, ContentContainer} from '../../styles/pages/StampPage';
 import { useNavigate, useSearchParams} from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import SortBottomSheet from '../../components/stamp/restaurant/bottomsheet/SortBottomSheet';
@@ -11,6 +9,7 @@ import CategoryBottomSheet from '../../components/stamp/restaurant/bottomsheet/C
 import styled from 'styled-components';
 import axiosInstance from '../../utils/axiosConfig';
 import { sortFunctions } from '../../utils/sortUtils';
+import HeaderContent from '../../components/stamp/restaurant/Header';
 
 const RestaurantPage = () => {
     const navigate = useNavigate();
@@ -145,41 +144,26 @@ const RestaurantPage = () => {
     return (
         <>
             <FixedContainer>
-                <Header>
-                    <Title>도장깨기</Title>
-                    {currentSearch && (
-                        <SearchInfo>
-                            <span>{currentSearch}</span>
-                        </SearchInfo>
-                    )}
-                    {currentSearch ? (
-                        <BackButton 
-                            src={closeIcon} 
-                            alt='back'
-                            onClick={handleResetSearch}
-                        />
-                    ) : (
-                        <Search 
-                            src={searchIcon} 
-                            alt='search' 
-                            onClick={() => navigate('/restaurant/search')}
-                        />
-                    )}
-                </Header>
+                <HeaderContent 
+                    currentSearch={currentSearch}
+                    handleResetSearch={handleResetSearch}
+                    navigate={navigate}
+                />
                 <Tap/>
                 <Category 
                     setBottomSheet={setBottomSheet}
                     visited={visited}
-                    setVisited={handleVisitFilter}
+                    setVisited={handleVisitFilter}  
                     selectedSorts={selectedSorts}
+                    selectedCategories={selectedCategories}
                 />
             </FixedContainer>
 
-            <ContentContainer>
-                <div className="bg-[#F0F0F3] flex justify-center">
-                    <StampList restaurants={data} visited={visited} />
-                </div>
-            </ContentContainer>
+            <ContentContainer $hasSearch={!!currentSearch}>
+            <div className="bg-[#F0F0F3] flex justify-center">
+                <StampList restaurants={data} visited={visited} />
+            </div>
+        </ContentContainer>
 
             <SortBottomSheet 
                 open={bottomSheet.isOpen && bottomSheet.type === 'sort'}
@@ -278,20 +262,4 @@ const ModalButtons = styled.div`
             color: #666;
         }
     }
-`;
-
-const SearchInfo = styled.div`
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 8px;
-    font-size: 14px;
-    color: #333;
-    padding: 1px 10px 2px 80px;
-`;
-
-const BackButton = styled.img`
-    flex: 0 0 auto;
-    cursor: pointer;
 `;
